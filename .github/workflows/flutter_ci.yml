@@ -1,0 +1,33 @@
+name: Flutter CI
+
+on:
+    push:
+        branches: [main] # GitFlow 기준: develop 브랜치에 push / 수정 예정
+    pull_request:
+        branches: [main] # 또는 PR이 develop으로 향할 때 / 수정 예정
+
+jobs:
+    build:
+        name: Analyze, Test and Build
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Set up Flutter
+              uses: subosito/flutter-action@v2
+              with:
+                  flutter-version: '3.32.6'
+
+            - name: Install dependencies
+              run: flutter pub get
+
+            - name: Analyze code
+              run: flutter analyze
+
+            - name: Run tests
+              run: flutter test
+
+            - name: Build APK (debug)
+              run: flutter build apk --debug
