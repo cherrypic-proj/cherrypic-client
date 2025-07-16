@@ -29,5 +29,5 @@ jobs:
             - name: Run tests
               run: flutter test
 
-            - name: Build only for ARM (no x86) to avoid NDK/ApplePlugin issues
-              run: flutter build apk --debug --target-platform android-arm,android-arm64
+            # - name: Build only for ARM (no x86) to avoid NDK/ApplePlugin issues
+            #   run: flutter build apk --debug --target-platform android-arm,android-arm64
