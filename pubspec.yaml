@@ -37,4 +37,4 @@ flutter:
     fonts:
         - family: Koulen
           fonts:
-              - asset: assets/fonts/Koulen/Koulen-Regular.ttf
+              - asset: assets/fonts/Koulen-Regular.ttf
