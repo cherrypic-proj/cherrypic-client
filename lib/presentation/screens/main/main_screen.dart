@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
-import 'package:cherrypic/presentation/widgets/CustomAppBar.dart';
+import 'package:cherrypic/presentation/widgets/custom_app_bar.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
