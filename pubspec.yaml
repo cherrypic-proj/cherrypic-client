@@ -10,8 +10,8 @@ dependencies:
     flutter:
         sdk: flutter
     cupertino_icons: ^1.0.8 # iOS 스타일 아이콘
-    sign_in_with_apple: ^5.0.0 # Apple 로그인
-
+    sign_in_with_apple: ^7.0.1 # Apple 로그인
+    flutter_web_auth_2: ^4.1.0
     # Architecture
     provider: ^6.1.1 # 상태 관리 (MVVM ViewModel 연동)
     # Networking
