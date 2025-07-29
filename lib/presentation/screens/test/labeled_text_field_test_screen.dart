@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cherrypic/presentation/widgets/text/custom_labeled_text_field.dart';
+import 'package:cherrypic/presentation/widgets/text/horizontal_labeled_text_field.dart';
 
 class LabeledTextFieldTestScreen extends StatelessWidget {
   const LabeledTextFieldTestScreen({super.key});
@@ -10,9 +11,20 @@ class LabeledTextFieldTestScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('텍스트필드 테스트')),
       body: Padding(
         padding: const EdgeInsets.all(24),
-        child: CustomLabeledTextField(
-          title: '임시 앨범 이름',
-          hintText: '임시 앨범 이름을 작성해주세요. (최대 00자)',
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: const [
+            CustomLabeledTextField(
+              title: '임시 앨범 이름',
+              hintText: '임시 앨범 이름을 작성해주세요. (최대 00자)',
+            ),
+            SizedBox(height: 32),
+            HorizontalLabeledTextField(title: '배송지명', hintText: '배송지명을 입력하세요'),
+            SizedBox(height: 24),
+            HorizontalLabeledTextField(title: '수령인', hintText: '수령인을 입력하세요'),
+            SizedBox(height: 24),
+            HorizontalLabeledTextField(title: '연락처', hintText: '000-0000-0000'),
+          ],
         ),
       ),
     );
