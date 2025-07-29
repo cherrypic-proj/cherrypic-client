@@ -1,3 +1,4 @@
+import 'package:cherrypic/presentation/screens/test/button_test.dart';
 import 'package:flutter/material.dart';
 import 'package:cherrypic/presentation/screens/main/main_screen.dart';
 import 'package:cherrypic/core/constants/font.dart';
@@ -14,7 +15,8 @@ class CherrypicApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
         useMaterial3: true,
       ),
-      home: const MainScreen(),
+      // home: const MainScreen(),
+      home: const ButtonTestScreen(),
     );
   }
 }
