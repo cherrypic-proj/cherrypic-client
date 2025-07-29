@@ -17,8 +17,8 @@ class CherrypicApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // home: const MainScreen(),
-      // home: const ButtonTestScreen(),
-      home: const BoxCardTest(),
+      home: const ButtonTestScreen(),
+      // home: const BoxCardTest(),
     );
   }
 }

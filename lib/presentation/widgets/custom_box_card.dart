@@ -215,9 +215,9 @@ class AddressBoxCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             _buildInfoRow('수령인', receiver),
-            const SizedBox(height: 8),
+            const SizedBox(height: 14),
             _buildInfoRow('연락처', phone),
-            const SizedBox(height: 8),
+            const SizedBox(height: 14),
             _buildInfoRow('주소', address),
             if (isFixed)
               Row(
