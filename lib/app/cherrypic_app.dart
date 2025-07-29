@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cherrypic/presentation/screens/main/main_screen.dart';
 import 'package:cherrypic/presentation/screens/test/album_card_test_screen.dart';
-import 'package:cherrypic/presentation/screens/test/album_group_test_screen.dart';
+import 'package:cherrypic/presentation/screens/test/event_card_test_screen.dart';
 import 'package:cherrypic/core/constants/font.dart';
 
 class CherrypicApp extends StatelessWidget {
@@ -16,7 +16,7 @@ class CherrypicApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
         useMaterial3: true,
       ),
-      home: const AlbumGroupTestScreen(),
+      home: const EventCardTestScreen(),
     );
   }
 }
