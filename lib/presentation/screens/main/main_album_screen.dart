@@ -20,7 +20,6 @@ class MainAlbumScreen extends StatelessWidget {
             title: '음식(양식, 중식, 한식...)',
             profileImagePath: 'assets/images/albumCover.png',
           ),
-          // 나머지 위젯
           Stack(
             children: [
               Container(
@@ -34,15 +33,19 @@ class MainAlbumScreen extends StatelessWidget {
                 ),
               ),
               Positioned(
-                top: 20, // 위치 조정
+                top: 20,
                 left: 20,
                 right: 20,
-                child: CustomGaugeBar(usedGB: 7.5, totalGB: 15),
+                child: CustomGaugeBar(usedGB: 13, totalGB: 15),
               ),
               Positioned(
-                bottom: 20, // Adjust vertical placement
+                bottom: 20,
                 left: MediaQuery.of(context).size.width / 2 - 316 / 2,
-                child: const CustomAlbumBadge(),
+                child: const CustomAlbumBadge(
+                  userName: '홍길동',
+                  memberCountText: '6',
+                  badgeType: 'pro',
+                ),
               ),
             ],
           ),

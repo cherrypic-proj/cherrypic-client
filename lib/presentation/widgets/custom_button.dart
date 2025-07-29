@@ -167,13 +167,11 @@ class RoundedMenuButton extends StatelessWidget {
 
 class ExitAlbumButton extends StatelessWidget {
   final String text;
-  // final String imageAsset;
   final VoidCallback onPressed;
 
   const ExitAlbumButton({
     Key? key,
     required this.text,
-    // required this.imageAsset,
     required this.onPressed,
   }) : super(key: key);
 
@@ -192,9 +190,7 @@ class ExitAlbumButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(text, style: AppFont.size16),
-          // const SizedBox(width: 8),
           Image.asset(
-            // imageAsset,
             'assets/images/door_open.png',
             width: 20,
             height: 20,
@@ -213,7 +209,6 @@ class UnSubscribeButton extends StatelessWidget {
   const UnSubscribeButton({
     Key? key,
     required this.text,
-    // required this.imageAsset,
     required this.onPressed,
   }) : super(key: key);
 
@@ -233,7 +228,6 @@ class UnSubscribeButton extends StatelessWidget {
         children: [
           Text(text, style: AppFont.size16),
           Image.asset(
-            // imageAsset,
             'assets/images/trash_icon.png',
             width: 20,
             height: 20,
