@@ -1,3 +1,4 @@
+import 'package:cherrypic/presentation/screens/test/box_card_test.dart';
 import 'package:cherrypic/presentation/screens/test/button_test.dart';
 import 'package:flutter/material.dart';
 import 'package:cherrypic/presentation/screens/main/main_screen.dart';
@@ -16,7 +17,8 @@ class CherrypicApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // home: const MainScreen(),
-      home: const ButtonTestScreen(),
+      // home: const ButtonTestScreen(),
+      home: const BoxCardTest(),
     );
   }
 }
