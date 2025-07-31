@@ -3,6 +3,11 @@ import 'package:flutter/material.dart';
 class AppFont {
   static const String family = 'Koulen';
 
+  static const TextStyle size10 = TextStyle(
+    fontFamily: family,
+    fontSize: 10,
+    height: 1.4,
+  );
   static const TextStyle size12 = TextStyle(
     fontFamily: family,
     fontSize: 12,
