@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cherrypic/core/constants/font.dart';
 import 'package:cherrypic/presentation/widgets/custom_app_bar.dart';
 
 import '../../widgets/custom_album_app_bar.dart';
@@ -36,15 +35,20 @@ class MainAlbumScreen extends StatelessWidget {
                 top: 20,
                 left: 20,
                 right: 20,
-                child: CustomGaugeBar(usedGB: 13, totalGB: 15),
+                child: CustomGaugeBar(usedGB: 9, totalGB: 15),
               ),
               Positioned(
                 bottom: 20,
-                left: MediaQuery.of(context).size.width / 2 - 316 / 2,
-                child: const CustomAlbumBadge(
-                  userName: '홍길동',
-                  memberCountText: '6',
-                  badgeType: 'pro',
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: const CustomAlbumBadge(
+                    userName: '홍길동',
+                    memberCountText: '6',
+                    showBadgeType: true,
+                    badgeType: 'pro',
+                    showAddMemberButton: true,
+                  ),
                 ),
               ),
             ],

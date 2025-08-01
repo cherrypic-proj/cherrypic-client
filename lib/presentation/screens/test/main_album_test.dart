@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cherrypic/core/constants/font.dart';
 import 'package:cherrypic/presentation/widgets/custom_app_bar.dart';
 
 import '../../widgets/custom_gauge_bar.dart';

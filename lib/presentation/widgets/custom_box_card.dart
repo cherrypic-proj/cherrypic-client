@@ -15,7 +15,7 @@ class CustomBoxCard extends StatelessWidget {
   final Color? divideColor;
 
   const CustomBoxCard({
-    Key? key,
+    super.key,
     // required this.selected,
     this.selected = false,
     required this.borderColor,
@@ -26,7 +26,7 @@ class CustomBoxCard extends StatelessWidget {
     required this.priceColor,
     required this.onTap,
     required this.divideColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

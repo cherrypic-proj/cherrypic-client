@@ -7,10 +7,10 @@ class PressedButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const PressedButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +40,10 @@ class EnabledButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const EnabledButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -68,14 +68,13 @@ class EnabledButton extends StatelessWidget {
   }
 }
 
-// Disabled gray button
 class DisabledButton extends StatelessWidget {
   final String text;
 
   const DisabledButton({
-    Key? key,
+    super.key,
     required this.text,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -108,10 +107,10 @@ class SquaredMenuButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const SquaredMenuButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -139,10 +138,10 @@ class RoundedMenuButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const RoundedMenuButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -170,10 +169,10 @@ class ExitAlbumButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const ExitAlbumButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -203,14 +202,13 @@ class ExitAlbumButton extends StatelessWidget {
 
 class UnSubscribeButton extends StatelessWidget {
   final String text;
-  // final String imageAsset;
   final VoidCallback onPressed;
 
   const UnSubscribeButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
