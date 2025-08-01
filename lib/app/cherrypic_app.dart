@@ -14,9 +14,9 @@ class CherrypicApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: AppFont.family,
         scaffoldBackgroundColor: Colors.white,
-        useMaterial3: true,
+        useMaterial3: false,
       ),
-      home: const LabeledTextFieldTestScreen(),
+      home: const MainScreen(),
     );
   }
 }

@@ -1,5 +1,6 @@
+import 'package:cherrypic/presentation/screens/main/ad_banner_placeholder.dart';
+import 'package:cherrypic/presentation/screens/main/album_section.dart';
 import 'package:flutter/material.dart';
-import 'package:cherrypic/core/constants/font.dart';
 import 'package:cherrypic/presentation/widgets/custom_app_bar.dart';
 
 class MainScreen extends StatelessWidget {
@@ -8,14 +9,17 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(),
+      extendBody: true,
       backgroundColor: Colors.white,
+      appBar: const CustomAppBar(),
       body: SafeArea(
-        child: Center(
-          child: Text(
-            '메인 화면',
-            style: AppFont.size20,
-          ),
+        bottom: false,
+        child: Column(
+          children: const [
+            SizedBox(height: 16),
+            AdBannerPlaceholder(),
+            Expanded(child: AlbumSection()),
+          ],
         ),
       ),
     );
