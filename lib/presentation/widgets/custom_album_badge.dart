@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:flutter/material.dart';
 import '../../core/constants/font.dart';
+import 'album/album_badge_type.dart';
 
 class CustomAlbumBadge extends StatelessWidget {
   final String userName;
@@ -21,29 +22,29 @@ class CustomAlbumBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final badgeImagePath = _getBadgeImagePath(badgeType);
-    double containerWidth = (showBadgeType && showAddMemberButton) ? 316 : 223;
-
     return Center(
       child: ClipRRect(
         borderRadius: BorderRadius.circular(6),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
           child: Container(
-            width: containerWidth,
             height: 45,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
               color: const Color.fromRGBO(0, 0, 0, 0.3),
               borderRadius: BorderRadius.circular(6),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildLeftSection(badgeImagePath),
-                const SizedBox(width: 14),
-                _buildRightSection(),
-              ],
+            child: IntrinsicWidth(
+              // 👈 이게 핵심
+              child: Row(
+                mainAxisSize: MainAxisSize.min, // 👈 내용에 따라 너비 결정
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildLeftSection(),
+                  const SizedBox(width: 14),
+                  _buildRightSection(),
+                ],
+              ),
             ),
           ),
         ),
@@ -51,23 +52,28 @@ class CustomAlbumBadge extends StatelessWidget {
     );
   }
 
-  String _getBadgeImagePath(String type) {
+  (AlbumBadgeType, String) _resolveBadge(String type) {
     switch (type) {
-      case 'pro':
-        return 'assets/images/pro_badge.png';
-      case 'premium':
-        return 'assets/images/premium_badge.png';
       case 'basic':
+        return (AlbumBadgeType.basic, 'basic');
+      case 'pro':
+        return (AlbumBadgeType.pro, 'pro');
+      case 'premium':
+        return (AlbumBadgeType.premium, 'premium');
       default:
-        return 'assets/images/basic_badge.png';
+        return (AlbumBadgeType.none, '');
     }
   }
 
-  Widget _buildLeftSection(String badgeImagePath) {
+  Widget _buildLeftSection() {
+    final (badge, label) = _resolveBadge(badgeType);
+
     return Row(
       children: [
         Padding(
-          padding: EdgeInsets.only(left: (!showBadgeType && !showAddMemberButton) ? 18 : 0),
+          padding: EdgeInsets.only(
+            left: (!showBadgeType && !showAddMemberButton) ? 18 : 0,
+          ),
           child: Image.asset(
             'assets/images/crown_icon.png',
             width: 24,
@@ -84,7 +90,21 @@ class CustomAlbumBadge extends StatelessWidget {
         ),
         SizedBox(width: (!showBadgeType && !showAddMemberButton) ? 0 : 14),
         if (showBadgeType)
-          Image.asset(badgeImagePath, height: 18),
+          if (badge != AlbumBadgeType.none)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: badge.backgroundColor,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                label,
+                style: AppFont.size10.copyWith(
+                  color: badge.textColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
       ],
     );
   }
@@ -139,9 +159,7 @@ class CustomAlbumBadge extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
         backgroundColor: AppColor.subSlicer,
         elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(999),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
       ),
       child: Text(
         '멤버 추가',

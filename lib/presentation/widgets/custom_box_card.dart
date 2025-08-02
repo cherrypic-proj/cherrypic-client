@@ -16,7 +16,6 @@ class CustomBoxCard extends StatelessWidget {
 
   const CustomBoxCard({
     super.key,
-    // required this.selected,
     this.selected = false,
     required this.borderColor,
     required this.dotColor,
@@ -37,7 +36,6 @@ class CustomBoxCard extends StatelessWidget {
         width: screenWidth - 40,
         child: Container(
           padding: const EdgeInsets.all(16),
-          // margin: const EdgeInsets.symmetric(vertical: 6),
           decoration: BoxDecoration(
             border: Border.all(
               color: selected ? borderColor : Colors.grey.shade300,
@@ -61,23 +59,14 @@ class CustomBoxCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(subtitle, style: TextStyle(color: AppColor.subGrey)),
-                    selected
-                        ? Container(
-                            margin: const EdgeInsets.symmetric(vertical: 12),
-                            width: double.infinity,
-                            height: 1,
-                            child: CustomPaint(
-                              painter: DottedLinePainter(divideColor!),
-                            ),
-                          )
-                        : Container(
-                            margin: const EdgeInsets.symmetric(vertical: 12),
-                            width: double.infinity,
-                            height: 1,
-                            child: CustomPaint(
-                              painter: DottedLinePainter(Colors.white),
-                            ),
-                          ),
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 12),
+                      width: double.infinity,
+                      height: 1,
+                      child: CustomPaint(
+                        painter: DottedLinePainter(selected ? divideColor! : Colors.white),
+                      ),
+                    ),
                     Text(
                       priceText,
                       style: TextStyle(
