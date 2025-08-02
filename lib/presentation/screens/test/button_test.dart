@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../widgets/custom_button.dart'; // 버튼 정의 파일을 import
+import '../../widgets/custom_button.dart';
 
 class ButtonTestScreen extends StatelessWidget {
   const ButtonTestScreen({super.key});
@@ -8,26 +8,89 @@ class ButtonTestScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(title: const Text('버튼 테스트'), backgroundColor: Colors.red),
+      appBar: AppBar(
+        title: const Text('버튼 테스트'),
+        backgroundColor: Colors.red,
+      ),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const DisabledButton(text: '앨범 생성'),
+            CustomButton(
+              onPressed: () {},
+              variant: AppButtonVariant.disabled,
+              type: CustomButtonType.createAlbum,
+            ),
             const SizedBox(height: 16),
-            EnabledButton(text: '앨범 생성', onPressed: () {}),
+
+            CustomButton(
+              onPressed: () {},
+              variant: AppButtonVariant.outlined,
+              type: CustomButtonType.createAlbum,
+            ),
             const SizedBox(height: 16),
-            PressedButton(text: '앨범 생성', onPressed: () {}),
-            SquaredMenuButton(text: '공유', onPressed: () {}),
-            SquaredMenuButton(text: '다운로드', onPressed: () {}),
-            SquaredMenuButton(text: '삭제', onPressed: () {}),
-            SquaredMenuButton(text: 'AI', onPressed: () {}),
-            RoundedMenuButton(text: '유사한 사진 그룹화', onPressed: () {}),
-            RoundedMenuButton(text: '흔들린 사진 삭제', onPressed: () {}),
-            RoundedMenuButton(text: '눈 감은 사진 삭제', onPressed: () {}),
-            ExitAlbumButton(text: '앨범 나가기', onPressed: () {}),
+
+            CustomButton(
+              type: CustomButtonType.createAlbum,
+              onPressed: () {},
+            ),
+
+            CustomButton(
+              type: CustomButtonType.share,
+              onPressed: () {},
+              shape: AppButtonShape.squared,
+            ),
+
+            CustomButton(
+              type: CustomButtonType.download,
+              onPressed: () {},
+              shape: AppButtonShape.squared,
+            ),
+
+            CustomButton(
+              type: CustomButtonType.delete,
+              onPressed: () {},
+              shape: AppButtonShape.squared,
+            ),
+
+            CustomButton(
+              type: CustomButtonType.ai,
+              onPressed: () {},
+              shape: AppButtonShape.squared,
+            ),
+
+            CustomButton(
+              type: CustomButtonType.similarGroup,
+              onPressed: () {},
+              shape: AppButtonShape.capsule,
+            ),
+
+            CustomButton(
+              type: CustomButtonType.deleteBlurryImage,
+              onPressed: () {},
+              shape: AppButtonShape.capsule,
+            ),
+
+            CustomButton(
+              type: CustomButtonType.deleteClosedEyeImage,
+              onPressed: () {},
+              shape: AppButtonShape.capsule,
+            ),
+
+            CustomButton(
+              type: CustomButtonType.exitAlbum,
+              onPressed: () {},
+              variant: AppButtonVariant.outlined,
+              iconPath: 'assets/images/door_open.png',
+            ),
+
             const SizedBox(height: 8),
-            UnSubscribeButton(text: '앨범 구독 해지', onPressed: () {}),
+
+            CustomButton(
+              type: CustomButtonType.unSubscribeAlbum,
+              onPressed: () {},
+              iconPath: 'assets/images/trash_icon.png',
+            ),
           ],
         ),
       ),
