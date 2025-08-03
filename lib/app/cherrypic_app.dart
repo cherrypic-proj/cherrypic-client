@@ -4,6 +4,8 @@ import 'package:cherrypic/presentation/screens/test/album_card_test_screen.dart'
 import 'package:cherrypic/presentation/screens/test/labeled_text_field_test_screen.dart';
 import 'package:cherrypic/core/constants/font.dart';
 
+import '../presentation/screens/login/splash_screen.dart';
+
 class CherrypicApp extends StatelessWidget {
   const CherrypicApp({super.key});
 
@@ -16,7 +18,8 @@ class CherrypicApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
         useMaterial3: true,
       ),
-      home: const LabeledTextFieldTestScreen(),
+      // home: const LabeledTextFieldTestScreen(),
+      home: const SplashScreen(),
     );
   }
 }
