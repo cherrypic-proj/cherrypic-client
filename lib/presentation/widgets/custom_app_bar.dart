@@ -18,7 +18,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: IconButton(
           icon: const Icon(Icons.menu, color: AppColor.mainRed),
           onPressed: () {
-            // TODO: 메뉴 버튼 액션
+
           },
         ),
       ),
@@ -33,7 +33,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             icon: const Icon(Icons.account_circle_outlined, color: Colors.black),
             iconSize: 40,
             onPressed: () {
-              // TODO: 프로필 버튼 액션
+
             },
           ),
         ),
