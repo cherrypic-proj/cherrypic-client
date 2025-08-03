@@ -4,6 +4,7 @@ import 'package:cherrypic/presentation/screens/main/home_tab/ad_banner_placehold
 import 'package:cherrypic/presentation/screens/main/home_tab/album_section.dart';
 import 'package:flutter/material.dart';
 import 'package:cherrypic/presentation/widgets/custom_app_bar.dart';
+import 'package:cherrypic/core/router/route_path.dart';
 import 'package:go_router/go_router.dart';
 
 class MainScreen extends StatelessWidget {
@@ -32,7 +33,7 @@ class MainScreen extends StatelessWidget {
           height: 45,
           child: TextButton(
             onPressed: () {
-              context.push('/album/add');
+              context.push(RoutePath.albumAdd);
             },
             style: TextButton.styleFrom(
               backgroundColor: AppColor.mainRed,
