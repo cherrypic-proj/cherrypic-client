@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cherrypic/presentation/screens/main/main_screen.dart';
+import 'package:cherrypic/presentation/screens/main/home_tab/main_screen.dart';
 import 'package:cherrypic/presentation/screens/test/album_card_test_screen.dart';
 import 'package:cherrypic/presentation/screens/test/labeled_text_field_test_screen.dart';
 import 'package:cherrypic/core/constants/font.dart';
