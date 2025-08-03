@@ -17,20 +17,21 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         padding: const EdgeInsets.only(left: 10),
         child: IconButton(
           icon: const Icon(Icons.menu, color: AppColor.mainRed),
+          iconSize: 40,
           onPressed: () {
             // TODO: 메뉴 버튼 액션
           },
         ),
       ),
-      title: Image.asset(
-        'assets/images/CherryPic_logo.png',
-        height: 50,
-      ),
+      title: Image.asset('assets/images/CherryPic_logo.png', height: 50),
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 10),
           child: IconButton(
-            icon: const Icon(Icons.account_circle_outlined, color: Colors.black),
+            icon: const Icon(
+              Icons.account_circle_outlined,
+              color: Colors.black,
+            ),
             iconSize: 40,
             onPressed: () {
               // TODO: 프로필 버튼 액션
