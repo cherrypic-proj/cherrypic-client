@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cherrypic/core/constants/font.dart';
 
+import '../presentation/screens/my_page/logout_popup_screen.dart';
 import '../presentation/screens/my_page/my_page_screen.dart';
 
 class CherrypicApp extends StatelessWidget {

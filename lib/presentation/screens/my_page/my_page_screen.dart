@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/font.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/text/horizontal_labeled_text_field.dart';
+import 'logout_popup_screen.dart';
 
 class MyPageScreen extends StatelessWidget {
   const MyPageScreen({super.key});
@@ -69,15 +70,25 @@ class MyPageScreen extends StatelessWidget {
                     child: _buildSocialLoginInfo(),
                   ),
                   const SizedBox(height: 20),
-                  _buildCustomDivider(2),
+                  _buildCustomDivider(1),
                   Column(
                     children: [
                       _buildListItem('공지사항', () {debugPrint("공지사항");}),
+                      _buildCustomDivider(2),
                       _buildListItem('구독 및 결제정보', () {debugPrint("구독 및 결제정보");}),
                       _buildListItem('실물사진 배송지 관리', () {debugPrint("실물사진 배송지 관리");}),
                       _buildListItem('앨범 가입 이력', () {debugPrint("앨범 가입 이력");}),
+                      _buildCustomDivider(2),
                       _buildListItem('설정', () {debugPrint("설정");}),
-                      _buildListItem('로그아웃', () {debugPrint("로그아웃");}),
+                      _buildCustomDivider(2),
+                      _buildListItem('로그아웃', () {
+                        showDialog(
+                          context: context,
+                          barrierDismissible: true,
+                          barrierColor: Colors.black.withOpacity(0.5),
+                          builder: (_) => const LogoutPopupScreen(),
+                        );
+                      }),
                       _buildListItem('회원탈퇴', () {debugPrint("회원탈퇴");}),
                       _buildCustomDivider(2),
                       const SizedBox(height: 40),
