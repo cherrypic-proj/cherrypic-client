@@ -35,9 +35,8 @@ class CustomAlbumBadge extends StatelessWidget {
               borderRadius: BorderRadius.circular(6),
             ),
             child: IntrinsicWidth(
-              // 👈 이게 핵심
               child: Row(
-                mainAxisSize: MainAxisSize.min, // 👈 내용에 따라 너비 결정
+                mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _buildLeftSection(),
