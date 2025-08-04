@@ -1,4 +1,5 @@
 import 'package:cherrypic/core/constants/color.dart';
+import 'package:cherrypic/presentation/screens/my_page/notice/notice_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/constants/font.dart';
@@ -73,7 +74,14 @@ class MyPageScreen extends StatelessWidget {
                   _buildCustomDivider(1),
                   Column(
                     children: [
-                      _buildListItem('공지사항', () {debugPrint("공지사항");}),
+                      _buildListItem('공지사항', () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NoticeScreen(),
+                          ),
+                        );
+                      }),
                       _buildCustomDivider(2),
                       _buildListItem('구독 및 결제정보', () {debugPrint("구독 및 결제정보");}),
                       _buildListItem('실물사진 배송지 관리', () {debugPrint("실물사진 배송지 관리");}),
