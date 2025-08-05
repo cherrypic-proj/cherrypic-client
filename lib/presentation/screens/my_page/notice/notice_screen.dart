@@ -31,7 +31,6 @@ class NoticeScreen extends StatelessWidget {
           CustomTabBar(
               title: '공지사항',
           ),
-          _buildCustomDivider(1),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30.0),
@@ -59,16 +58,6 @@ class NoticeScreen extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildCustomDivider(double thickness) {
-    return Divider(
-      color: AppColor.subSlicer,
-      thickness: thickness,
-      height: 1,
-      indent: 0,
-      endIndent: 0,
     );
   }
 }

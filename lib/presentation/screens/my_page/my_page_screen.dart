@@ -1,4 +1,5 @@
 import 'package:cherrypic/core/constants/color.dart';
+import 'package:cherrypic/presentation/screens/my_page/address_management/address_management_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/notice/notice_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/subscription_payment_info/subscription_payment_info_screen.dart';
 import 'package:flutter/material.dart';
@@ -92,7 +93,14 @@ class MyPageScreen extends StatelessWidget {
                           ),
                         );
                       }),
-                      _buildListItem('실물사진 배송지 관리', () {debugPrint("실물사진 배송지 관리");}),
+                      _buildListItem('실물사진 배송지 관리', () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddressManagementScreen(),
+                          ),
+                        );
+                      }),
                       _buildListItem('앨범 가입 이력', () {debugPrint("앨범 가입 이력");}),
                       _buildCustomDivider(2),
                       _buildListItem('설정', () {debugPrint("설정");}),

@@ -10,6 +10,7 @@ class AddressBoxCard extends StatelessWidget {
   final String phone;
   final String address;
   final bool isFixed;
+  final bool isSelected;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
 
@@ -21,6 +22,7 @@ class AddressBoxCard extends StatelessWidget {
     required this.phone,
     required this.address,
     required this.isFixed,
+    required this.isSelected,
     this.onEdit,
     this.onDelete,
   });
@@ -52,10 +54,13 @@ class AddressBoxCard extends StatelessWidget {
                   label,
                   style: AppFont.size14.copyWith(color: AppColor.mainRed),
                 ),
-                if (isFixed) ...[
-                  const SizedBox(width: 8),
-                  Icon(Icons.check_circle, color: AppColor.mainRed, size: 20),
-                ],
+                const SizedBox(width: 8),
+                if (isFixed)
+                  Icon(
+                    isSelected ? Icons.check_circle : Icons.circle_outlined,
+                    color: AppColor.mainRed,
+                    size: 20,
+                  ),
               ],
             ),
             const SizedBox(height: 12),

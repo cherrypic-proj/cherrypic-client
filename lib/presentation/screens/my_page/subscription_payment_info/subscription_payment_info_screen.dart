@@ -41,7 +41,6 @@ class _SubscriptionPaymentInfoScreenState extends State<SubscriptionPaymentInfoS
           CustomTabBar(
             title: '구독 및 결제 정보',
           ),
-          _buildCustomDivider(1),
           const SizedBox(height: 40),
           RichText(
             text: TextSpan(
@@ -79,16 +78,6 @@ class _SubscriptionPaymentInfoScreenState extends State<SubscriptionPaymentInfoS
           )
         ],
       ),
-    );
-  }
-
-  Widget _buildCustomDivider(double thickness) {
-    return Divider(
-      color: AppColor.subSlicer,
-      thickness: thickness,
-      height: 1,
-      indent: 0,
-      endIndent: 0,
     );
   }
 }

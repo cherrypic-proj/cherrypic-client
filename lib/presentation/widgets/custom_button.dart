@@ -2,7 +2,7 @@ import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:flutter/material.dart';
 
-enum AppButtonVariant { filled, outlined, disabled }
+enum AppButtonVariant { filled, outlined, disabled, outlinedStatic }
 enum AppButtonShape { rounded, squared, capsule }
 
 enum CustomButtonType {
@@ -16,6 +16,7 @@ enum CustomButtonType {
   deleteClosedEyeImage,
   exitAlbum,
   unSubscribeAlbum,
+  addAddress
 }
 
 class CustomButtonStyle {
@@ -61,7 +62,8 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isDisabled =
-        variant == AppButtonVariant.disabled || onPressed == null;
+        variant == AppButtonVariant.disabled ||
+            (onPressed == null && variant != AppButtonVariant.outlinedStatic);
 
     Color bgColor;
     Color fgColor;
@@ -81,6 +83,11 @@ class CustomButton extends StatelessWidget {
         bgColor = Colors.white;
         fgColor = Colors.grey;
         border = BorderSide(color: Colors.grey);
+        break;
+      case AppButtonVariant.outlinedStatic:
+        bgColor = Colors.white;
+        fgColor = AppColor.mainRed;
+        border = BorderSide(color: AppColor.mainRed);
         break;
     }
 
@@ -231,10 +238,10 @@ class CustomButton extends StatelessWidget {
       default:
         return CustomButtonStyle(
           width: null,
-          height: 30,
-          padding: EdgeInsets.zero,
+          height: 43,
+          padding: const EdgeInsets.symmetric(vertical: 12),
           fontStyle: AppFont.size16,
-          text: text ?? '',
+          text: '',
         );
     }
   }
