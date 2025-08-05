@@ -1,23 +1,25 @@
-import 'package:cherrypic/presentation/screens/my_page/notice/notice_list.dart';
-import 'package:cherrypic/presentation/widgets/custom_tab_bar.dart';
 import 'package:flutter/material.dart';
 
 import '../../../widgets/custom_app_bar.dart';
+import '../../../widgets/custom_tab_bar.dart';
+import 'album_subscription_history_list.dart';
 
 class NoticeItem {
   final String date;
   final String title;
+  final NoticeIconType iconType;
 
-  NoticeItem({required this.date, required this.title});
+  NoticeItem({required this.date, required this.title, required this.iconType,});
 }
 
-class NoticeScreen extends StatelessWidget {
-  NoticeScreen({super.key});
+
+class AlbumSubscriptionHistoryScreen extends StatelessWidget {
+  AlbumSubscriptionHistoryScreen({super.key});
 
   final List<NoticeItem> noticeItems = [
-    NoticeItem(date: '2025.08.04', title: '서비스 점검 안내'),
-    NoticeItem(date: '2025.07.20', title: '신규 기능 업데이트'),
-    NoticeItem(date: '2025.07.01', title: '이용약관 변경 안내'),
+    NoticeItem(date: '2025.08.04', title: '서비스 점검 안내', iconType: NoticeIconType.subscribeIn),
+    NoticeItem(date: '2025.08.04', title: '서비스 점검 안내', iconType: NoticeIconType.subscribeOut),
+    NoticeItem(date: '2025.08.04', title: '서비스 점검 안내', iconType: NoticeIconType.subscribeIn),
   ];
 
   @override
@@ -28,7 +30,7 @@ class NoticeScreen extends StatelessWidget {
       body: Column(
         children: [
           CustomTabBar(
-              title: '공지사항',
+            title: '앨범 가입 이력',
           ),
           Expanded(
             child: Padding(
@@ -37,9 +39,10 @@ class NoticeScreen extends StatelessWidget {
                 itemCount: noticeItems.length,
                 itemBuilder: (context, index) {
                   final item = noticeItems[index];
-                  return NoticeList(
+                  return AlbumSubscriptionHistoryList(
                     date: item.date,
                     title: item.title,
+                    iconType: item.iconType,
                     onTap: () {
                       Navigator.push(
                         context,
