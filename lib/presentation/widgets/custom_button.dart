@@ -2,7 +2,7 @@ import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:flutter/material.dart';
 
-enum AppButtonVariant { filled, outlined, disabled, outlinedStatic }
+enum AppButtonVariant { filled, outlined, disabled, outlinedStatic, address }
 enum AppButtonShape { rounded, squared, capsule }
 
 enum CustomButtonType {
@@ -16,7 +16,7 @@ enum CustomButtonType {
   deleteClosedEyeImage,
   exitAlbum,
   unSubscribeAlbum,
-  addAddress
+  addAddress,
 }
 
 class CustomButtonStyle {
@@ -89,6 +89,11 @@ class CustomButton extends StatelessWidget {
         fgColor = AppColor.mainRed;
         border = BorderSide(color: AppColor.mainRed);
         break;
+      case AppButtonVariant.address:
+        bgColor = AppColor.mainLightRed;
+        fgColor = Colors.black;
+        border = BorderSide(color: AppColor.mainLightRed);
+        break;
     }
 
     BorderRadius borderRadius;
@@ -111,7 +116,9 @@ class CustomButton extends StatelessWidget {
       children: [
         Text(
           text?.isNotEmpty == true ? text! : styleByType.text,
-          style: styleByType.fontStyle.copyWith(fontWeight: FontWeight.w800),
+          style: styleByType.fontStyle.copyWith(
+            fontWeight: type == CustomButtonType.addAddress ? FontWeight.w500 : FontWeight.w800,
+          ),
         ),
         if (iconPath != null) ...[
           const SizedBox(width: 0),
@@ -234,6 +241,14 @@ class CustomButton extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(20, 8, 12, 8),
           fontStyle: AppFont.size16,
           text: '앨범 구독 해지',
+        );
+      case CustomButtonType.addAddress:
+        return CustomButtonStyle(
+          width: 106,
+          height: 35,
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+          fontStyle: AppFont.size16,
+          text: '우편번호 찾기',
         );
       default:
         return CustomButtonStyle(

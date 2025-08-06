@@ -4,6 +4,7 @@ import '../../../widgets/address_box_card.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_tab_bar.dart';
+import 'add_address_screen.dart';
 
 class AddressItem {
   final String title;
@@ -44,7 +45,7 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
       address: '서울 동작구 상도로 369 [06978]',
       isFixed: true,
       onEdit: () {
-        debugPrint('집 주소 수정');
+        debugPrint('회사 주소 수정');
       },
       onDelete: () {
         debugPrint('집 주소 삭제');
@@ -104,7 +105,14 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
                         address: item.address,
                         isFixed: item.isFixed,
                         isSelected: index == selectedIndex,
-                        onEdit: item.onEdit,
+                        onEdit: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AddAddressScreen(isEdit: true),
+                            ),
+                          );
+                        },
                         onDelete: item.onDelete,
                       ),
                     ),
@@ -115,7 +123,14 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
                     child: CustomButton(
                       variant: AppButtonVariant.outlinedStatic,
                       text: '새 배송지 추가',
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddAddressScreen(isEdit: false,),
+                          ),
+                        );
+                      },
                     ),
                   );
                 }

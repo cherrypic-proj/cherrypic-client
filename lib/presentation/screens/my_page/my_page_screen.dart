@@ -126,7 +126,7 @@ class MyPageScreen extends StatelessWidget {
                         showDialog(
                           context: context,
                           barrierDismissible: true,
-                          barrierColor: Colors.black.withOpacity(0.5),
+                          barrierColor: Colors.black.withAlpha(128),
                           builder: (_) => const LogoutPopupScreen(),
                         );
                       }),
