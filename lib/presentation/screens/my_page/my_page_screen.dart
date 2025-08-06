@@ -1,6 +1,7 @@
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/presentation/screens/my_page/address_management/address_management_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/album_subscription_history/album_subscription_history_screen.dart';
+import 'package:cherrypic/presentation/screens/my_page/delete_account/delete_account_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/notice/notice_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/settings/setting_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/subscription_payment_info/subscription_payment_info_screen.dart';
@@ -129,7 +130,14 @@ class MyPageScreen extends StatelessWidget {
                           builder: (_) => const LogoutPopupScreen(),
                         );
                       }),
-                      _buildListItem('회원탈퇴', () {debugPrint("회원탈퇴");}),
+                      _buildListItem('회원탈퇴', () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DeleteAccountScreen(),
+                          ),
+                        );
+                      }),
                       _buildCustomDivider(2),
                       const SizedBox(height: 40),
                     ],
