@@ -108,7 +108,7 @@ class _AlbumCoverSectionState extends State<AlbumCoverSection> {
                       : Colors.white,
                   side: const BorderSide(color: AppColor.mainRed, width: 2),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
                 child: Text(
@@ -136,7 +136,7 @@ class _AlbumCoverSectionState extends State<AlbumCoverSection> {
                       : AppColor.mainRed,
                   side: const BorderSide(color: AppColor.mainRed, width: 2),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
                 child: Text(

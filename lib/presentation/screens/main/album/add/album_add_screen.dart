@@ -1,4 +1,5 @@
 import 'package:cherrypic/presentation/screens/main/album/components/album_cover_section.dart';
+import 'package:cherrypic/presentation/screens/main/album/components/album_type_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
@@ -27,8 +28,15 @@ class AlbumAddScreen extends StatelessWidget {
       ),
       body: const SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          child: AlbumCoverSection(),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              AlbumCoverSection(),
+              SizedBox(height: 80), // 원하는 간격
+              AlbumTypeSelector(),
+            ],
+          ),
         ),
       ),
     );
