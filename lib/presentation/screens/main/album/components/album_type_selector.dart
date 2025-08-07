@@ -112,7 +112,7 @@ class _AlbumTypeSelectorState extends State<AlbumTypeSelector> {
           title: 'Basic 앨범',
           description: '기본 제공되는 앨범이에요\n최대 nGB 저장 가능',
           imagePath: 'assets/images/basic_lgoo.png',
-          backgroundColor: Colors.grey[200]!,
+          backgroundColor: AppColor.subSlicer,
           basicCapacityStatus: '7/10',
         ),
         _buildAlbumOption(

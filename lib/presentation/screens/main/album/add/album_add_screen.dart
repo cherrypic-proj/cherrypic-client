@@ -1,4 +1,5 @@
 import 'package:cherrypic/presentation/screens/main/album/components/album_cover_section.dart';
+import 'package:cherrypic/presentation/screens/main/album/components/album_permission_toggle.dart';
 import 'package:cherrypic/presentation/screens/main/album/components/album_type_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:cherrypic/core/constants/color.dart';
@@ -35,6 +36,9 @@ class AlbumAddScreen extends StatelessWidget {
               AlbumCoverSection(),
               SizedBox(height: 80), // 원하는 간격
               AlbumTypeSelector(),
+              SizedBox(height: 50),
+              AlbumPermissionToggle(),
+              SizedBox(height: 50),
             ],
           ),
         ),
