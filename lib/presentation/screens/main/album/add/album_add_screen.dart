@@ -29,15 +29,15 @@ class AlbumAddScreen extends StatelessWidget {
       ),
       body: const SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               AlbumCoverSection(),
-              SizedBox(height: 80), // 원하는 간격
+              SizedBox(height: 80),
               AlbumTypeSelector(),
               SizedBox(height: 50),
-              AlbumPermissionToggle(),
+              AlbumPermissionToggle(showLockSetting: false),
               SizedBox(height: 50),
             ],
           ),
