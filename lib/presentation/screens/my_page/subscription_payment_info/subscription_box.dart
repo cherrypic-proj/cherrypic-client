@@ -17,7 +17,7 @@ class SubscriptionBox extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-      margin: const EdgeInsets.symmetric(horizontal: 30),
+      // margin: const EdgeInsets.symmetric(horizontal: 30),
       decoration: BoxDecoration(
         color: badgeType.borderColor,
         borderRadius: BorderRadius.circular(8),
