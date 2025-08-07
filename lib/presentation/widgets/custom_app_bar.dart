@@ -19,7 +19,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           icon: const Icon(Icons.menu, color: AppColor.mainRed),
           iconSize: 40,
           onPressed: () {
-            // TODO: 메뉴 버튼 액션
+
           },
         ),
       ),
@@ -34,7 +34,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
             iconSize: 40,
             onPressed: () {
-              // TODO: 프로필 버튼 액션
+
             },
           ),
         ),

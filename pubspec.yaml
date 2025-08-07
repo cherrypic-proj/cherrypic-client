@@ -22,6 +22,7 @@ dependencies:
     photo_manager: ^3.0.0 # 갤러리 접근 및 다중 이미지 선택
     flutter_image_compress: ^2.1.0 # 이미지 압축 처리
     cached_network_image: ^3.3.1 # 네트워크 이미지 캐싱 및 최적화
+    percent_indicator: ^4.2.2 #게이지 바
 
 dev_dependencies:
     flutter_test:
