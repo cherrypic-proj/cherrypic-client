@@ -16,43 +16,46 @@ class NoticeList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return Column(
+      children: [
+        GestureDetector(onTap: onTap, child: _buildNoticeTile()),
+        _buildCustomDivider(2),
+      ],
+    );
+  }
+
+  /// 공지 사항 subTitle(날짜) & Title(공지 사항 제목)
+  Widget _buildNoticeTile() {
+    const EdgeInsets contentPadding = EdgeInsets.fromLTRB(30, 20, 198, 20);
+
+    return Container(
+      padding: contentPadding,
+      color: Colors.white,
+      width: double.infinity,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          GestureDetector(
-            onTap: onTap,
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(30, 20, 198, 20),
-              color: Colors.white,
-              width: double.infinity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children:[
-                  Text(
-                    date,
-                    style: AppFont.size10.copyWith(
-                      color: AppColor.subGrey,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 4,),
-                  Text(
-                    title,
-                    style: AppFont.size16.copyWith(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
+          Text(
+            date,
+            style: AppFont.size10.copyWith(
+              color: AppColor.subGrey,
+              fontWeight: FontWeight.w600,
             ),
           ),
-          _buildCustomDivider(2),
+          const SizedBox(height: 4),
+          Text(
+            title,
+            style: AppFont.size16.copyWith(
+              color: Colors.black,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ],
       ),
     );
   }
 
+  /// 공지 사항 리스트 구분선
   Widget _buildCustomDivider(double thickness) {
     return Divider(
       color: AppColor.subSlicer,

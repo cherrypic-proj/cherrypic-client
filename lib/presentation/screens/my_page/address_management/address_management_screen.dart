@@ -7,6 +7,7 @@ import '../../../widgets/custom_tab_bar.dart';
 import '../common_popup_dialog.dart';
 import 'add_address_screen.dart';
 
+/// 실물 사진 배송지 Model
 class AddressItem {
   final String title;
   final String label;
@@ -29,6 +30,27 @@ class AddressItem {
   });
 }
 
+/// 실물 사진 배송지 리스트
+final List<AddressItem> sampleAddressItems = [
+  AddressItem(
+    title: '집',
+    label: '기본 배송지',
+    receiver: '홍길동',
+    phone: '010 - 1234 - 5678',
+    address: '서울 동작구 상도로 369 [06978]',
+    isFixed: true,
+  ),
+  AddressItem(
+    title: '회사',
+    label: '기본 배송지',
+    receiver: '홍길동',
+    phone: '010 - 1234 - 5678',
+    address: '서울특별시 종로구 성균관 25-2 [03063]',
+    isFixed: true,
+  ),
+];
+
+/// 실물 사진 배송지 관리 화면
 class AddressManagementScreen extends StatefulWidget {
   const AddressManagementScreen({super.key});
 
@@ -38,37 +60,7 @@ class AddressManagementScreen extends StatefulWidget {
 }
 
 class _AddressManagementScreenState extends State<AddressManagementScreen> {
-  final List<AddressItem> addressItems = [
-    AddressItem(
-      title: '집',
-      label: '기본 배송지',
-      receiver: '홍길동',
-      phone: '010 - 1234 - 5678',
-      address: '서울 동작구 상도로 369 [06978]',
-      isFixed: true,
-      onEdit: () {
-        debugPrint('집 주소 수정');
-      },
-      onDelete: () {
-        debugPrint('집 주소 삭제');
-      },
-    ),
-    AddressItem(
-      title: '회사',
-      label: '기본 배송지',
-      receiver: '홍길동',
-      phone: '010 - 1234 - 5678',
-      address: '서울특별시 종로구 성균관 25-2 [03063]',
-      isFixed: true,
-      onEdit: () {
-        debugPrint('회사 주소 수정');
-      },
-      onDelete: () {
-        debugPrint('회사 주소 삭제');
-      },
-    ),
-  ];
-
+  /// 선택된 배송지 인덱스 상태
   int selectedIndex = 0;
 
   @override
@@ -83,79 +75,89 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: addressItems.length + 1,
+              itemCount: sampleAddressItems.length + 1,
               itemBuilder: (context, index) {
-                if (index < addressItems.length) {
-                  final item = addressItems[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: TextButton(
-                      onPressed: () {
-                        setState(() {
-                          selectedIndex = index;
-                        });
-                      },
-                      style: TextButton.styleFrom(
-                        foregroundColor: Colors.black,
-                        padding: EdgeInsets.zero,
-                      ),
-                      child: AddressBoxCard(
-                        title: item.title,
-                        label: item.label,
-                        receiver: item.receiver,
-                        phone: item.phone,
-                        address: item.address,
-                        isFixed: item.isFixed,
-                        isSelected: index == selectedIndex,
-                        onEdit: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const AddAddressScreen(isEdit: true),
-                            ),
-                          );
-                        },
-                        onDelete: () {
-                          showDialog(
-                            context: context,
-                            builder: (_) => CommonPopupDialog(
-                              title: '배송지 삭제',
-                              messages: const ['해당 배송지 정보를 삭제하시겠습니까?'],
-                              leftButtonText: '취소',
-                              rightButtonText: '삭제',
-                              onLeftTap: () => Navigator.of(context).pop(),
-                              onRightTap: () {
-                                /// 삭제 로직 구현 예정
-                              },
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+                if (index < sampleAddressItems.length) {
+                  return _buildAddressCard(
+                    sampleAddressItems[index],
+                    index,
                   );
                 } else {
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 30, bottom: 137),
-                    child: CustomButton(
-                      variant: AppButtonVariant.outlinedStatic,
-                      text: '새 배송지 추가',
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                AddAddressScreen(isEdit: false),
-                          ),
-                        );
-                      },
-                    ),
-                  );
+                  return _buildAddNewAddressButton();
                 }
               },
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  /// 배송지 카드 위젯
+  Widget _buildAddressCard(AddressItem item, int index) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: TextButton(
+        onPressed: () {
+          setState(() {
+            selectedIndex = index;
+          });
+        },
+        style: TextButton.styleFrom(
+          foregroundColor: Colors.black,
+          padding: EdgeInsets.zero,
+        ),
+        child: AddressBoxCard(
+          title: item.title,
+          label: item.label,
+          receiver: item.receiver,
+          phone: item.phone,
+          address: item.address,
+          isFixed: item.isFixed,
+          isSelected: index == selectedIndex,
+          onEdit: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AddAddressScreen(isEdit: true),
+              ),
+            );
+          },
+          onDelete: () {
+            showDialog(
+              context: context,
+              builder: (_) => CommonPopupDialog(
+                title: '배송지 삭제',
+                messages: const ['해당 배송지 정보를 삭제하시겠습니까?'],
+                leftButtonText: '취소',
+                rightButtonText: '삭제',
+                onLeftTap: () => Navigator.of(context).pop(),
+                onRightTap: () {
+                  /// 삭제 로직 구현 예정
+                },
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  /// '새 배송지 추가' 버튼
+  Widget _buildAddNewAddressButton() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 30, bottom: 137),
+      child: CustomButton(
+        variant: AppButtonVariant.outlinedStatic,
+        text: '새 배송지 추가',
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddAddressScreen(isEdit: false),
+            ),
+          );
+        },
       ),
     );
   }

@@ -38,6 +38,7 @@ class CommonPopupDialog extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  /// 팝업창 Title
                   Text(
                     title,
                     style: AppFont.size18.copyWith(
@@ -46,8 +47,10 @@ class CommonPopupDialog extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
+
+                  /// 팝업창 메시지
                   ...messages.map(
-                        (msg) => Padding(
+                    (msg) => Padding(
                       padding: const EdgeInsets.only(bottom: 25),
                       child: Text(
                         msg,
@@ -63,65 +66,17 @@ class CommonPopupDialog extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SizedBox(
-                          height: 32,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColor.mainRed,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              padding: EdgeInsets.zero,
-                            ),
-                            onPressed: onLeftTap,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
-                              ),
-                              child: Text(
-                                leftButtonText,
-                                style: AppFont.size14.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+                        _buildButton(leftButtonText, onLeftTap),
                         const SizedBox(width: 40),
-                        SizedBox(
-                          height: 32,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColor.mainRed,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              padding: EdgeInsets.zero,
-                            ),
-                            onPressed: onRightTap,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
-                              ),
-                              child: Text(
-                                rightButtonText,
-                                style: AppFont.size14.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+                        _buildButton(rightButtonText, onRightTap),
                       ],
                     ),
                   ),
                 ],
               ),
             ),
+
+            /// 닫기 버튼
             Positioned(
               top: 12,
               right: 12,
@@ -135,6 +90,31 @@ class CommonPopupDialog extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  /// 팝업창 버튼 위젯
+  Widget _buildButton(String text, VoidCallback onTap) {
+    return SizedBox(
+      height: 32,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColor.mainRed,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          padding: EdgeInsets.zero,
+        ),
+        onPressed: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          child: Text(
+            text,
+            style: AppFont.size14.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         ),
       ),
     );

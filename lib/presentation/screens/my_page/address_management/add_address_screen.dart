@@ -20,6 +20,17 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
   bool isChecked = false;
   bool _buttonPressed = false;
 
+  /// isEdit 값에 따라 상단 제목을 '배송지 수정' 또는 '새 배송지 추가'로 표시
+  Widget _buildTitle(bool isEdit) {
+    return Text(
+      isEdit ? '배송지 수정' : '새 배송지 추가',
+      style: AppFont.size18.copyWith(
+        color: Colors.black,
+        fontWeight: FontWeight.w600,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isEdit = widget.isEdit;
@@ -32,33 +43,21 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
           const CustomTabBar(title: '실물사진 배송지 관리'),
           const SizedBox(height: 30.29),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 30),
+            padding: const EdgeInsets.symmetric(horizontal: 30),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  isEdit ? '배송지 수정' : '새 배송지 추가',
-                  style: AppFont.size18.copyWith(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 25,),
-                HorizontalLabeledTextField(
-                  title: '배송지명',
-                  hintText: '집',
-                ),
-                const SizedBox(height: 25,),
-                HorizontalLabeledTextField(
-                  title: '수령인',
-                  hintText: '홍길동',
-                ),
-                const SizedBox(height: 25,),
+                _buildTitle(isEdit),
+                const SizedBox(height: 25),
+                HorizontalLabeledTextField(title: '배송지명', hintText: '집'),
+                const SizedBox(height: 25),
+                HorizontalLabeledTextField(title: '수령인', hintText: '홍길동'),
+                const SizedBox(height: 25),
                 HorizontalLabeledTextField(
                   title: '연락처',
                   hintText: '010-1234-5678',
                 ),
-                const SizedBox(height: 25,),
+                const SizedBox(height: 25),
                 Row(
                   children: [
                     Expanded(
@@ -76,12 +75,12 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 25,),
+                const SizedBox(height: 25),
                 HorizontalLabeledTextField(
                   title: '',
                   hintText: '서울 동작구 상도로 369',
                 ),
-                const SizedBox(height: 36.97,),
+                const SizedBox(height: 36.97),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -100,7 +99,9 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                         });
                       },
                       child: Icon(
-                        isChecked ? Icons.check_circle : Icons.check_circle_outline,
+                        isChecked
+                            ? Icons.check_circle
+                            : Icons.check_circle_outline,
                         size: 26,
                         color: Colors.pink.shade100,
                       ),
@@ -112,31 +113,38 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
           ),
           const SizedBox(height: 53.45),
           Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              child: GestureDetector(
-                onTapDown: (_) {
-                  if (isChecked) {
-                    setState(() => _buttonPressed = true);
-                  }
-                },
-                onTapUp: (_) {
-                  if (isChecked) {
-                    setState(() => _buttonPressed = false);
-                  }
-                },
-                onTapCancel: () {
-                  if (isChecked) {
-                    setState(() => _buttonPressed = false);
-                  }
-                },
-                child: CustomButton(
-                  variant: isChecked
-                      ? (_buttonPressed ? AppButtonVariant.filled : AppButtonVariant.outlined)
-                      : AppButtonVariant.disabled,
-                  text: '배송지 저장',
-                  onPressed: isChecked ? () {} : null,
-                ),
-              )
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: GestureDetector(
+              /// 버튼을 길게 누르는 동안의 버튼 상태 -> filled
+              onTapDown: (_) {
+                if (isChecked) {
+                  setState(() => _buttonPressed = true);
+                }
+              },
+
+              /// 버튼에서 손을 뗄 때 버튼 상태 복원 -> outlined
+              onTapUp: (_) {
+                if (isChecked) {
+                  setState(() => _buttonPressed = false);
+                }
+              },
+
+              /// 터치 취소했을 때 버튼 상태 복원 -> disabled
+              onTapCancel: () {
+                if (isChecked) {
+                  setState(() => _buttonPressed = false);
+                }
+              },
+              child: CustomButton(
+                variant: isChecked
+                    ? (_buttonPressed
+                          ? AppButtonVariant.filled
+                          : AppButtonVariant.outlined)
+                    : AppButtonVariant.disabled,
+                text: '배송지 저장',
+                onPressed: isChecked ? () {} : null,
+              ),
+            ),
           ),
           const SizedBox(height: 30),
         ],

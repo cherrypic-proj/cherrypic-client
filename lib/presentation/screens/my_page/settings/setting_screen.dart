@@ -20,6 +20,29 @@ class _SettingScreenState extends State<SettingScreen> {
   bool adToggle = false;
   bool deleteLocalImage = false;
 
+  /// SettingToggle 리스트
+  List<Widget> _buildToggles() {
+    return [
+      SettingToggle(
+        label: '앨범 알림',
+        value: albumAlert,
+        onChanged: (value) => setState(() => albumAlert = value),
+      ),
+      const SizedBox(height: 26.72),
+      SettingToggle(
+        label: '사진 업로드',
+        value: photoUpload,
+        onChanged: (value) => setState(() => photoUpload = value),
+      ),
+      const SizedBox(height: 26.72),
+      SettingToggle(
+        label: '광고',
+        value: adToggle,
+        onChanged: (value) => setState(() => adToggle = value),
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,35 +68,9 @@ class _SettingScreenState extends State<SettingScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(15, 26.72, 0, 0),
-                  child: Column(
-                    children: [
-                      SettingToggle(
-                        label: '앨범 알림',
-                        value: albumAlert,
-                        onChanged: (bool value) {
-                          setState(() => albumAlert = value);
-                        },
-                      ),
-                      const SizedBox(height: 26.72,),
-                      SettingToggle(
-                        label: '사진 업로드',
-                        value: photoUpload,
-                        onChanged: (bool value) {
-                          setState(() => photoUpload = value);
-                        },
-                      ),
-                      const SizedBox(height: 26.72,),
-                      SettingToggle(
-                        label: '광고',
-                        value: adToggle,
-                        onChanged: (bool value) {
-                          setState(() => adToggle = value);
-                        },
-                      ),
-                    ],
-                  ),
+                  child: Column(children: _buildToggles()),
                 ),
-                const SizedBox(height: 101.1,),
+                const SizedBox(height: 101.1),
                 SettingToggle(
                   label: '로컬 사진 삭제',
                   value: deleteLocalImage,
@@ -85,7 +82,7 @@ class _SettingScreenState extends State<SettingScreen> {
                           title: '로컬 사진 삭제',
                           messages: [
                             '앨범에 업로드된 사진은 기기에서 자동으로 삭제되며, 복구가 어려울 수 있습니다.',
-                            '삭제를 허용하시겠습니까?'
+                            '삭제를 허용하시겠습니까?',
                           ],
                           leftButtonText: '취소',
                           rightButtonText: '허용',
@@ -107,7 +104,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                const SizedBox(height: 10,),
+                const SizedBox(height: 10),
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -121,7 +118,7 @@ class _SettingScreenState extends State<SettingScreen> {
               ],
             ),
           ),
-        ]
+        ],
       ),
     );
   }

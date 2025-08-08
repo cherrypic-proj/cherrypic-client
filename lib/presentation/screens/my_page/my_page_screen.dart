@@ -92,7 +92,8 @@ class MyPageScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SubscriptionPaymentInfoScreen(),
+                            builder: (context) =>
+                                SubscriptionPaymentInfoScreen(),
                           ),
                         );
                       }),
@@ -108,7 +109,8 @@ class MyPageScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AlbumSubscriptionHistoryScreen(),
+                            builder: (context) =>
+                                AlbumSubscriptionHistoryScreen(),
                           ),
                         );
                       }),
@@ -161,6 +163,7 @@ class MyPageScreen extends StatelessWidget {
     );
   }
 
+  /// 마이페이지 로그인 정보
   Widget _buildSocialLoginInfo() {
     return Row(
       children: [
@@ -192,6 +195,7 @@ class MyPageScreen extends StatelessWidget {
     );
   }
 
+  /// 구분선
   Widget _buildCustomDivider(double thickness) {
     return Divider(
       color: AppColor.subSlicer,
@@ -202,6 +206,7 @@ class MyPageScreen extends StatelessWidget {
     );
   }
 
+  /// 마이페이지 리스트
   Widget _buildListItem(String title, VoidCallback onTap) {
     return Column(
       children: [

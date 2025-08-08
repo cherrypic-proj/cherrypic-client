@@ -18,6 +18,15 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
   bool _isChecked = false;
   bool _buttonPressed = false;
 
+  /// 탈퇴 시 안내 문구 리스트
+  final List<String> _withdrawalNotices = [
+    '가입 시 사용하신 모든 계정 정보와 프로필이 삭제됩니다.',
+    '공유 앨범 및 개인 앨범이 모두 삭제되며, 다른 사용자와 공유한 사진도 함께 사라질 수 있습니다.',
+    '업로드한 사진, 이벤트 정보, 댓글, 좋아요 내역 등 모든 활동 기록이 삭제됩니다.',
+    '탈퇴 후에는 동일한 이메일로 재가입이 가능하나, 기존 데이터는 복구되지 않습니다.',
+    '유료 서비스를 이용 중인 경우, 탈퇴와 동시에 자동 해지되며 환불은 불가합니다. (환불 정책은 이용약관을 참조해 주세요.)',
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,12 +37,13 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const CustomTabBar(title: '회원 탈퇴'),
-            const SizedBox(height: 37.26,),
+            const SizedBox(height: 37.26),
             Padding(
               padding: const EdgeInsets.fromLTRB(42.97, 0, 0, 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  /// 탈퇴 Title
                   Text(
                     '체리픽 회원 탈퇴 전 꼭 확인해주세요.',
                     style: AppFont.size18.copyWith(
@@ -42,6 +52,8 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                     ),
                   ),
                   const SizedBox(height: 8),
+
+                  /// 탈퇴 SubTitle
                   Text(
                     '탈퇴하시면 아래 내용이 즉시 적용되며, 복구는 불가능합니다.',
                     style: AppFont.size12.copyWith(
@@ -54,32 +66,33 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
             ),
             const SizedBox(height: 37.26),
             Padding(
-              padding: EdgeInsets.fromLTRB(30, 0, 37.64, 0),
+              padding: const EdgeInsets.fromLTRB(30, 0, 37.64, 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _bulletText('가입 시 사용하신 모든 계정 정보와 프로필이 삭제됩니다.'),
-                  const SizedBox(height: 10),
-                  _bulletText('공유 앨범 및 개인 앨범이 모두 삭제되며, 다른 사용자와 공유한 사진도 함께 사라질 수 있습니다.'),
-                  const SizedBox(height: 10),
-                  _bulletText('업로드한 사진, 이벤트 정보, 댓글, 좋아요 내역 등 모든 활동 기록이 삭제됩니다.'),
-                  const SizedBox(height: 10),
-                  _bulletText('탈퇴 후에는 동일한 이메일로 재가입이 가능하나, 기존 데이터는 복구되지 않습니다.'),
-                  const SizedBox(height: 10),
-                  _bulletText('유료 서비스를 이용 중인 경우, 탈퇴와 동시에 자동 해지되며 환불은 불가합니다. (환불 정책은 이용약관을 참조해 주세요.)'),
-                ],
+
+                /// 탈퇴 안내 문구
+                children: _withdrawalNotices
+                    .map(
+                      (text) => Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: _bulletText(text),
+                      ),
+                    )
+                    .toList(),
               ),
             ),
-            const SizedBox(height: 106.8,),
+            const SizedBox(height: 106.8),
+
+            /// 구분선
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 30),
               width: double.infinity,
               height: 1,
-              child: CustomPaint(
-                painter: DottedLinePainter(AppColor.mainRed),
-              ),
+              child: CustomPaint(painter: DottedLinePainter(AppColor.mainRed)),
             ),
             const SizedBox(height: 48.2),
+
+            /// 확인 체크 표시
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -89,7 +102,9 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                     value: _isChecked,
                     activeColor: AppColor.mainRed,
                     side: const BorderSide(color: AppColor.mainRed),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0),
+                    ),
                     onChanged: (val) {
                       setState(() {
                         _isChecked = val ?? false;
@@ -108,8 +123,10 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
               ],
             ),
             const SizedBox(height: 37),
+
+            /// 회원 탈퇴하기 버튼
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30),
+              padding: const EdgeInsets.symmetric(horizontal: 30),
               child: GestureDetector(
                 onTapDown: (_) {
                   if (_isChecked) {
@@ -128,12 +145,14 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                 },
                 child: CustomButton(
                   variant: _isChecked
-                      ? (_buttonPressed ? AppButtonVariant.filled : AppButtonVariant.outlined)
+                      ? (_buttonPressed
+                            ? AppButtonVariant.filled
+                            : AppButtonVariant.outlined)
                       : AppButtonVariant.disabled,
                   text: '회원 탈퇴하기',
                   onPressed: _isChecked ? () {} : null,
                 ),
-              )
+              ),
             ),
             const SizedBox(height: 30),
           ],
@@ -142,6 +161,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
     );
   }
 
+  /// 탈퇴 안내 텍스트 위젯
   Widget _bulletText(String text) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,

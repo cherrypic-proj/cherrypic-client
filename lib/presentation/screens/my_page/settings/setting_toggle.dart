@@ -3,6 +3,7 @@ import 'package:cherrypic/core/constants/font.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+/// 설정 토글
 class SettingToggle extends StatefulWidget {
   final String label;
   final bool value;
@@ -29,10 +30,12 @@ class _SettingToggleState extends State<SettingToggle> {
       children: [
         Text(
           widget.label,
-          style: widget.textStyle ?? AppFont.size16.copyWith(
-            color: Colors.black,
-            fontWeight: FontWeight.w600,
-          ),
+          style:
+              widget.textStyle ??
+              AppFont.size16.copyWith(
+                color: Colors.black,
+                fontWeight: FontWeight.w600,
+              ),
         ),
         Transform.scale(
           scale: 0.78,
@@ -42,7 +45,7 @@ class _SettingToggleState extends State<SettingToggle> {
             activeTrackColor: AppColor.mainRed,
             inactiveTrackColor: AppColor.subLightGrey,
           ),
-        )
+        ),
       ],
     );
   }
