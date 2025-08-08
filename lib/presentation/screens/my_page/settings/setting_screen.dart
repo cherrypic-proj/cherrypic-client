@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/custom_tab_bar.dart';
+import '../common_popup_dialog.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -17,6 +18,7 @@ class _SettingScreenState extends State<SettingScreen> {
   bool albumAlert = false;
   bool photoUpload = true;
   bool adToggle = false;
+  bool deleteLocalImage = false;
 
   @override
   Widget build(BuildContext context) {
@@ -74,9 +76,31 @@ class _SettingScreenState extends State<SettingScreen> {
                 const SizedBox(height: 101.1,),
                 SettingToggle(
                   label: '로컬 사진 삭제',
-                  value: photoUpload,
+                  value: deleteLocalImage,
                   onChanged: (bool value) {
-                    setState(() => photoUpload = value);
+                    if (value) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => CommonPopupDialog(
+                          title: '로컬 사진 삭제',
+                          messages: [
+                            '앨범에 업로드된 사진은 기기에서 자동으로 삭제되며, 복구가 어려울 수 있습니다.',
+                            '삭제를 허용하시겠습니까?'
+                          ],
+                          leftButtonText: '취소',
+                          rightButtonText: '허용',
+                          onLeftTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          onRightTap: () {
+                            setState(() => deleteLocalImage = true);
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      );
+                    } else {
+                      setState(() => deleteLocalImage = false);
+                    }
                   },
                   textStyle: AppFont.size18.copyWith(
                     color: Colors.black,

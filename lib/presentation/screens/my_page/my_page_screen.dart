@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/font.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/text/horizontal_labeled_text_field.dart';
-import 'logout_popup_screen.dart';
+import 'common_popup_dialog.dart';
 
 class MyPageScreen extends StatelessWidget {
   const MyPageScreen({super.key});
@@ -125,9 +125,19 @@ class MyPageScreen extends StatelessWidget {
                       _buildListItem('로그아웃', () {
                         showDialog(
                           context: context,
-                          barrierDismissible: true,
-                          barrierColor: Colors.black.withAlpha(128),
-                          builder: (_) => const LogoutPopupScreen(),
+                          builder: (_) => CommonPopupDialog(
+                            title: '로컬 사진 삭제',
+                            messages: const [
+                              '지금 로그아웃하면 앨범을 더 이상 확인할 수 없어요.',
+                              '계속 로그아웃하시겠어요?',
+                            ],
+                            leftButtonText: '취소',
+                            rightButtonText: '로그아웃',
+                            onLeftTap: () => Navigator.of(context).pop(),
+                            onRightTap: () {
+                              /// 삭제 로직 구현 예정
+                            },
+                          ),
                         );
                       }),
                       _buildListItem('회원탈퇴', () {

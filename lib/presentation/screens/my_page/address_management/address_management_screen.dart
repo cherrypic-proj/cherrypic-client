@@ -4,6 +4,7 @@ import '../../../widgets/address_box_card.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_tab_bar.dart';
+import '../common_popup_dialog.dart';
 import 'add_address_screen.dart';
 
 class AddressItem {
@@ -32,7 +33,8 @@ class AddressManagementScreen extends StatefulWidget {
   const AddressManagementScreen({super.key});
 
   @override
-  State<AddressManagementScreen> createState() => _AddressManagementScreenState();
+  State<AddressManagementScreen> createState() =>
+      _AddressManagementScreenState();
 }
 
 class _AddressManagementScreenState extends State<AddressManagementScreen> {
@@ -45,7 +47,7 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
       address: '서울 동작구 상도로 369 [06978]',
       isFixed: true,
       onEdit: () {
-        debugPrint('회사 주소 수정');
+        debugPrint('집 주소 수정');
       },
       onDelete: () {
         debugPrint('집 주소 삭제');
@@ -109,11 +111,26 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const AddAddressScreen(isEdit: true),
+                              builder: (context) =>
+                                  const AddAddressScreen(isEdit: true),
                             ),
                           );
                         },
-                        onDelete: item.onDelete,
+                        onDelete: () {
+                          showDialog(
+                            context: context,
+                            builder: (_) => CommonPopupDialog(
+                              title: '배송지 삭제',
+                              messages: const ['해당 배송지 정보를 삭제하시겠습니까?'],
+                              leftButtonText: '취소',
+                              rightButtonText: '삭제',
+                              onLeftTap: () => Navigator.of(context).pop(),
+                              onRightTap: () {
+                                /// 삭제 로직 구현 예정
+                              },
+                            ),
+                          );
+                        },
                       ),
                     ),
                   );
@@ -127,7 +144,8 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AddAddressScreen(isEdit: false,),
+                            builder: (context) =>
+                                AddAddressScreen(isEdit: false),
                           ),
                         );
                       },
