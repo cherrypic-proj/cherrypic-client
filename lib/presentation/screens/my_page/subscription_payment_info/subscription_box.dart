@@ -5,10 +5,18 @@ import '../../../widgets/album/album_badge_type.dart';
 
 class SubscriptionBox extends StatelessWidget {
   final AlbumBadgeType badgeType;
+  final String title;
+  final String startDate;
+  final String? nextDate;
+  final String price;
 
   const SubscriptionBox({
     super.key,
     required this.badgeType,
+    required this.title,
+    required this.startDate,
+    this.nextDate,
+    required this.price,
   });
 
   @override
@@ -46,7 +54,7 @@ class SubscriptionBox extends StatelessWidget {
           ),
           const SizedBox(height: 9),
           Text(
-            '음식(양식, 중식, 한식, 일식) 음식 음식',
+            title,
             style: AppFont.size14.copyWith(
               color: badgeType.textColor,
               fontWeight: FontWeight.w600,
@@ -64,7 +72,7 @@ class SubscriptionBox extends StatelessWidget {
               ),
               const SizedBox(width: 30,),
               Text(
-                '2025/06/23',
+                startDate,
                 style: AppFont.size12.copyWith(
                   color: badgeType.textColor,
                   fontWeight: FontWeight.w600,
@@ -87,7 +95,7 @@ class SubscriptionBox extends StatelessWidget {
                     ),
                     const SizedBox(width: 30,),
                     Text(
-                      '2025/06/23',
+                      nextDate!,
                       style: AppFont.size12.copyWith(
                         color: badgeType.textColor,
                         fontWeight: FontWeight.w600,
@@ -99,7 +107,7 @@ class SubscriptionBox extends StatelessWidget {
               ],
             ),
           Text(
-            '월 0원',
+            price,
             style: AppFont.size14.copyWith(
               color: badgeType.textColor,
               fontWeight: FontWeight.w600,
