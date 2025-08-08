@@ -1,3 +1,4 @@
+import 'package:cherrypic/presentation/screens/main/mini_add_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:cherrypic/core/constants/color.dart';
 
@@ -18,9 +19,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: IconButton(
           icon: const Icon(Icons.menu, color: AppColor.mainRed),
           iconSize: 40,
-          onPressed: () {
-
-          },
+          onPressed: () => showMiniAddMenu(context),
         ),
       ),
       title: Image.asset('assets/images/CherryPic_logo.png', height: 50),
@@ -33,9 +32,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               color: Colors.black,
             ),
             iconSize: 40,
-            onPressed: () {
-
-            },
+            onPressed: () {},
           ),
         ),
       ],
