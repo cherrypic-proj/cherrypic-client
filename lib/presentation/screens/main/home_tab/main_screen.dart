@@ -3,7 +3,6 @@ import 'package:cherrypic/core/constants/font.dart';
 import 'package:cherrypic/presentation/screens/main/home_tab/ad_banner_placeholder.dart';
 import 'package:cherrypic/presentation/screens/main/home_tab/album_section.dart';
 import 'package:flutter/material.dart';
-import 'package:cherrypic/presentation/widgets/custom_app_bar.dart';
 import 'package:cherrypic/core/router/route_path.dart';
 import 'package:go_router/go_router.dart';
 
@@ -15,7 +14,7 @@ class MainScreen extends StatelessWidget {
     return Scaffold(
       extendBody: true,
       backgroundColor: Colors.white,
-      appBar: const CustomAppBar(),
+      // appBar: const CustomAppBar(),
       body: SafeArea(
         bottom: false,
         child: Column(
@@ -33,6 +32,8 @@ class MainScreen extends StatelessWidget {
           height: 45,
           child: TextButton(
             onPressed: () {
+              // context.pushNamed(RouteName.albumAdd);
+              // context.pushNamed(RouteName.albumAddFull);
               context.push(RoutePath.albumAdd);
             },
             style: TextButton.styleFrom(
@@ -46,7 +47,7 @@ class MainScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  '전체선택',
+                  '앨범추가',
                   style: AppFont.size18.copyWith(
                     color: Colors.white,
                     fontSize: 18,

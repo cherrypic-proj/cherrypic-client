@@ -2,8 +2,8 @@ import 'package:cherrypic/presentation/screens/main/album/components/album_cover
 import 'package:cherrypic/presentation/screens/main/album/components/album_permission_toggle.dart';
 import 'package:cherrypic/presentation/screens/main/album/components/album_type_selector.dart';
 import 'package:flutter/material.dart';
-import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
+import 'package:go_router/go_router.dart';
 
 class AlbumAddScreen extends StatelessWidget {
   const AlbumAddScreen({super.key});
@@ -17,7 +17,7 @@ class AlbumAddScreen extends StatelessWidget {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.pop(),
         ),
         title: Text(
           '앨범 추가',
