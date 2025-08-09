@@ -8,4 +8,5 @@ class AppColor {
   static const Color subGrey = Color(0xFF4D4D4D);
   static const Color subSlicer = Color(0xFFE4E4E4);
   static const Color highlightBlue = Color(0xFF0073FF);
+  static const Color subDarkGrey = Color(0xFF313131);
 }

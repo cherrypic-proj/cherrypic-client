@@ -86,6 +86,7 @@ class _BoxCardTestState extends State<BoxCardTest> {
                 receiver: '홍길동',
                 phone: '010 - 1234 - 5678',
                 address: '서울 동작구 상도로 369 [06978]',
+                isSelected: false,
               ),
               const SizedBox(height: 8),
               AddressBoxCard(
@@ -95,6 +96,7 @@ class _BoxCardTestState extends State<BoxCardTest> {
                 receiver: '홍길동',
                 phone: '010 - 1234 - 5678',
                 address: '서울 동작구 상도로 369 [06978]',
+                isSelected: false,
               ),
             ],
           ),

@@ -2,7 +2,7 @@ import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:flutter/material.dart';
 
-enum AppButtonVariant { filled, outlined, disabled }
+enum AppButtonVariant { filled, outlined, disabled, outlinedStatic, address }
 enum AppButtonShape { rounded, squared, capsule }
 
 enum CustomButtonType {
@@ -16,6 +16,7 @@ enum CustomButtonType {
   deleteClosedEyeImage,
   exitAlbum,
   unSubscribeAlbum,
+  addAddress,
 }
 
 class CustomButtonStyle {
@@ -61,7 +62,8 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isDisabled =
-        variant == AppButtonVariant.disabled || onPressed == null;
+        variant == AppButtonVariant.disabled ||
+            (onPressed == null && variant != AppButtonVariant.outlinedStatic);
 
     Color bgColor;
     Color fgColor;
@@ -81,6 +83,16 @@ class CustomButton extends StatelessWidget {
         bgColor = Colors.white;
         fgColor = Colors.grey;
         border = BorderSide(color: Colors.grey);
+        break;
+      case AppButtonVariant.outlinedStatic:
+        bgColor = Colors.white;
+        fgColor = AppColor.mainRed;
+        border = BorderSide(color: AppColor.mainRed);
+        break;
+      case AppButtonVariant.address:
+        bgColor = AppColor.mainLightRed;
+        fgColor = Colors.black;
+        border = BorderSide(color: AppColor.mainLightRed);
         break;
     }
 
@@ -104,7 +116,9 @@ class CustomButton extends StatelessWidget {
       children: [
         Text(
           text?.isNotEmpty == true ? text! : styleByType.text,
-          style: styleByType.fontStyle.copyWith(fontWeight: FontWeight.w800),
+          style: styleByType.fontStyle.copyWith(
+            fontWeight: type == CustomButtonType.addAddress ? FontWeight.w500 : FontWeight.w800,
+          ),
         ),
         if (iconPath != null) ...[
           const SizedBox(width: 0),
@@ -228,13 +242,21 @@ class CustomButton extends StatelessWidget {
           fontStyle: AppFont.size16,
           text: '앨범 구독 해지',
         );
+      case CustomButtonType.addAddress:
+        return CustomButtonStyle(
+          width: 106,
+          height: 35,
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+          fontStyle: AppFont.size16,
+          text: '우편번호 찾기',
+        );
       default:
         return CustomButtonStyle(
           width: null,
-          height: 30,
-          padding: EdgeInsets.zero,
+          height: 43,
+          padding: const EdgeInsets.symmetric(vertical: 12),
           fontStyle: AppFont.size16,
-          text: text ?? '',
+          text: '',
         );
     }
   }

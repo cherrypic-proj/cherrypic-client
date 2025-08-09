@@ -1,3 +1,4 @@
+import 'package:cherrypic/presentation/screens/my_page/my_page_screen.dart';
 import 'package:cherrypic/presentation/screens/main/mini_add_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:cherrypic/core/constants/color.dart';
@@ -32,7 +33,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               color: Colors.black,
             ),
             iconSize: 40,
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MyPageScreen(),
+                ),
+              );
+            },
           ),
         ),
       ],

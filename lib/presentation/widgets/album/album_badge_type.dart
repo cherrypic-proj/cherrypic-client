@@ -58,10 +58,10 @@ extension AlbumBadgeTypeExtension on AlbumBadgeType {
 
   Color get textColor {
     switch (this) {
-      case AlbumBadgeType.basic:
-        return Colors.black;
-      default:
+      case AlbumBadgeType.premium:
         return Colors.white;
+      default:
+        return AppColor.subDarkGrey;
     }
   }
 }
