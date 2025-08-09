@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
+
 import 'package:cherrypic/core/constants/font.dart';
-import '../presentation/screens/main/main_screen.dart';
+import 'package:cherrypic/core/router/app_router.dart';
 
 class CherrypicApp extends StatelessWidget {
   const CherrypicApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: appRouter,
       title: 'Cherrypic',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: AppFont.family,
         scaffoldBackgroundColor: Colors.white,
-        useMaterial3: true,
+        useMaterial3: false,
       ),
-      home: const MainScreen(),
     );
   }
 }

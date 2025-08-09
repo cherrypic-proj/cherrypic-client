@@ -58,7 +58,6 @@ class AlbumGroupSection extends StatelessWidget {
                       '전체선택',
                       style: AppFont.size18.copyWith(
                         color: isAllSelected ? Colors.white : Colors.black,
-                        fontSize: 12,
                         height: 1.0,
                       ),
                     ),
