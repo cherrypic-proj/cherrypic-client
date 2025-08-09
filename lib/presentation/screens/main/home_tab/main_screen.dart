@@ -50,7 +50,6 @@ class MainScreen extends StatelessWidget {
                   '앨범추가',
                   style: AppFont.size18.copyWith(
                     color: Colors.white,
-                    fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
