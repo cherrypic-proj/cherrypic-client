@@ -2,8 +2,6 @@ import 'package:cherrypic/presentation/screens/my_page/notice/notice_list.dart';
 import 'package:cherrypic/presentation/widgets/custom_tab_bar.dart';
 import 'package:flutter/material.dart';
 
-import '../../../widgets/custom_app_bar.dart';
-
 /// 공지 사항
 class NoticeItem {
   final String date;
@@ -37,7 +35,6 @@ class NoticeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(),
       backgroundColor: Colors.white,
       body: Column(
         children: [

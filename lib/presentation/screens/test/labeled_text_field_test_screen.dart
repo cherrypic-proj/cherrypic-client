@@ -14,12 +14,14 @@ class LabeledTextFieldTestScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const MenuButton(
-            iconPath: 'assets/images/menu_icon_1.png',
+            // iconPath: 'assets/images/menu_icon_1.png',
+            iconType: EventStoreIconType.event,
             title: '스토어',
           ),
           const SizedBox(height: 8),
           const MenuButton(
-            iconPath: 'assets/images/menu_icon_2.png',
+            // iconPath: 'assets/images/menu_icon_2.png',
+            iconType: EventStoreIconType.event,
             title: '행사',
           ),
           const SizedBox(height: 32),

@@ -3,7 +3,6 @@ import 'package:cherrypic/core/constants/font.dart';
 import 'package:cherrypic/presentation/screens/my_page/settings/setting_toggle.dart';
 import 'package:flutter/material.dart';
 
-import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/custom_tab_bar.dart';
 import '../common_popup_dialog.dart';
 
@@ -46,7 +45,6 @@ class _SettingScreenState extends State<SettingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(),
       backgroundColor: Colors.white,
       body: Column(
         children: [
@@ -86,12 +84,9 @@ class _SettingScreenState extends State<SettingScreen> {
                           ],
                           leftButtonText: '취소',
                           rightButtonText: '허용',
-                          onLeftTap: () {
-                            Navigator.of(context).pop();
-                          },
+                          onLeftTap: () {},
                           onRightTap: () {
                             setState(() => deleteLocalImage = true);
-                            Navigator.of(context).pop();
                           },
                         ),
                       );

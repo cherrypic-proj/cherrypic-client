@@ -1,6 +1,9 @@
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../core/router/route_path.dart';
 
 Future<void> showMiniAddMenu(BuildContext context) {
   return showGeneralDialog(
@@ -83,15 +86,20 @@ Future<void> showMiniAddMenu(BuildContext context) {
                     // 스토어 / 행사
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
+                      children: [
                         _CircleMenuButton(
                           assetPath: 'assets/images/menu_icon_2.png',
                           label: '스토어',
                         ),
-                        SizedBox(width: 60),
+                        const SizedBox(width: 60),
                         _CircleMenuButton(
                           assetPath: 'assets/images/menu_icon_1.png',
                           label: '행사',
+                          onTap: () {
+                            // 다이얼로그 닫은 후, 이동
+                            Navigator.of(context).pop();
+                            context.push(RoutePath.event);
+                          },
                         ),
                       ],
                     ),
@@ -111,25 +119,30 @@ Future<void> showMiniAddMenu(BuildContext context) {
 class _CircleMenuButton extends StatelessWidget {
   final String assetPath;
   final String label;
+  final VoidCallback? onTap;
 
   const _CircleMenuButton({
     super.key,
     required this.assetPath,
     required this.label,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          width: 53,
-          height: 53,
-          decoration: BoxDecoration(
-            color: AppColor.mainRed,
-            shape: BoxShape.circle,
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: 53,
+            height: 53,
+            decoration: BoxDecoration(
+              color: AppColor.mainRed,
+              shape: BoxShape.circle,
+            ),
+            child: Center(child: Image.asset(assetPath, width: 20, height: 20)),
           ),
-          child: Center(child: Image.asset(assetPath, width: 20, height: 20)),
         ),
         const SizedBox(height: 8),
         Text(

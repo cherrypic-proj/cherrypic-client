@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/custom_tab_bar.dart';
 import 'album_subscription_history_list.dart';
 
@@ -38,7 +37,6 @@ class AlbumSubscriptionHistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(),
       backgroundColor: Colors.white,
       body: Column(
         children: [
