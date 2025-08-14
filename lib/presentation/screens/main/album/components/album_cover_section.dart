@@ -188,8 +188,11 @@ class _AlbumCoverSectionState extends State<AlbumCoverSection> {
             const SizedBox(height: 12),
             CustomLabeledTextField(
               controller: _textController,
-              hintText: '앨범 이름을 작성해주세요. (최대 00자)',
+              hintText:
+                  '앨범 이름을 작성해주세요. (최대 ${AlbumCoverViewModel.maxAlbumNameLength}자)',
               title: '앨범이름',
+              maxLength: AlbumCoverViewModel.maxAlbumNameLength,
+              showCounter: true,
             ),
           ],
         );
