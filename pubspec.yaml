@@ -20,6 +20,7 @@ dependencies:
     go_router: ^14.0.1 # 화면 라우팅 및 딥링크 지원
     # 이미지 처리
     photo_manager: ^3.0.0 # 갤러리 접근 및 다중 이미지 선택
+    wechat_assets_picker: ^9.7.0 # 갤러리 뷰어
     flutter_image_compress: ^2.1.0 # 이미지 압축 처리
     cached_network_image: ^3.3.1 # 네트워크 이미지 캐싱 및 최적화
     percent_indicator: ^4.2.2 #게이지 바
