@@ -111,90 +111,98 @@ class _EventMainScreenState extends State<EventMainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            /// 행사 menu_button
-            MenuButton(iconType: EventStoreIconType.event, title: '행사'),
+      body: Column(
+        children: [
+          /// 행사 menu_button
+          MenuButton(iconType: EventStoreIconType.event, title: '행사'),
 
-            const SizedBox(height: 44.5),
+          const SizedBox(height: 44.5),
 
-            /// 메인 이벤트 카드 배너
-            SizedBox(
-              height: 160,
-              child: PageView.builder(
-                controller: _pageController,
-                scrollDirection: Axis.horizontal,
-                itemCount: _pageCards.length,
-                itemBuilder: (context, index) {
-                  final card = _pageCards[index];
-                  return EventCard(
-                    title: card.title,
-                    imagePath: card.imagePath,
-                    backgroundColor: card.backgroundColor,
-                  );
-                },
-              ),
-            ),
-
-            const SizedBox(height: 20.5),
-
-            /// 페이지네이션
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(_pageCards.length, (index) {
-                final isActive = _currentPage == index;
-                return Container(
-                  width: isActive ? 12 : 8,
-                  height: isActive ? 12 : 8,
-                  margin: const EdgeInsets.symmetric(horizontal: 8),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: isActive ? AppColor.mainRed : AppColor.mainLightRed,
-                  ),
-                );
-              }),
-            ),
-
-            const SizedBox(height: 84.33),
-
-            /// 행사 Title
-            Padding(
-              padding: EdgeInsets.only(left: 30),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  '행사',
-                  style: AppFont.size20.copyWith(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 7.67),
-
-            /// 행사 List
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30.0),
+          Expanded(
+            child: SingleChildScrollView(
               child: Column(
-                children: eventItems.map((item) {
-                  return EventList(
-                    eventImage: item.eventImage,
-                    date: item.date,
-                    title: item.title,
-                    onTap: () {
-                      context.push(
-                        '${RoutePath.eventList}?date=${Uri.encodeComponent(item.date)}&title=${Uri.encodeComponent(item.title)}&image=${Uri.encodeComponent(item.eventImage)}',
+                children: [
+                  /// 메인 이벤트 카드 배너
+                  SizedBox(
+                    height: 160,
+                    child: PageView.builder(
+                      controller: _pageController,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _pageCards.length,
+                      itemBuilder: (context, index) {
+                        final card = _pageCards[index];
+                        return EventCard(
+                          title: card.title,
+                          imagePath: card.imagePath,
+                          backgroundColor: card.backgroundColor,
+                        );
+                      },
+                    ),
+                  ),
+
+                  const SizedBox(height: 20.5),
+
+                  /// 페이지네이션
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(_pageCards.length, (index) {
+                      final isActive = _currentPage == index;
+                      return Container(
+                        width: isActive ? 12 : 8,
+                        height: isActive ? 12 : 8,
+                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: isActive
+                              ? AppColor.mainRed
+                              : AppColor.mainLightRed,
+                        ),
                       );
-                    },
-                  );
-                }).toList(),
+                    }),
+                  ),
+
+                  const SizedBox(height: 84.33),
+
+                  /// 행사 Title
+                  Padding(
+                    padding: EdgeInsets.only(left: 30),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        '행사',
+                        style: AppFont.size20.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 7.67),
+
+                  /// 행사 List
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                    child: Column(
+                      children: eventItems.map((item) {
+                        return EventList(
+                          eventImage: item.eventImage,
+                          date: item.date,
+                          title: item.title,
+                          onTap: () {
+                            context.push(
+                              '${RoutePath.eventList}?date=${Uri.encodeComponent(item.date)}&title=${Uri.encodeComponent(item.title)}&image=${Uri.encodeComponent(item.eventImage)}',
+                            );
+                          },
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -22,65 +22,69 @@ class EventListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            /// 상단 메뉴 버튼
-            MenuButton(iconType: EventStoreIconType.event, title: '행사'),
+      body: Column(
+        children: [
+          /// 상단 메뉴 버튼
+          MenuButton(iconType: EventStoreIconType.event, title: '행사'),
 
-            /// backButton Bar
-            EventStoreTabBar(),
+          /// backButton Bar
+          EventStoreTabBar(),
 
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 이벤트 상단 요약 카드
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 0),
-                  child: _buildContent(),
-                ),
-                const SizedBox(height: 34.47),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 이벤트 상단 요약 카드
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+                    child: _buildContent(),
+                  ),
+                  const SizedBox(height: 34.47),
 
-                /// 이벤트 상세 정보
-                const EventListInfo(),
+                  /// 이벤트 상세 정보
+                  const EventListInfo(),
 
-                const SizedBox(height: 25.83),
+                  const SizedBox(height: 25.83),
 
-                /// 이벤트 마무리 멘트
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 30,
-                    vertical: 0,
-                  ).copyWith(bottom: 129),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Baseline(
-                        baseline: 25,
-                        baselineType: TextBaseline.alphabetic,
-                        child: Image.asset(
-                          'assets/images/CherryPic_logo.png',
-                          width: 20,
+                  /// 이벤트 마무리 멘트
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 30,
+                      vertical: 0,
+                    ).copyWith(bottom: 129),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Baseline(
+                          baseline: 25,
+                          baselineType: TextBaseline.alphabetic,
+                          child: Image.asset(
+                            'assets/images/CherryPic_logo.png',
+                            width: 20,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 6),
-                      Flexible(
-                        child: Text(
-                          '지금 바로 가족의 따뜻한 순간을 공유하세요!',
-                          style: AppFont.size18.copyWith(fontWeight: FontWeight.w700),
-                          softWrap: true,
-                          overflow: TextOverflow.visible,
-                          textAlign: TextAlign.start,
+                        const SizedBox(width: 6),
+                        Flexible(
+                          child: Text(
+                            '지금 바로 가족의 따뜻한 순간을 공유하세요!',
+                            style: AppFont.size18.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
+                            softWrap: true,
+                            overflow: TextOverflow.visible,
+                            textAlign: TextAlign.start,
+                          ),
                         ),
-                      ),
-                    ],
-                  )
-                ),
-              ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
