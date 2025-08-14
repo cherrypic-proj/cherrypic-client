@@ -9,25 +9,20 @@ class EventStoreTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(10, 12, 30, 12),
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_sharp, color: Colors.black),
-                onPressed: onBackPressed ?? () => Navigator.of(context).pop(),
-              ),
+    return Column(
+      children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(10, 12, 30, 12),
+            child: IconButton(
+              icon: const Icon(Icons.arrow_back_ios_sharp, color: Colors.black),
+              onPressed: onBackPressed ?? () => Navigator.of(context).pop(),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 0,),
-            child: _buildCustomDivider(1),
-          )
-        ],
-      ),
+        ),
+        _buildCustomDivider(1),
+      ],
     );
   }
 
