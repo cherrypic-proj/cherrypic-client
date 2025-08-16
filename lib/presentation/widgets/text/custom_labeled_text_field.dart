@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:cherrypic/core/constants/color.dart';
 
-class CustomLabeledTextField extends StatelessWidget {
+class CustomLabeledTextField extends StatefulWidget {
   final String title;
   final String hintText;
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
+  final int? maxLength;
+  final bool showCounter;
 
   const CustomLabeledTextField({
     super.key,
@@ -14,7 +17,37 @@ class CustomLabeledTextField extends StatelessWidget {
     required this.hintText,
     this.controller,
     this.onChanged,
+    this.maxLength,
+    this.showCounter = false,
   });
+
+  @override
+  State<CustomLabeledTextField> createState() => _CustomLabeledTextFieldState();
+}
+
+class _CustomLabeledTextFieldState extends State<CustomLabeledTextField> {
+  int _currentLength = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentLength = widget.controller?.text.length ?? 0;
+    widget.controller?.addListener(_updateCounter);
+  }
+
+  @override
+  void dispose() {
+    widget.controller?.removeListener(_updateCounter);
+    super.dispose();
+  }
+
+  void _updateCounter() {
+    if (mounted) {
+      setState(() {
+        _currentLength = widget.controller?.text.length ?? 0;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +55,7 @@ class CustomLabeledTextField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          title,
+          widget.title,
           style: AppFont.size18.copyWith(
             fontWeight: FontWeight.w800,
             color: Colors.black,
@@ -30,8 +63,11 @@ class CustomLabeledTextField extends StatelessWidget {
         ),
         const SizedBox(height: 13),
         TextField(
-          controller: controller,
-          onChanged: onChanged,
+          controller: widget.controller,
+          onChanged: widget.onChanged,
+          inputFormatters: widget.maxLength != null
+              ? [LengthLimitingTextInputFormatter(widget.maxLength)]
+              : null,
           style: AppFont.size16.copyWith(fontWeight: FontWeight.w600),
           decoration: InputDecoration(
             isDense: true,
@@ -39,7 +75,7 @@ class CustomLabeledTextField extends StatelessWidget {
               horizontal: 10,
               vertical: 5,
             ),
-            hintText: hintText,
+            hintText: widget.hintText,
             hintStyle: AppFont.size16.copyWith(
               fontWeight: FontWeight.w600,
               color: Colors.grey,
@@ -52,6 +88,17 @@ class CustomLabeledTextField extends StatelessWidget {
             ),
           ),
         ),
+        if (widget.showCounter && widget.maxLength != null)
+          Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 4.0, right: 2.0),
+              child: Text(
+                '$_currentLength/${widget.maxLength}자',
+                style: AppFont.size12.copyWith(color: AppColor.mainRed),
+              ),
+            ),
+          ),
       ],
     );
   }
