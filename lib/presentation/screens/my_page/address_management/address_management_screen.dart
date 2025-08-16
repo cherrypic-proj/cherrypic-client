@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../widgets/address_box_card.dart';
 import '../../../widgets/custom_button.dart';
-import '../../../widgets/custom_tab_bar.dart';
+import '../../../widgets/custom_sub_app_bar.dart';
 import '../common_popup_dialog.dart';
 import 'add_address_screen.dart';
 
@@ -65,10 +65,10 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const CustomSubAppBar(title: '실물사진 배송지 관리'),
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          const CustomTabBar(title: '실물사진 배송지 관리'),
           const SizedBox(height: 26),
           Expanded(
             child: ListView.builder(

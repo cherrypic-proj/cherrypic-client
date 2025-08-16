@@ -1,6 +1,7 @@
 import 'package:cherrypic/presentation/screens/my_page/notice/notice_list.dart';
-import 'package:cherrypic/presentation/widgets/custom_tab_bar.dart';
 import 'package:flutter/material.dart';
+
+import '../../../widgets/custom_sub_app_bar.dart';
 
 /// 공지 사항
 class NoticeItem {
@@ -35,10 +36,10 @@ class NoticeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const CustomSubAppBar(title: '공지사항'),
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          const CustomTabBar(title: '공지사항'),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30.0),

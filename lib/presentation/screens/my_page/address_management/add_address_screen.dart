@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constants/font.dart';
 import '../../../widgets/custom_button.dart';
-import '../../../widgets/custom_tab_bar.dart';
+import '../../../widgets/custom_sub_app_bar.dart';
 import '../../../widgets/text/horizontal_labeled_text_field.dart';
 
 class AddAddressScreen extends StatefulWidget {
@@ -35,10 +35,10 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
     final isEdit = widget.isEdit;
 
     return Scaffold(
+      appBar: const CustomSubAppBar(title: '실물사진 배송지 관리'),
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          const CustomTabBar(title: '실물사진 배송지 관리'),
           const SizedBox(height: 30.29),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30),

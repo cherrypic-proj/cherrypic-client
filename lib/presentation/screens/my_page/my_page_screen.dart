@@ -77,9 +77,9 @@ class MyPageScreen extends StatelessWidget {
                         context.push(RoutePath.myPage_notice);
                       }),
                       _buildCustomDivider(2),
-                      _buildListItem('구독 및 결제정보', () {
+                      _buildListItem('앨범 및 결제정보', () {
                         context.push(
-                          RoutePath.myPage_subscription_payment_info,
+                          RoutePath.myPage_album_payment_info,
                         );
                       }),
                       _buildListItem('실물사진 배송지 관리', () {

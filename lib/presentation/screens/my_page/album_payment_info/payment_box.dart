@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/font.dart';
 import '../../../widgets/album/album_badge_type.dart';
 
-class SubscriptionBox extends StatelessWidget {
+class PaymentBox extends StatelessWidget {
   final AlbumBadgeType badgeType;
   final String title;
   final String startDate;
   final String? nextDate;
   final String price;
 
-  const SubscriptionBox({
+  const PaymentBox({
     super.key,
     required this.badgeType,
     required this.title,
@@ -21,11 +21,10 @@ class SubscriptionBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = _resolveLabel(badgeType);
 
     /// 구독 및 결제 정보 박스
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+      padding: const EdgeInsets.fromLTRB(30, 10, 30, 14),
       decoration: BoxDecoration(
         color: badgeType.borderColor,
         borderRadius: BorderRadius.circular(8),
@@ -47,7 +46,13 @@ class SubscriptionBox extends StatelessWidget {
                 ),
               ],
             ),
-            child: Text(label, style: TextStyle(color: badgeType.textColor)),
+            child: Text(
+              badgeType.name,
+              style: AppFont.size10.copyWith(
+                color: badgeType.textColor,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
           const SizedBox(height: 9),
 
@@ -107,19 +112,5 @@ class SubscriptionBox extends StatelessWidget {
         Text(value, style: style),
       ],
     );
-  }
-
-  /// 구독 Type
-  String _resolveLabel(AlbumBadgeType type) {
-    switch (type) {
-      case AlbumBadgeType.basic:
-        return '무료 플랜 사용 중';
-      case AlbumBadgeType.pro:
-        return 'Chrerrypic Pro 구독 중';
-      case AlbumBadgeType.premium:
-        return 'Chrerrypic Premium 구독 중';
-      default:
-        return '';
-    }
   }
 }
