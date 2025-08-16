@@ -149,6 +149,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
     );
   }
 
+  /// 로그인 정보
   Widget _buildSocialLoginInfo() {
     return Row(
       children: [
@@ -162,7 +163,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
         const SizedBox(width: 50),
         ClipOval(
           child: Image.asset(
-            'assets/images/kakao_icon.png',
+            viewModel.loginIconAsset,
             width: 30,
             height: 30,
             fit: BoxFit.cover,
@@ -170,7 +171,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
         ),
         const SizedBox(width: 20),
         Text(
-          '카카오 로그인',
+          viewModel.loginTypeLabel,
           style: AppFont.size16.copyWith(
             color: Colors.black,
             fontWeight: FontWeight.w200,
