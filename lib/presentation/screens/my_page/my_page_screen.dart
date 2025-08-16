@@ -1,14 +1,9 @@
 import 'package:cherrypic/core/constants/color.dart';
-import 'package:cherrypic/presentation/screens/my_page/address_management/address_management_screen.dart';
-import 'package:cherrypic/presentation/screens/my_page/album_subscription_history/album_subscription_history_screen.dart';
-import 'package:cherrypic/presentation/screens/my_page/delete_account/delete_account_screen.dart';
-import 'package:cherrypic/presentation/screens/my_page/notice/notice_screen.dart';
-import 'package:cherrypic/presentation/screens/my_page/settings/setting_screen.dart';
-import 'package:cherrypic/presentation/screens/my_page/subscription_payment_info/subscription_payment_info_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/font.dart';
-import '../../widgets/custom_app_bar.dart';
+import '../../../core/router/route_path.dart';
 import '../../widgets/text/horizontal_labeled_text_field.dart';
 import 'common_popup_dialog.dart';
 
@@ -18,7 +13,6 @@ class MyPageScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Align(
@@ -80,48 +74,23 @@ class MyPageScreen extends StatelessWidget {
                   Column(
                     children: [
                       _buildListItem('공지사항', () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => NoticeScreen(),
-                          ),
-                        );
+                        context.push(RoutePath.myPage_notice);
                       }),
                       _buildCustomDivider(2),
                       _buildListItem('구독 및 결제정보', () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                SubscriptionPaymentInfoScreen(),
-                          ),
+                        context.push(
+                          RoutePath.myPage_subscription_payment_info,
                         );
                       }),
                       _buildListItem('실물사진 배송지 관리', () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => AddressManagementScreen(),
-                          ),
-                        );
+                        context.push(RoutePath.myPage_address_management);
                       }),
                       _buildListItem('앨범 가입 이력', () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                AlbumSubscriptionHistoryScreen(),
-                          ),
-                        );
+                        context.push(RoutePath.myPage_subscription_history);
                       }),
                       _buildCustomDivider(2),
                       _buildListItem('설정', () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SettingScreen(),
-                          ),
-                        );
+                        context.push(RoutePath.myPage_setting);
                       }),
                       _buildCustomDivider(2),
                       _buildListItem('로그아웃', () {
@@ -143,12 +112,7 @@ class MyPageScreen extends StatelessWidget {
                         );
                       }),
                       _buildListItem('회원탈퇴', () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DeleteAccountScreen(),
-                          ),
-                        );
+                        context.push(RoutePath.myPage_delete_account);
                       }),
                       _buildCustomDivider(2),
                       const SizedBox(height: 40),

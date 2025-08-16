@@ -1,7 +1,9 @@
-import 'package:cherrypic/presentation/screens/my_page/my_page_screen.dart';
 import 'package:cherrypic/presentation/screens/main/mini_add_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:cherrypic/core/constants/color.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../core/router/route_path.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});
@@ -23,7 +25,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           onPressed: () => showMiniAddMenu(context),
         ),
       ),
-      title: Image.asset('assets/images/CherryPic_logo.png', height: 50),
+      title: GestureDetector(
+        onTap: (){
+          context.go(RoutePath.home);
+        },
+          child: Image.asset('assets/images/CherryPic_logo.png', height: 50)),
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 10),
@@ -34,12 +40,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
             iconSize: 40,
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MyPageScreen(),
-                ),
-              );
+              context.push(RoutePath.myPage);
             },
           ),
         ),

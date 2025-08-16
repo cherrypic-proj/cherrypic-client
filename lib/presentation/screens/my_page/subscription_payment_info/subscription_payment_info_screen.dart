@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/color.dart';
 import '../../../../core/constants/font.dart';
 import '../../../widgets/album/album_badge_type.dart';
-import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/custom_tab_bar.dart';
 
 /// 구독 및 결제 정보 Model
@@ -76,7 +75,6 @@ class _SubscriptionPaymentInfoScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(

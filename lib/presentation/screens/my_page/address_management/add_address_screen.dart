@@ -2,7 +2,6 @@ import 'package:cherrypic/core/constants/color.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/font.dart';
-import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_tab_bar.dart';
 import '../../../widgets/text/horizontal_labeled_text_field.dart';
@@ -36,7 +35,6 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
     final isEdit = widget.isEdit;
 
     return Scaffold(
-      appBar: const CustomAppBar(),
       backgroundColor: Colors.white,
       body: Column(
         children: [

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../widgets/address_box_card.dart';
-import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_tab_bar.dart';
 import '../common_popup_dialog.dart';
@@ -66,7 +65,6 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(),
       backgroundColor: Colors.white,
       body: Column(
         children: [
@@ -78,10 +76,7 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
               itemCount: sampleAddressItems.length + 1,
               itemBuilder: (context, index) {
                 if (index < sampleAddressItems.length) {
-                  return _buildAddressCard(
-                    sampleAddressItems[index],
-                    index,
-                  );
+                  return _buildAddressCard(sampleAddressItems[index], index);
                 } else {
                   return _buildAddNewAddressButton();
                 }
