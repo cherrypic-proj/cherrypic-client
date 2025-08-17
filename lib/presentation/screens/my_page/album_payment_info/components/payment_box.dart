@@ -1,30 +1,21 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/font.dart';
-import '../../../widgets/album/album_badge_type.dart';
+import '../../../../../core/constants/font.dart';
+import '../../../../widgets/album/album_badge_type.dart';
+import 'album_payment_info_model.dart';
 
 class PaymentBox extends StatelessWidget {
-  final AlbumBadgeType badgeType;
-  final String title;
-  final String createDate;
-  final String? startDate;
-  final String? nextDate;
-  final String price;
+  final AlbumPaymentInfoModel model;
 
   const PaymentBox({
     super.key,
-    required this.badgeType,
-    required this.title,
-    required this.createDate,
-    this.startDate,
-    this.nextDate,
-    required this.price,
+    required this.model,
   });
 
   @override
   Widget build(BuildContext context) {
+    final badgeType = model.badgeType;
 
-    /// 구독 및 결제 정보 박스
     return Container(
       padding: const EdgeInsets.fromLTRB(30, 10, 30, 14),
       decoration: BoxDecoration(
@@ -61,7 +52,7 @@ class PaymentBox extends StatelessWidget {
               ),
               /// 월 결제 금액
               Text(
-                price,
+                model.price,
                 style: AppFont.size14.copyWith(
                   color: badgeType.textColor,
                   fontWeight: FontWeight.w600,
@@ -70,16 +61,15 @@ class PaymentBox extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 9),
-
           Padding(
-              padding: const EdgeInsets.only(left: 10),
+            padding: const EdgeInsets.only(left: 10),
             child: Column(
               children: [
                 /// 구독한 앨범명
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    title,
+                    model.title,
                     style: AppFont.size14.copyWith(
                       color: badgeType.textColor,
                       fontWeight: FontWeight.w600,
@@ -89,35 +79,15 @@ class PaymentBox extends StatelessWidget {
                 const SizedBox(height: 9),
 
                 /// 앨범 생성일
-                _buildInfoRow(
-                  '앨범 생성일',
-                  createDate,
-                  AppFont.size12.copyWith(
-                    color: badgeType.textColor,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                _buildInfoRow('앨범 생성일', model.createDate, badgeType),
 
-                /// 다음 결제일
-                if (badgeType != AlbumBadgeType.basic && nextDate != null) ...[
-                  /// 구독 시작일
-                  _buildInfoRow(
-                    '구독 시작일',
-                    startDate!,
-                    AppFont.size12.copyWith(
-                      color: badgeType.textColor,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                const SizedBox(height: 4),
+
+                /// 구독 시작일 + 다음 결제일
+                if (badgeType != AlbumBadgeType.basic && model.nextDate != null) ...[
+                  _buildInfoRow('구독 시작일', model.startDate!, badgeType),
                   const SizedBox(height: 4),
-                  _buildInfoRow(
-                    '다음 결제일',
-                    nextDate!,
-                    AppFont.size12.copyWith(
-                      color: badgeType.textColor,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  _buildInfoRow('다음 결제일', model.nextDate!, badgeType),
                   const SizedBox(height: 4),
                 ],
               ],
@@ -128,13 +98,24 @@ class PaymentBox extends StatelessWidget {
     );
   }
 
-  /// 구독 시작일 + 다음 결제일
-  Widget _buildInfoRow(String label, String value, TextStyle style) {
+  Widget _buildInfoRow(String label, String value, AlbumBadgeType badgeType) {
     return Row(
       children: [
-        Text(label, style: style),
+        Text(
+          label,
+          style: AppFont.size12.copyWith(
+            color: badgeType.textColor,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         const SizedBox(width: 30),
-        Text(value, style: style),
+        Text(
+          value,
+          style: AppFont.size12.copyWith(
+            color: badgeType.textColor,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ],
     );
   }
