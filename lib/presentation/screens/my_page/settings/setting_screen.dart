@@ -4,7 +4,7 @@ import 'package:cherrypic/presentation/screens/my_page/settings/setting_toggle.d
 import 'package:flutter/material.dart';
 
 import '../../../widgets/custom_sub_app_bar.dart';
-import '../common_popup_dialog.dart';
+import '../../../widgets/common_popup_dialog.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -84,7 +84,7 @@ class _SettingScreenState extends State<SettingScreen> {
                           ],
                           leftButtonText: '취소',
                           rightButtonText: '허용',
-                          onLeftTap: () {},
+                          onLeftTap: () {Navigator.of(context).pop();},
                           onRightTap: () {
                             setState(() => deleteLocalImage = true);
                           },

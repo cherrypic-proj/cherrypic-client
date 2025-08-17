@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../widgets/address_box_card.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_sub_app_bar.dart';
-import '../common_popup_dialog.dart';
+import '../../../widgets/common_popup_dialog.dart';
 import 'add_address_screen.dart';
 
 /// 실물 사진 배송지 Model

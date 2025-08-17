@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/constants/font.dart';
 import '../../../core/router/route_path.dart';
 import '../../widgets/text/horizontal_labeled_text_field.dart';
-import 'common_popup_dialog.dart';
+import '../../widgets/common_popup_dialog.dart';
 
 class MyPageScreen extends StatefulWidget {
   const MyPageScreen({super.key});
