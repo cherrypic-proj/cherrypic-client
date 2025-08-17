@@ -6,7 +6,8 @@ import '../../../widgets/album/album_badge_type.dart';
 class PaymentBox extends StatelessWidget {
   final AlbumBadgeType badgeType;
   final String title;
-  final String startDate;
+  final String createDate;
+  final String? startDate;
   final String? nextDate;
   final String price;
 
@@ -14,7 +15,8 @@ class PaymentBox extends StatelessWidget {
     super.key,
     required this.badgeType,
     required this.title,
-    required this.startDate,
+    required this.createDate,
+    this.startDate,
     this.nextDate,
     required this.price,
   });
@@ -32,72 +34,95 @@ class PaymentBox extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// 구독 정보 상자
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            decoration: BoxDecoration(
-              color: badgeType.borderColor,
-              borderRadius: BorderRadius.circular(999),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withAlpha(51),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              /// 구독 정보 상자
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                decoration: BoxDecoration(
+                  color: badgeType.borderColor,
+                  borderRadius: BorderRadius.circular(999),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(51),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
+                child: Text(
+                  badgeType.label,
+                  style: AppFont.size14.copyWith(
+                    color: badgeType.textColor,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              /// 월 결제 금액
+              Text(
+                price,
+                style: AppFont.size14.copyWith(
+                  color: badgeType.textColor,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 9),
+
+          Padding(
+              padding: const EdgeInsets.only(left: 10),
+            child: Column(
+              children: [
+                /// 구독한 앨범명
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    title,
+                    style: AppFont.size14.copyWith(
+                      color: badgeType.textColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 9),
+
+                /// 앨범 생성일
+                _buildInfoRow(
+                  '앨범 생성일',
+                  createDate,
+                  AppFont.size12.copyWith(
+                    color: badgeType.textColor,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+
+                /// 다음 결제일
+                if (badgeType != AlbumBadgeType.basic && nextDate != null) ...[
+                  /// 구독 시작일
+                  _buildInfoRow(
+                    '구독 시작일',
+                    startDate!,
+                    AppFont.size12.copyWith(
+                      color: badgeType.textColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  _buildInfoRow(
+                    '다음 결제일',
+                    nextDate!,
+                    AppFont.size12.copyWith(
+                      color: badgeType.textColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                ],
               ],
             ),
-            child: Text(
-              badgeType.name,
-              style: AppFont.size10.copyWith(
-                color: badgeType.textColor,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          const SizedBox(height: 9),
-
-          /// 구독한 앨범명
-          Text(
-            title,
-            style: AppFont.size14.copyWith(
-              color: badgeType.textColor,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 9),
-
-          /// 구독 시작일
-          _buildInfoRow(
-            '구독 시작일',
-            startDate,
-            AppFont.size12.copyWith(
-              color: badgeType.textColor,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 4),
-
-          /// 다음 결제일
-          if (badgeType != AlbumBadgeType.basic && nextDate != null) ...[
-            _buildInfoRow(
-              '다음 결제일',
-              nextDate!,
-              AppFont.size12.copyWith(
-                color: badgeType.textColor,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 4),
-          ],
-
-          /// 월 결제 금액
-          Text(
-            price,
-            style: AppFont.size14.copyWith(
-              color: badgeType.textColor,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+          )
         ],
       ),
     );

@@ -5,19 +5,22 @@ import '../../../../core/constants/color.dart';
 import '../../../../core/constants/font.dart';
 import '../../../widgets/album/album_badge_type.dart';
 import '../../../widgets/custom_sub_app_bar.dart';
+import 'album_badge_toggle.dart';
 
 /// 구독 및 결제 정보 Model
 class AlbumPaymentInfoList {
   final AlbumBadgeType badgeType;
   final String title;
-  final String startDate;
+  final String createDate;
+  final String? startDate;
   final String? nextDate;
   final String price;
 
   const AlbumPaymentInfoList({
     required this.badgeType,
     required this.title,
-    required this.startDate,
+    required this.createDate,
+    this.startDate,
     this.nextDate,
     required this.price,
   });
@@ -28,12 +31,13 @@ const List<AlbumPaymentInfoList> subscriptionPaymentInfoItems = [
   AlbumPaymentInfoList(
     badgeType: AlbumBadgeType.basic,
     title: '음식(양식, 중식, 한식, 일식) 음식 음식',
-    startDate: '2025/06/23',
-    price: '월 0원',
+    createDate: '2025/06/23',
+    price: '무료',
   ),
   AlbumPaymentInfoList(
     badgeType: AlbumBadgeType.pro,
     title: '프랑스 여행_2025. 06. 24',
+    createDate: '2025/06/23',
     startDate: '2025/05/25',
     nextDate: '2025/08/25',
     price: '월 3,900원',
@@ -41,6 +45,7 @@ const List<AlbumPaymentInfoList> subscriptionPaymentInfoItems = [
   AlbumPaymentInfoList(
     badgeType: AlbumBadgeType.premium,
     title: '호주 여행',
+    createDate: '2025/06/23',
     startDate: '2025/06/28',
     nextDate: '2025/08/25',
     price: '월 5,900원',
@@ -48,6 +53,7 @@ const List<AlbumPaymentInfoList> subscriptionPaymentInfoItems = [
   AlbumPaymentInfoList(
     badgeType: AlbumBadgeType.pro,
     title: '등반',
+    createDate: '2025/06/23',
     startDate: '2025/07/01',
     nextDate: '2025/09/01',
     price: '월 3,900원',
@@ -68,9 +74,17 @@ class _AlbumPaymentInfoScreenState
   /// 전체 보기 여부
   bool _isExpanded = false;
 
-  List<AlbumPaymentInfoList> get displayedItems => _isExpanded
-      ? subscriptionPaymentInfoItems
-      : subscriptionPaymentInfoItems.take(2).toList();
+  // List<AlbumPaymentInfoList> get displayedItems => _isExpanded
+  //     ? subscriptionPaymentInfoItems
+  //     : subscriptionPaymentInfoItems.take(2).toList();
+
+  AlbumBadgeType _selectedBadgeType = AlbumBadgeType.basic;
+
+  List<AlbumPaymentInfoList> get displayedItems =>
+      _isExpanded
+          ? subscriptionPaymentInfoItems.where((e) => e.badgeType == _selectedBadgeType).toList()
+          : subscriptionPaymentInfoItems.where((e) => e.badgeType == _selectedBadgeType).take(2).toList();
+
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +125,23 @@ class _AlbumPaymentInfoScreenState
                               ),
                             ),
                           ),
-                          const SizedBox(height: 26.78),
+                          const SizedBox(height: 19),
+
+                          AlbumBadgeToggle(
+                            selectedBadgeType: _selectedBadgeType,
+                            onBadgeTypeChanged: (type) {
+                              setState(() {
+                                _selectedBadgeType = type;
+                                _isExpanded = false;
+                              });
+                            },
+                            badgeCounts: {
+                              for (var type in AlbumBadgeType.values)
+                                type: subscriptionPaymentInfoItems.where((e) => e.badgeType == type).length,
+                            },
+                          ),
+                          const SizedBox(height: 35),
+
 
                           /// 구독 및 결제 정보 리스트 띄우기
                           _buildSubscriptionList(displayedItems),
@@ -171,6 +201,7 @@ class _AlbumPaymentInfoScreenState
           child: PaymentBox(
             badgeType: item.badgeType,
             title: item.title,
+            createDate: item.createDate,
             startDate: item.startDate,
             nextDate: item.nextDate,
             price: item.price,
