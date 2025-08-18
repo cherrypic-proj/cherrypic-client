@@ -31,6 +31,8 @@ class ScaffoldWithNavBar extends StatelessWidget {
 final Map<String, GoRouterWidgetBuilder> routeBuilders = {
   RoutePath.home: (context, state) => const MainScreen(),
   RoutePath.albumAdd: (context, state) => const AlbumAddScreen(),
+
+  // album
   RoutePath.albumDetail: (context, state) {
     final idStr =
         state.pathParameters['albumId'] ??
@@ -40,7 +42,6 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
     return AlbumDetailScreen(albumId: albumId);
   },
 
-  // 필요시 추가
   /// myPage
   RoutePath.myPage: (context, state) => const MyPageScreen(),
   RoutePath.myPage_notice: (context, state) => const NoticeScreen(),
@@ -81,6 +82,7 @@ final List<String> shellRoutes = [
   RoutePath.myPage_subscription_history,
   RoutePath.myPage_setting,
   RoutePath.myPage_delete_account,
+  RoutePath.albumDetail,
 
   /// event
   RoutePath.event,

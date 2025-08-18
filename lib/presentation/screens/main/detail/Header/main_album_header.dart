@@ -20,8 +20,8 @@ class MainAlbumHeader extends StatelessWidget {
           children: [
             CustomAlbumAppBar(
               title: '음식(양식, 중식, 한식...)',
-              profileImagePath: 'assets/images/albumCover.png', // ← 설정 왼쪽 썸네일
-              badgeType: AlbumBadgeType.pro, // ← 뱃지 타입
+              profileImagePath: 'assets/images/albumCover.png',
+              badgeType: AlbumBadgeType.pro,
             ),
             Stack(
               children: [
