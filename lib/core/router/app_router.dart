@@ -10,7 +10,7 @@ import 'package:cherrypic/presentation/screens/my_page/delete_account/delete_acc
 import 'package:cherrypic/presentation/screens/my_page/my_page_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/notice/notice_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/settings/setting_screen.dart';
-import 'package:cherrypic/presentation/screens/my_page/subscription_payment_info/subscription_payment_info_screen.dart';
+import 'package:cherrypic/presentation/screens/my_page/album_payment_info/album_payment_info_screen.dart';
 import 'package:cherrypic/presentation/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -34,7 +34,7 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
   /// myPage
   RoutePath.myPage: (context, state) => const MyPageScreen(),
   RoutePath.myPage_notice: (context, state) => const NoticeScreen(),
-  RoutePath.myPage_subscription_payment_info: (context, state) => const SubscriptionPaymentInfoScreen(),
+  RoutePath.myPage_album_payment_info: (context, state) => const AlbumPaymentInfoScreen(),
   RoutePath.myPage_address_management: (context, state) => const AddressManagementScreen(),
   RoutePath.myPage_add_address: (context, state) => const AddAddressScreen(),
   RoutePath.myPage_subscription_history: (context, state) => AlbumSubscriptionHistoryScreen(),
@@ -60,13 +60,13 @@ final List<String> shellRoutes = [
 
   /// myPage
   RoutePath.myPage,
-  RoutePath.myPage_notice,
-  RoutePath.myPage_subscription_payment_info,
-  RoutePath.myPage_address_management,
-  RoutePath.myPage_add_address,
-  RoutePath.myPage_subscription_history,
-  RoutePath.myPage_setting,
-  RoutePath.myPage_delete_account,
+  // RoutePath.myPage_notice,
+  // RoutePath.myPage_album_payment_info,
+  // RoutePath.myPage_address_management,
+  // RoutePath.myPage_add_address,
+  // RoutePath.myPage_subscription_history,
+  // RoutePath.myPage_setting,
+  // RoutePath.myPage_delete_account,
 
   /// event
   RoutePath.event,

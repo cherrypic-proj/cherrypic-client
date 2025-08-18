@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../widgets/custom_tab_bar.dart';
+import '../../../widgets/custom_sub_app_bar.dart';
 import 'album_subscription_history_list.dart';
 
 /// 앨범 가입 이력 리스트 Model
@@ -37,10 +37,10 @@ class AlbumSubscriptionHistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const CustomSubAppBar(title: '앨범 가입 이력'),
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          const CustomTabBar(title: '앨범 가입 이력'),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30.0),

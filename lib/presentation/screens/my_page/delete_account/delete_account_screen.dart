@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/font.dart';
 import '../../../widgets/custom_box_card.dart';
 import '../../../widgets/custom_button.dart';
-import '../../../widgets/custom_tab_bar.dart';
+import '../../../widgets/custom_sub_app_bar.dart';
 
 class DeleteAccountScreen extends StatefulWidget {
   const DeleteAccountScreen({super.key});
@@ -29,12 +29,12 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const CustomSubAppBar(title: '회원 탈퇴'),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const CustomTabBar(title: '회원 탈퇴'),
             const SizedBox(height: 37.26),
             Padding(
               padding: const EdgeInsets.fromLTRB(42.97, 0, 0, 0),
