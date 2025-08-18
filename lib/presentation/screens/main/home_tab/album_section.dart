@@ -1,6 +1,8 @@
+import 'package:cherrypic/core/router/route_path.dart';
 import 'package:flutter/material.dart';
 import 'package:cherrypic/presentation/widgets/album/album_card.dart';
 import 'package:cherrypic/presentation/widgets/album/album_badge_type.dart';
+import 'package:go_router/go_router.dart';
 
 class AlbumSection extends StatefulWidget {
   const AlbumSection({super.key});
@@ -72,8 +74,10 @@ class _AlbumSectionState extends State<AlbumSection> {
                   badgeType: badges[index],
                   isLiked: likedList[index],
                   onTap: () {
-                    debugPrint('${titles[index]} 탭');
+                    final id = (index + 1).toString();
+                    context.push('/album/$id');
                   },
+
                   onLikeToggle: () {
                     setState(() {
                       likedList[index] = !likedList[index];

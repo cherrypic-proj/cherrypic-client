@@ -2,13 +2,11 @@ import 'dart:ui';
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:flutter/material.dart';
 import '../../core/constants/font.dart';
-import 'album/album_badge_type.dart';
 
 class CustomAlbumBadge extends StatelessWidget {
   final String userName;
   final String memberCountText;
   final bool showBadgeType;
-  final String badgeType;
   final bool showAddMemberButton;
 
   const CustomAlbumBadge({
@@ -16,7 +14,6 @@ class CustomAlbumBadge extends StatelessWidget {
     required this.userName,
     required this.memberCountText,
     required this.showBadgeType,
-    required this.badgeType,
     required this.showAddMemberButton,
   });
 
@@ -31,7 +28,7 @@ class CustomAlbumBadge extends StatelessWidget {
             height: 45,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
-              color: const Color.fromRGBO(0, 0, 0, 0.3),
+              color: const Color.fromARGB(130, 0, 0, 0),
               borderRadius: BorderRadius.circular(6),
             ),
             child: IntrinsicWidth(
@@ -51,22 +48,7 @@ class CustomAlbumBadge extends StatelessWidget {
     );
   }
 
-  (AlbumBadgeType, String) _resolveBadge(String type) {
-    switch (type) {
-      case 'basic':
-        return (AlbumBadgeType.basic, 'basic');
-      case 'pro':
-        return (AlbumBadgeType.pro, 'pro');
-      case 'premium':
-        return (AlbumBadgeType.premium, 'premium');
-      default:
-        return (AlbumBadgeType.none, '');
-    }
-  }
-
   Widget _buildLeftSection() {
-    final (badge, label) = _resolveBadge(badgeType);
-
     return Row(
       children: [
         Padding(
@@ -88,22 +70,6 @@ class CustomAlbumBadge extends StatelessWidget {
           ),
         ),
         SizedBox(width: (!showBadgeType && !showAddMemberButton) ? 0 : 14),
-        if (showBadgeType)
-          if (badge != AlbumBadgeType.none)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: badge.backgroundColor,
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Text(
-                label,
-                style: AppFont.size10.copyWith(
-                  color: badge.textColor,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
       ],
     );
   }
