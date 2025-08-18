@@ -25,6 +25,7 @@ class CustomAlbumBadge extends StatelessWidget {
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
           child: Container(
+            width: double.infinity,
             height: 45,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
@@ -37,7 +38,7 @@ class CustomAlbumBadge extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _buildLeftSection(),
-                  const SizedBox(width: 14),
+                  const Spacer(),
                   _buildRightSection(),
                 ],
               ),

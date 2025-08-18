@@ -43,8 +43,8 @@ class MainAlbumHeader extends StatelessWidget {
                 ),
                 Positioned(
                   bottom: 20,
-                  left: 0,
-                  right: 0,
+                  left: 16,
+                  right: 16,
                   child: Center(
                     child: const CustomAlbumBadge(
                       userName: '홍길동',
