@@ -16,7 +16,7 @@ class AlbumDetailScreen extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AlbumHeaderViewModel(albumId)),
-        ChangeNotifierProvider(create: (_) => AlbumDetailViewModel(albumId)),
+        ChangeNotifierProvider(create: (_) => AlbumDetailViewModel()),
       ],
       child: const _Body(),
     );
@@ -91,27 +91,60 @@ class _BodyState extends State<_Body> {
           ),
 
           // 하단 좌측: 전체/이벤트 토글
-          Positioned(
-            bottom: 24 + bottomSafe,
-            left: 0,
-            right: 0, // 좌우 0으로 펼치고
-            child: Center(
-              // Center로 가운데 정렬
-              child: _FloatingSegmented(
-                value: _tabIndex,
-                onChanged: (i) => setState(() => _tabIndex = i),
-              ),
-            ),
+          Selector<AlbumDetailViewModel, bool>(
+            selector: (_, vm) => vm.isSelecting,
+            builder: (context, isSelecting, _) {
+              if (isSelecting) return const SizedBox.shrink();
+              return Positioned(
+                bottom: 24 + bottomSafe,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: _FloatingSegmented(
+                    value: _tabIndex,
+                    onChanged: (i) => setState(() => _tabIndex = i),
+                  ),
+                ),
+              );
+            },
           ),
 
-          // 하단 우측: 사진 추가 버튼(기능은 나중에 연결)
+          // 하단 우측: 사진 추가 버튼(선택 중이면 숨김)
+          Selector<AlbumDetailViewModel, bool>(
+            selector: (_, vm) => vm.isSelecting,
+            builder: (context, isSelecting, _) {
+              if (isSelecting) return const SizedBox.shrink();
+              return Positioned(
+                right: 45,
+                bottom: 24 + bottomSafe,
+                child: _AddPhotoButton(
+                  onTap: () {
+                    // TODO: 사진 추가 기능 연결
+                  },
+                ),
+              );
+            },
+          ),
+
+          // 선택 바: 선택 중일 때만 노출
           Positioned(
-            right: 45,
-            bottom: 24 + bottomSafe,
-            child: _AddPhotoButton(
-              onTap: () {
-                // TODO: 사진 추가 기능 연결
-              },
+            left: 0,
+            right: 0,
+            bottom: 24,
+            child: SafeArea(
+              top: false,
+              child: Selector<AlbumDetailViewModel, int>(
+                selector: (_, vm) => vm.selectedCount,
+                builder: (context, count, _) {
+                  if (count == 0) return const SizedBox.shrink();
+                  return Center(
+                    child: _SelectingBar(
+                      count: count,
+                      onMore: () => _openMoreSheet(context),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ],
@@ -200,7 +233,7 @@ class _FloatingSegmented extends StatelessWidget {
                   onTap: () => onChanged(0),
                   child: Center(
                     child: Transform.translate(
-                      offset: Offset(dxLeftLabel, 0), // 선택 시만 미세정렬(0)
+                      offset: Offset(dxLeftLabel, 0),
                       child: Text(
                         '전체',
                         style: AppFont.size16.copyWith(
@@ -218,7 +251,7 @@ class _FloatingSegmented extends StatelessWidget {
                   onTap: () => onChanged(1),
                   child: Center(
                     child: Transform.translate(
-                      offset: Offset(dxRightLabel, 0), // 이벤트 선택 시 -5px
+                      offset: Offset(dxRightLabel, 0),
                       child: Text(
                         '이벤트',
                         style: AppFont.size16.copyWith(
@@ -271,4 +304,96 @@ class _AddPhotoButton extends StatelessWidget {
       ),
     );
   }
+}
+
+class _SelectingBar extends StatelessWidget {
+  final int count;
+  final VoidCallback onMore;
+  const _SelectingBar({super.key, required this.count, required this.onMore});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 40,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: AppColor.mainRed.withAlpha(150),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(38),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // "#장 선택됨" 캡슐(흰색 1px 테두리)
+          Container(
+            height: 28,
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: Colors.white, width: 1),
+            ),
+            child: Text(
+              '$count 장 선택됨',
+              style: AppFont.size18.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          // 더보기 버튼
+          GestureDetector(
+            onTap: onMore,
+            child: Container(
+              width: 28,
+              height: 28,
+              decoration: const BoxDecoration(
+                color: AppColor.mainLightRed,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(Icons.more_horiz, size: 18, color: AppColor.mainRed),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// 간단한 액션 시트
+void _openMoreSheet(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    builder: (_) {
+      return SafeArea(
+        child: Wrap(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.download),
+              title: const Text('다운로드'),
+              onTap: () {
+                Navigator.pop(context);
+                // TODO: 구현
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete_outline),
+              title: const Text('삭제'),
+              onTap: () {
+                Navigator.pop(context);
+                // TODO: 구현
+              },
+            ),
+          ],
+        ),
+      );
+    },
+  );
 }
