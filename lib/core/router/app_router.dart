@@ -2,6 +2,7 @@ import 'package:cherrypic/core/router/route_path.dart';
 import 'package:cherrypic/presentation/screens/event/event_list_detail/event_list_screen.dart';
 import 'package:cherrypic/presentation/screens/event/event_main_screen.dart';
 import 'package:cherrypic/presentation/screens/main/album/add/album_add_screen.dart';
+import 'package:cherrypic/presentation/screens/main/detail/album_detail_screen.dart';
 import 'package:cherrypic/presentation/screens/main/home_tab/main_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/address_management/add_address_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/address_management/address_management_screen.dart';
@@ -30,7 +31,17 @@ class ScaffoldWithNavBar extends StatelessWidget {
 final Map<String, GoRouterWidgetBuilder> routeBuilders = {
   RoutePath.home: (context, state) => const MainScreen(),
   RoutePath.albumAdd: (context, state) => const AlbumAddScreen(),
-  // 필요시 추가
+
+  // album
+  RoutePath.albumDetail: (context, state) {
+    final idStr =
+        state.pathParameters['albumId'] ??
+        state.uri.queryParameters['albumId'] ??
+        '-1';
+    final albumId = int.tryParse(idStr) ?? -1;
+    return AlbumDetailScreen(albumId: albumId);
+  },
+
   /// myPage
   RoutePath.myPage: (context, state) => const MyPageScreen(),
   RoutePath.myPage_notice: (context, state) => const NoticeScreen(),
