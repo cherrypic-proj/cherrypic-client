@@ -2,7 +2,6 @@ import 'package:cherrypic/core/router/route_path.dart';
 import 'package:cherrypic/presentation/screens/event/event_list_detail/event_list_screen.dart';
 import 'package:cherrypic/presentation/screens/event/event_main_screen.dart';
 import 'package:cherrypic/presentation/screens/main/album/add/album_add_screen.dart';
-import 'package:cherrypic/presentation/screens/main/detail/album_detail_screen.dart';
 import 'package:cherrypic/presentation/screens/main/home_tab/main_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/address_management/add_address_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/address_management/address_management_screen.dart';
@@ -11,7 +10,7 @@ import 'package:cherrypic/presentation/screens/my_page/delete_account/delete_acc
 import 'package:cherrypic/presentation/screens/my_page/my_page_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/notice/notice_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/settings/setting_screen.dart';
-import 'package:cherrypic/presentation/screens/my_page/subscription_payment_info/subscription_payment_info_screen.dart';
+import 'package:cherrypic/presentation/screens/my_page/album_payment_info/album_payment_info_screen.dart';
 import 'package:cherrypic/presentation/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -31,22 +30,12 @@ class ScaffoldWithNavBar extends StatelessWidget {
 final Map<String, GoRouterWidgetBuilder> routeBuilders = {
   RoutePath.home: (context, state) => const MainScreen(),
   RoutePath.albumAdd: (context, state) => const AlbumAddScreen(),
-
-  // album
-  RoutePath.albumDetail: (context, state) {
-    final idStr =
-        state.pathParameters['albumId'] ??
-        state.uri.queryParameters['albumId'] ??
-        '-1';
-    final albumId = int.tryParse(idStr) ?? -1;
-    return AlbumDetailScreen(albumId: albumId);
-  },
-
+  // 필요시 추가
   /// myPage
   RoutePath.myPage: (context, state) => const MyPageScreen(),
   RoutePath.myPage_notice: (context, state) => const NoticeScreen(),
-  RoutePath.myPage_subscription_payment_info: (context, state) =>
-      const SubscriptionPaymentInfoScreen(),
+  RoutePath.myPage_album_payment_info: (context, state) =>
+      const AlbumPaymentInfoScreen(),
   RoutePath.myPage_address_management: (context, state) =>
       const AddressManagementScreen(),
   RoutePath.myPage_add_address: (context, state) => const AddAddressScreen(),
@@ -75,14 +64,13 @@ final List<String> shellRoutes = [
 
   /// myPage
   RoutePath.myPage,
-  RoutePath.myPage_notice,
-  RoutePath.myPage_subscription_payment_info,
-  RoutePath.myPage_address_management,
-  RoutePath.myPage_add_address,
-  RoutePath.myPage_subscription_history,
-  RoutePath.myPage_setting,
-  RoutePath.myPage_delete_account,
-  RoutePath.albumDetail,
+  // RoutePath.myPage_notice,
+  // RoutePath.myPage_album_payment_info,
+  // RoutePath.myPage_address_management,
+  // RoutePath.myPage_add_address,
+  // RoutePath.myPage_subscription_history,
+  // RoutePath.myPage_setting,
+  // RoutePath.myPage_delete_account,
 
   /// event
   RoutePath.event,

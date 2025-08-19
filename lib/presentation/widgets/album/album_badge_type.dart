@@ -33,7 +33,7 @@ extension AlbumBadgeTypeExtension on AlbumBadgeType {
   Color get borderColor {
     switch (this) {
       case AlbumBadgeType.basic:
-        return const Color(0xFFBCBCBC);
+        return AppColor.subSlicer;
       case AlbumBadgeType.pro:
         return AppColor.mainLightRed;
       case AlbumBadgeType.premium:
