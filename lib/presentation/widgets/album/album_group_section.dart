@@ -22,8 +22,6 @@ class AlbumGroupSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double imageSize = (MediaQuery.of(context).size.width - 18 * 2) / 3;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -56,9 +54,10 @@ class AlbumGroupSection extends StatelessWidget {
                   children: [
                     Text(
                       '전체선택',
-                      style: AppFont.size18.copyWith(
+                      style: AppFont.size12.copyWith(
                         color: isAllSelected ? Colors.white : Colors.black,
-                        height: 1.0,
+                        fontWeight: FontWeight.w500,
+                        height: 1.2,
                       ),
                     ),
                     const SizedBox(width: 4),
@@ -76,60 +75,56 @@ class AlbumGroupSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 10),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18),
-          child: GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: imageUrls.length,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              crossAxisSpacing: 0,
-              mainAxisSpacing: 0,
-              childAspectRatio: 1,
-            ),
-            itemBuilder: (context, index) {
-              final imageUrl = imageUrls[index];
-              final isSelected = selectedIndexes.contains(index);
-              return GestureDetector(
-                onTap: () => onImageTap(index),
-                child: Stack(
-                  children: [
-                    Container(
-                      width: imageSize,
-                      height: imageSize,
-                      decoration: BoxDecoration(
-                        border: isSelected
-                            ? Border.all(color: AppColor.mainRed, width: 2)
-                            : null,
-                        image: DecorationImage(
-                          image: NetworkImage(imageUrl),
-                          fit: BoxFit.cover,
+        GridView.builder(
+          padding: EdgeInsets.zero,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: imageUrls.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 0,
+            mainAxisSpacing: 0,
+            childAspectRatio: 1,
+          ),
+          itemBuilder: (context, index) {
+            final imageUrl = imageUrls[index];
+            final isSelected = selectedIndexes.contains(index);
+            return GestureDetector(
+              onTap: () => onImageTap(index),
+              child: Stack(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      border: isSelected
+                          ? Border.all(color: AppColor.mainRed, width: 2)
+                          : null,
+                      image: DecorationImage(
+                        image: NetworkImage(imageUrl),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  if (isSelected)
+                    Positioned(
+                      top: 6,
+                      right: 6,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColor.mainRed,
+                        ),
+                        padding: const EdgeInsets.all(4),
+                        child: const Icon(
+                          Icons.check,
+                          color: Colors.white,
+                          size: 14,
                         ),
                       ),
                     ),
-                    if (isSelected)
-                      Positioned(
-                        top: 6,
-                        right: 6,
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: AppColor.mainRed,
-                          ),
-                          padding: const EdgeInsets.all(4),
-                          child: const Icon(
-                            Icons.check,
-                            color: Colors.white,
-                            size: 14,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              );
-            },
-          ),
+                ],
+              ),
+            );
+          },
         ),
       ],
     );

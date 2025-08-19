@@ -1,5 +1,8 @@
 import 'package:cherrypic/presentation/screens/main/detail/Header/album_header_view_model.dart';
 import 'package:cherrypic/presentation/screens/main/detail/Header/main_album_header.dart';
+import 'package:cherrypic/presentation/screens/main/detail/album_detail_models.dart';
+import 'package:cherrypic/presentation/screens/main/detail/album_detail_view_model.dart';
+import 'package:cherrypic/presentation/widgets/album/album_group_section.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -9,8 +12,11 @@ class AlbumDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => AlbumHeaderViewModel(albumId),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AlbumHeaderViewModel(albumId)),
+        ChangeNotifierProvider(create: (_) => AlbumDetailViewModel(albumId)),
+      ],
       child: const _Body(),
     );
   }
@@ -21,18 +27,43 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final vm = context.watch<AlbumHeaderViewModel>();
+    final headerVm = context.watch<AlbumHeaderViewModel>();
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: CustomScrollView(
         slivers: [
+          // 상단 헤더
           SliverSafeArea(
-            top: true, // 상단 세이프에리어 보호
-            bottom: false, // 하단은 필요시 true로
-            sliver: SliverToBoxAdapter(child: MainAlbumHeader(data: vm.header)),
+            top: true,
+            bottom: false,
+            sliver: SliverToBoxAdapter(
+              child: MainAlbumHeader(data: headerVm.header),
+            ),
           ),
-          // TODO: 이후 body 섹션은 여기 아래에 SliverGrid/List로 추가
+
+          // 날짜별 이미지 그룹 리스트
+          Consumer<AlbumDetailViewModel>(
+            builder: (context, vm, _) {
+              return SliverList.builder(
+                itemCount: vm.groups.length,
+                itemBuilder: (context, index) {
+                  final g = vm.groups[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 24),
+                    child: AlbumGroupSection(
+                      date: g.date,
+                      isAllSelected: g.isAllSelected,
+                      onToggleAll: () => vm.toggleAll(index),
+                      imageUrls: g.imageUrls,
+                      selectedIndexes: g.selectedIndexes,
+                      onImageTap: (imgIdx) => vm.toggleImage(index, imgIdx),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
         ],
       ),
     );
