@@ -1,4 +1,3 @@
-import 'package:cherrypic/core/router/route_path.dart';
 import 'package:flutter/material.dart';
 import 'package:cherrypic/presentation/widgets/album/album_card.dart';
 import 'package:cherrypic/presentation/widgets/album/album_badge_type.dart';

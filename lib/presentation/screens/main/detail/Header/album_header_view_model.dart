@@ -1,5 +1,4 @@
 import 'package:cherrypic/presentation/screens/main/detail/Header/album_header_model.dart';
-import 'package:cherrypic/presentation/screens/main/detail/album_detail_models.dart';
 import 'package:flutter/foundation.dart';
 
 class AlbumHeaderViewModel extends ChangeNotifier {

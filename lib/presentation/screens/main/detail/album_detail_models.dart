@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 /// 날짜별 이미지 묶음(그룹)
 class AlbumDayGroup {
   final String date;
