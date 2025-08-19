@@ -72,6 +72,7 @@ final List<String> shellRoutes = [
   RoutePath.home,
   // RoutePath.albumAdd,
   // 필요시 추가
+  RoutePath.albumDetail,
 
   /// myPage
   RoutePath.myPage,
