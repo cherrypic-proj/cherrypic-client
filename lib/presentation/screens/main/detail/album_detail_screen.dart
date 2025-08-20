@@ -1,5 +1,6 @@
 import 'package:cherrypic/presentation/screens/main/detail/Header/album_header_view_model.dart';
 import 'package:cherrypic/presentation/screens/main/detail/Header/main_album_header.dart';
+import 'package:cherrypic/presentation/screens/main/detail/events_tab/%20create/create_event_sheet.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/components/event_album_cover.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/event_tab_view_model.dart';
 import 'package:cherrypic/presentation/widgets/album/album_group_section.dart';
@@ -89,7 +90,7 @@ class _BodyState extends State<_Body> {
                   builder: (context, vm, _) {
                     return SliverList(
                       delegate: SliverChildListDelegate.fixed([
-                        _buildCreateEventButton(),
+                        _buildCreateEventButton(), // 이 버튼을 누르면 시트가 올라옵니다.
                         const SizedBox(height: 35),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -185,8 +186,14 @@ class _BodyState extends State<_Body> {
     return Center(
       child: GestureDetector(
         onTap: () {
-          // TODO: 새 이벤트 생성 로직 연결
-          print("새 이벤트 생성 버튼 클릭");
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            useRootNavigator: true,
+
+            builder: (_) => const CreateEventSheet(),
+          );
         },
         child: Container(
           width: 125,
