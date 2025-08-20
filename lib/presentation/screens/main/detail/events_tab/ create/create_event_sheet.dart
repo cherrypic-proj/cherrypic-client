@@ -291,7 +291,10 @@ class _SheetContent extends StatelessWidget {
                 child: Center(
                   child: Text(
                     '${vm.selectedPhotosCount}장 선택됨',
-                    style: AppFont.size14.copyWith(color: AppColor.mainRed),
+                    style: AppFont.size14.copyWith(
+                      color: AppColor.mainRed,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ),
@@ -301,7 +304,7 @@ class _SheetContent extends StatelessWidget {
           GestureDetector(
             onTap: vm.createEvent,
             child: Container(
-              width: 240,
+              width: 260,
               height: 40,
               decoration: BoxDecoration(
                 color: AppColor.mainRed,
