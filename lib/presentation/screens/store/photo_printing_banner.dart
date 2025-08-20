@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/constants/font.dart';
 
+/// 인화 서비스 배너
 class PhotoPrintingBanner extends StatelessWidget {
   const PhotoPrintingBanner({super.key});
 

@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 enum StoreType { basic, pro, premium }
 
 class StoreTypeSelector extends StatefulWidget {
-  final ValueChanged<StoreType> onTypeSelected;
+  final ValueChanged<StoreType> type;
 
   const StoreTypeSelector({
     super.key,
-    required this.onTypeSelected,
+    required this.type,
   });
 
   @override
@@ -40,8 +40,7 @@ class _StoreTypeSelectorState extends State<StoreTypeSelector> {
     setState(() {
     });
 
-    // 선택된 StoreType 외부로 전달
-    widget.onTypeSelected(StoreType.values[index]);
+    widget.type(StoreType.values[index]);
   }
 
   @override

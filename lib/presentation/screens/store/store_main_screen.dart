@@ -60,12 +60,12 @@ class StoreMainScreen extends StatelessWidget {
 
                           /// 구독 Selector
                           StoreTypeSelector(
-                            onTypeSelected: (type) {
+                            type: (type) {
                               context.push('${RoutePath.store_subs_info}?type=${type.name}');
                             },
                           ),
 
-                          const SizedBox(height: 221,),
+                          const SizedBox(height: 30,),
                         ],
                       ),
                     ),
