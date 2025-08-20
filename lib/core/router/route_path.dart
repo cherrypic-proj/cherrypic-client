@@ -13,4 +13,6 @@ class RoutePath {
 
   static const String event = '/event/event_main_screen';
   static const String eventList = '/event/event_list_screen';
+
+  static const String store = '/store/store_main_screen';
 }

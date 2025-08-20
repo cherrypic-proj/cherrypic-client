@@ -90,6 +90,11 @@ Future<void> showMiniAddMenu(BuildContext context) {
                         _CircleMenuButton(
                           assetPath: 'assets/images/menu_icon_2.png',
                           label: '스토어',
+                          onTap: () {
+                            // 다이얼로그 닫은 후, 이동
+                            Navigator.of(context).pop();
+                            context.push(RoutePath.store);
+                          },
                         ),
                         const SizedBox(width: 60),
                         _CircleMenuButton(
