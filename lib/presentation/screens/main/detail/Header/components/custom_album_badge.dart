@@ -1,7 +1,24 @@
 import 'dart:ui';
 import 'package:cherrypic/core/constants/color.dart';
+import 'package:cherrypic/presentation/screens/main/detail/Header/components/member_count_button.dart';
 import 'package:flutter/material.dart';
-import '../../core/constants/font.dart';
+import '../../../../../../core/constants/font.dart';
+import 'member_list_popup.dart';
+
+final List<MemberListData> _dummyMembers = [
+  MemberListData('김나은', const AssetImage('assets/images/sample_photo.png')),
+  MemberListData('김지현', const AssetImage('assets/images/sample_photo.png')),
+  MemberListData('나용준', const AssetImage('assets/images/sample_photo.png')),
+  MemberListData('최현태', const AssetImage('assets/images/sample_photo.png')),
+  MemberListData('한금준', const AssetImage('assets/images/sample_photo.png')),
+  MemberListData('황상환', const AssetImage('assets/images/sample_photo.png')),
+  MemberListData('김나은', const AssetImage('assets/images/sample_photo.png')),
+  MemberListData('김지현', const AssetImage('assets/images/sample_photo.png')),
+  MemberListData('나용준', const AssetImage('assets/images/sample_photo.png')),
+  MemberListData('최현태', const AssetImage('assets/images/sample_photo.png')),
+  MemberListData('한금준', const AssetImage('assets/images/sample_photo.png')),
+  MemberListData('황상환', const AssetImage('assets/images/sample_photo.png')),
+];
 
 class CustomAlbumBadge extends StatelessWidget {
   final String userName;
@@ -87,35 +104,7 @@ class CustomAlbumBadge extends StatelessWidget {
   }
 
   Widget _buildMemberCountButton() {
-    return SizedBox(
-      width: 50,
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          side: const BorderSide(color: Colors.white, width: 1.5),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(999),
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              memberCountText,
-              style: AppFont.size14.copyWith(
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(width: 6),
-            const Icon(Icons.person, color: Colors.white, size: 16),
-          ],
-        ),
-      ),
-    );
+    return MemberCountButton(members: _dummyMembers);
   }
 
   Widget _buildAddMemberButton() {
