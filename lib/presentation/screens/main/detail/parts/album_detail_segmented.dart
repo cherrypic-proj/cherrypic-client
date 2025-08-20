@@ -14,7 +14,7 @@ class _FloatingSegmented extends StatelessWidget {
   Widget build(BuildContext context) {
     // 트랙/핸들 규격
     const double trackW = 120;
-    const double trackH = 50;
+    const double trackH = 45;
     const double handleH = 35;
     const double edge = 5;
     const double leftHandleW = 50; // 전체
