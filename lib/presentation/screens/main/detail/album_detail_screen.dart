@@ -1,5 +1,7 @@
 import 'package:cherrypic/presentation/screens/main/detail/Header/album_header_view_model.dart';
 import 'package:cherrypic/presentation/screens/main/detail/Header/main_album_header.dart';
+import 'package:cherrypic/presentation/screens/main/detail/events_tab/components/event_album_cover.dart';
+import 'package:cherrypic/presentation/screens/main/detail/events_tab/event_tab_view_model.dart';
 import 'package:cherrypic/presentation/widgets/album/album_group_section.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +21,7 @@ class AlbumDetailScreen extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AlbumHeaderViewModel(albumId)),
         ChangeNotifierProvider(create: (_) => AlbumDetailViewModel()),
+        ChangeNotifierProvider(create: (_) => EventTabViewModel()),
       ],
       child: const _Body(),
     );
@@ -82,13 +85,37 @@ class _BodyState extends State<_Body> {
                   },
                 )
               else
-                const SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: ColoredBox(color: Colors.white),
+                Consumer<EventTabViewModel>(
+                  builder: (context, vm, _) {
+                    return SliverList(
+                      delegate: SliverChildListDelegate.fixed([
+                        _buildCreateEventButton(),
+                        const SizedBox(height: 35),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: GridView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            padding: EdgeInsets.zero,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 16,
+                                  mainAxisSpacing: 16,
+                                  childAspectRatio: 1,
+                                ),
+                            itemCount: vm.albums.length,
+                            itemBuilder: (context, index) {
+                              final album = vm.albums[index];
+                              return EventAlbumCover(album: album);
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 120),
+                      ]),
+                    );
+                  },
                 ),
-
-              // 하단 고정 버튼들과 겹침 방지
-              const SliverToBoxAdapter(child: SizedBox(height: 120)),
             ],
           ),
 
@@ -150,6 +177,41 @@ class _BodyState extends State<_Body> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildCreateEventButton() {
+    return Center(
+      child: GestureDetector(
+        onTap: () {
+          // TODO: 새 이벤트 생성 로직 연결
+          print("새 이벤트 생성 버튼 클릭");
+        },
+        child: Container(
+          width: 125,
+          height: 40,
+          decoration: BoxDecoration(
+            color: AppColor.mainRed,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withAlpha(45),
+                blurRadius: 5,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Center(
+            child: Text(
+              '새 이벤트 생성',
+              style: AppFont.size18.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
