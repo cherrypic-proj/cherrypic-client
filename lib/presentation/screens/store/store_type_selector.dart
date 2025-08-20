@@ -1,8 +1,16 @@
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:flutter/material.dart';
 
+/// 앨범 타입
+enum StoreType { basic, pro, premium }
+
 class StoreTypeSelector extends StatefulWidget {
-  const StoreTypeSelector({super.key});
+  final ValueChanged<StoreType> onTypeSelected;
+
+  const StoreTypeSelector({
+    super.key,
+    required this.onTypeSelected,
+  });
 
   @override
   State<StoreTypeSelector> createState() => _StoreTypeSelectorState();
@@ -21,7 +29,6 @@ class _StoreTypeSelectorState extends State<StoreTypeSelector> {
   ];
 
   int _currentPage = 0;
-  int? _selectedIndex;
 
   @override
   void dispose() {
@@ -31,56 +38,55 @@ class _StoreTypeSelectorState extends State<StoreTypeSelector> {
 
   void _onTapCard(int index) {
     setState(() {
-      if (_selectedIndex == index) {
-        _selectedIndex = null;
-      } else {
-        _selectedIndex = index;
-      }
     });
+
+    // 선택된 StoreType 외부로 전달
+    widget.onTypeSelected(StoreType.values[index]);
   }
 
   @override
   Widget build(BuildContext context) {
-    final double cardW = 333;
-    final double cardH = 420;
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        SizedBox(
-          width: cardW,
-          height: cardH,
-          child: PageView.builder(
-            controller: _pageController,
-            itemCount: 3,
-            onPageChanged: (i) => setState(() => _currentPage = i),
-            itemBuilder: (context, index) {
-              final String asset = selectedImages[index];
+        /// 화면 크기에 따라 비율에 맞게 크기 조정
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final screenWidth = MediaQuery.of(context).size.width;
+            const horizontalPadding = 30.0;
+            final availableWidth = screenWidth - 2 * horizontalPadding;
+            final aspectRatio = 333 / 420;
+            final calculatedHeight = availableWidth / aspectRatio;
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () => _onTapCard(index),
-                  child: SizedBox(
-                    width: cardW,
-                    height: cardH,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: AspectRatio(
-                        aspectRatio: 333 / 420,
+            return SizedBox(
+              width: availableWidth,
+              height: calculatedHeight,
+              child: PageView.builder(
+                controller: _pageController,
+                itemCount: 3,
+                onPageChanged: (i) => setState(() => _currentPage = i),
+                itemBuilder: (context, index) {
+                  final String asset = selectedImages[index];
+
+                  return GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => _onTapCard(index),
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 8),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
                         child: Image.asset(
                           asset,
-                          fit: BoxFit.contain,
+                          fit: BoxFit.cover,
                           filterQuality: FilterQuality.high,
                         ),
                       ),
                     ),
-                  ),
-                ),
-              );
-            },
-          ),
+                  );
+                },
+              ),
+            );
+          },
         ),
         const SizedBox(height: 12),
 
@@ -90,16 +96,16 @@ class _StoreTypeSelectorState extends State<StoreTypeSelector> {
           children: List.generate(3, (i) {
             final active = i == _currentPage;
             return Container(
-              margin: const EdgeInsets.symmetric(horizontal: 6),
-              width: 10,
-              height: 10,
+              margin: const EdgeInsets.symmetric(horizontal: 15),
+              width: 12,
+              height: 12,
               alignment: Alignment.center,
               child: AnimatedScale(
                 duration: const Duration(milliseconds: 160),
                 scale: active ? 1.0 : 0.6,
                 child: Container(
-                  width: 10,
-                  height: 10,
+                  width: active ? 12 : 8,
+                  height: active ? 12 : 8,
                   decoration: BoxDecoration(
                     color: active ? AppColor.mainRed : AppColor.mainLightRed,
                     shape: BoxShape.circle,
