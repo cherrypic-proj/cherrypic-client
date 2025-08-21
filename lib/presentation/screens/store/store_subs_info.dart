@@ -36,7 +36,7 @@ class StoreSubsInfo extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 40,),
+              const SizedBox(height: 40),
               /// 화면 크기에 따라 비율에 맞게 크기 조정
               LayoutBuilder(
                 builder: (context, constraints) {
@@ -56,7 +56,7 @@ class StoreSubsInfo extends StatelessWidget {
                 },
               ),
 
-              const SizedBox(height: 37,),
+              const SizedBox(height: 37),
 
               /// 버튼
               CustomButton(
@@ -65,7 +65,7 @@ class StoreSubsInfo extends StatelessWidget {
                 type: CustomButtonType.createAlbum,
                 text: storeType == StoreType.basic ? '앨범 생성하기' : '구독하기',
               ),
-              const SizedBox(height: 40,)
+              const SizedBox(height: 40)
             ]
           ),
         ),

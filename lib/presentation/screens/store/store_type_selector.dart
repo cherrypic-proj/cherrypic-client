@@ -39,7 +39,6 @@ class _StoreTypeSelectorState extends State<StoreTypeSelector> {
   void _onTapCard(int index) {
     setState(() {
     });
-
     widget.type(StoreType.values[index]);
   }
 

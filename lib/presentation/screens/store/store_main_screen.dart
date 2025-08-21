@@ -25,11 +25,11 @@ class StoreMainScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 30),
                       child: Column(
                         children: [
-                          const SizedBox(height: 72,),
+                          const SizedBox(height: 72),
 
                           /// 사진 인화 서비스 배너
                           PhotoPrintingBanner(),
-                          const SizedBox(height: 57,),
+                          const SizedBox(height: 57),
 
                           /// 정기 구독 Selector Title 과 SubTitle
                           Align(
@@ -44,7 +44,7 @@ class StoreMainScreen extends StatelessWidget {
                                     color: Colors.black,
                                   ),
                                 ),
-                                const SizedBox(height: 5,),
+                                const SizedBox(height: 5),
                                 Text(
                                   '한장의 사진도 놓치지 마세요!\nPro 또는 Premium 앨범을 구매해서, 용량 걱정 없이 사진을 공유해보세요!',
                                   style: AppFont.size10.copyWith(
@@ -56,7 +56,7 @@ class StoreMainScreen extends StatelessWidget {
                             ),
                           ),
 
-                          const SizedBox(height: 22.5,),
+                          const SizedBox(height: 22.5),
 
                           /// 구독 Selector
                           StoreTypeSelector(
@@ -65,7 +65,7 @@ class StoreMainScreen extends StatelessWidget {
                             },
                           ),
 
-                          const SizedBox(height: 30,),
+                          const SizedBox(height: 30),
                         ],
                       ),
                     ),
