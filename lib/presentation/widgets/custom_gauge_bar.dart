@@ -7,11 +7,8 @@ class CustomGaugeBar extends StatelessWidget {
   final double usedGB;
   final double totalGB;
 
-  const CustomGaugeBar({
-    required this.usedGB,
-    required this.totalGB,
-    super.key,
-  })  : assert(usedGB >= 0 && usedGB <= totalGB);
+  const CustomGaugeBar({required this.usedGB, required this.totalGB, super.key})
+    : assert(usedGB >= 0 && usedGB <= totalGB);
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +64,7 @@ class CustomGaugeBar extends StatelessWidget {
                                 color: AppColor.highlightBlue,
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
+                                height: 1.2,
                               ),
                             ),
                             TextSpan(
@@ -75,6 +73,7 @@ class CustomGaugeBar extends StatelessWidget {
                                 color: Colors.grey[700],
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
+                                height: 1.2,
                               ),
                             ),
                           ],

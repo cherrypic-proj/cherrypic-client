@@ -64,4 +64,17 @@ extension AlbumBadgeTypeExtension on AlbumBadgeType {
         return AppColor.subDarkGrey;
     }
   }
+
+  String get shortLabel {
+    switch (this) {
+      case AlbumBadgeType.basic:
+        return 'Basic';
+      case AlbumBadgeType.pro:
+        return 'Pro';
+      case AlbumBadgeType.premium:
+        return 'Premium';
+      case AlbumBadgeType.none:
+        return '';
+    }
+  }
 }
