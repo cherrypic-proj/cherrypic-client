@@ -12,9 +12,13 @@ import 'package:cherrypic/presentation/screens/my_page/my_page_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/notice/notice_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/settings/setting_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/album_payment_info/album_payment_info_screen.dart';
+import 'package:cherrypic/presentation/screens/store/store_main_screen.dart';
+import 'package:cherrypic/presentation/screens/store/store_subs_info.dart';
 import 'package:cherrypic/presentation/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../presentation/screens/store/store_type_selector.dart';
 
 // 앱바 고정 UI 레퍼
 class ScaffoldWithNavBar extends StatelessWidget {
@@ -65,6 +69,17 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
     final image = qp['image'] ?? '';
     return EventListScreen(eventImage: image, date: date, title: title);
   },
+
+  /// store
+  RoutePath.store: (context, state) => const StoreMainScreen(),
+  RoutePath.store_subs_info: (context, state) {
+    final typeParam = state.uri.queryParameters['type'];
+    final storeType = StoreType.values.firstWhere(
+          (e) => e.name == typeParam,
+      orElse: () => StoreType.basic,
+    );
+    return StoreSubsInfo(storeType: storeType);
+  },
 };
 
 // 앱바 고정 경로 목록 -> 여기 적으면 앱바 고정됨.
@@ -87,6 +102,9 @@ final List<String> shellRoutes = [
   /// event
   RoutePath.event,
   RoutePath.eventList,
+
+  /// store
+  RoutePath.store,
 ];
 
 // GoRouter
