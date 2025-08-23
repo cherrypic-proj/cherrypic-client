@@ -1,7 +1,9 @@
-import 'package:cherrypic/presentation/screens/store/store_type_selector.dart';
+import 'package:cherrypic/presentation/screens/store/components/store_type_selector.dart';
 import 'package:cherrypic/presentation/widgets/custom_sub_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../core/router/route_path.dart';
 import '../../widgets/custom_button.dart';
 
 class StoreSubsInfo extends StatelessWidget {
@@ -60,7 +62,13 @@ class StoreSubsInfo extends StatelessWidget {
 
               /// 버튼
               CustomButton(
-                onPressed: () {},
+                onPressed: () {
+                  if (storeType == StoreType.basic) {
+                    /// 앨범 생성하기 페이지로 로직 추가
+                  } else {
+                    context.go(RoutePath.payment_method);
+                  }
+                },
                 variant: AppButtonVariant.filled,
                 type: CustomButtonType.createAlbum,
                 text: storeType == StoreType.basic ? '앨범 생성하기' : '구독하기',

@@ -1,6 +1,6 @@
 import 'package:cherrypic/core/constants/color.dart';
-import 'package:cherrypic/presentation/screens/store/photo_printing_banner.dart';
-import 'package:cherrypic/presentation/screens/store/store_type_selector.dart';
+import 'package:cherrypic/presentation/screens/store/components/photo_printing_banner.dart';
+import 'package:cherrypic/presentation/screens/store/components/store_type_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

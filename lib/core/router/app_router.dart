@@ -12,13 +12,14 @@ import 'package:cherrypic/presentation/screens/my_page/my_page_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/notice/notice_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/settings/setting_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/album_payment_info/album_payment_info_screen.dart';
+import 'package:cherrypic/presentation/screens/store/payment_method_screen.dart';
 import 'package:cherrypic/presentation/screens/store/store_main_screen.dart';
 import 'package:cherrypic/presentation/screens/store/store_subs_info.dart';
 import 'package:cherrypic/presentation/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../presentation/screens/store/store_type_selector.dart';
+import '../../presentation/screens/store/components/store_type_selector.dart';
 
 // 앱바 고정 UI 레퍼
 class ScaffoldWithNavBar extends StatelessWidget {
@@ -80,6 +81,7 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
     );
     return StoreSubsInfo(storeType: storeType);
   },
+  RoutePath.payment_method: (context, state) => const PaymentMethodScreen(),
 };
 
 // 앱바 고정 경로 목록 -> 여기 적으면 앱바 고정됨.
@@ -91,13 +93,6 @@ final List<String> shellRoutes = [
 
   /// myPage
   RoutePath.myPage,
-  // RoutePath.myPage_notice,
-  // RoutePath.myPage_album_payment_info,
-  // RoutePath.myPage_address_management,
-  // RoutePath.myPage_add_address,
-  // RoutePath.myPage_subscription_history,
-  // RoutePath.myPage_setting,
-  // RoutePath.myPage_delete_account,
 
   /// event
   RoutePath.event,
@@ -105,6 +100,7 @@ final List<String> shellRoutes = [
 
   /// store
   RoutePath.store,
+  RoutePath.payment_method,
 ];
 
 // GoRouter
