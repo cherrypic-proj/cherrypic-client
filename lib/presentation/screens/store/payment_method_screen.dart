@@ -1,7 +1,9 @@
 import 'package:cherrypic/core/constants/color.dart';
+import 'package:cherrypic/core/router/route_path.dart';
 import 'package:cherrypic/presentation/screens/store/payment/payment_info_model.dart';
 import 'package:cherrypic/presentation/screens/store/payment/payment_info_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/font.dart';
 import '../../widgets/custom_button.dart';
@@ -79,7 +81,9 @@ class PaymentMethodScreen extends StatelessWidget {
                       PaymentInfo(viewModel: viewModel),
                       const SizedBox(height: 92.45),
                       CustomButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          context.push(RoutePath.payment_complete);
+                        },
                         variant: AppButtonVariant.filled,
                         type: CustomButtonType.createAlbum,
                         text: '${viewModel.formattedTotalPrice} 결제하기',

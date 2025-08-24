@@ -12,6 +12,7 @@ import 'package:cherrypic/presentation/screens/my_page/my_page_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/notice/notice_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/settings/setting_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/album_payment_info/album_payment_info_screen.dart';
+import 'package:cherrypic/presentation/screens/store/payment_complete_screen.dart';
 import 'package:cherrypic/presentation/screens/store/payment_method_screen.dart';
 import 'package:cherrypic/presentation/screens/store/store_main_screen.dart';
 import 'package:cherrypic/presentation/screens/store/store_subs_info.dart';
@@ -82,6 +83,7 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
     return StoreSubsInfo(storeType: storeType);
   },
   RoutePath.payment_method: (context, state) => const PaymentMethodScreen(),
+  RoutePath.payment_complete: (context, state) => const PaymentCompleteScreen(),
 };
 
 // 앱바 고정 경로 목록 -> 여기 적으면 앱바 고정됨.
@@ -101,6 +103,7 @@ final List<String> shellRoutes = [
   /// store
   RoutePath.store,
   RoutePath.payment_method,
+  RoutePath.payment_complete,
 ];
 
 // GoRouter
