@@ -32,8 +32,6 @@ class MainScreen extends StatelessWidget {
           height: 45,
           child: TextButton(
             onPressed: () {
-              // context.pushNamed(RouteName.albumAdd);
-              // context.pushNamed(RouteName.albumAddFull);
               context.push(RoutePath.albumAdd);
             },
             style: TextButton.styleFrom(

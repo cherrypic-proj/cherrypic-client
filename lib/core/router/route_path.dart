@@ -23,7 +23,3 @@ class RoutePath {
 
   static const albumDetail = '/album/:albumId';
 }
-
-class RouteName {
-  static const albumDetail = 'albumDetail';
-}
