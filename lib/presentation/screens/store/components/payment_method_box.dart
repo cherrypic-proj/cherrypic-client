@@ -2,30 +2,7 @@ import 'package:cherrypic/core/constants/color.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/constants/font.dart';
 
-enum PaymentMethodType { kakao, toss }
-
-class PaymentMethodInfo {
-  final String imagePath;
-  final String label;
-
-  const PaymentMethodInfo({required this.imagePath, required this.label});
-}
-
-PaymentMethodInfo getPaymentMethodInfo(PaymentMethodType type) {
-  switch (type) {
-    case PaymentMethodType.kakao:
-      return const PaymentMethodInfo(
-        imagePath: 'assets/images/kakao_pay.png',
-        label: '카카오페이',
-      );
-    case PaymentMethodType.toss:
-      return const PaymentMethodInfo(
-        imagePath: 'assets/images/toss_pay.png',
-        label: '토스페이',
-      );
-  }
-}
-
+/// 결제수단 선택 박스
 class PaymentMethodBox extends StatelessWidget {
   final PaymentMethodType type;
 
@@ -36,14 +13,10 @@ class PaymentMethodBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final info = getPaymentMethodInfo(type);
-
     return Column(
       children: [
         Container(
-          padding: type == PaymentMethodType.kakao
-              ? const EdgeInsets.symmetric(vertical: 15, horizontal: 15.5)
-              : const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+          padding: type.padding,
           height: 54,
           width: 101,
           decoration: BoxDecoration(
@@ -51,14 +24,14 @@ class PaymentMethodBox extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
           ),
           child: Image.asset(
-            info.imagePath,
+            type.imagePath,
             width: 73,
             fit: BoxFit.contain,
           ),
         ),
         const SizedBox(height: 10),
         Text(
-          info.label,
+          type.label,
           style: AppFont.size12.copyWith(
             fontWeight: FontWeight.w500,
             color: Colors.black,
@@ -66,5 +39,37 @@ class PaymentMethodBox extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+/// 결제수단 타입
+enum PaymentMethodType { kakao, toss }
+
+extension PaymentMethodExtension on PaymentMethodType {
+  String get imagePath {
+    switch (this) {
+      case PaymentMethodType.kakao:
+        return 'assets/images/kakao_pay.png';
+      case PaymentMethodType.toss:
+        return 'assets/images/toss_pay.png';
+    }
+  }
+
+  String get label {
+    switch (this) {
+      case PaymentMethodType.kakao:
+        return '카카오페이';
+      case PaymentMethodType.toss:
+        return '토스페이';
+    }
+  }
+
+  EdgeInsets get padding {
+    switch (this) {
+      case PaymentMethodType.kakao:
+        return const EdgeInsets.symmetric(vertical: 15, horizontal: 15.5);
+      case PaymentMethodType.toss:
+        return const EdgeInsets.symmetric(vertical: 12, horizontal: 14);
+    }
   }
 }

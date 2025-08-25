@@ -38,6 +38,7 @@ class PaymentMethodScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       const SizedBox(height: 39.5),
+                      /// Title
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(
@@ -49,6 +50,7 @@ class PaymentMethodScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 38.8),
+                      /// 결제 수단 방식 Row
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -61,8 +63,10 @@ class PaymentMethodScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 38.8),
+                /// 구분선
                 Container(height: 4, color: AppColor.subSlicer),
                 const SizedBox(height: 46.28),
+                /// 결제 정보
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: Column(
@@ -78,8 +82,10 @@ class PaymentMethodScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 28),
+                      /// 결제 세부 정보
                       PaymentInfo(viewModel: viewModel),
                       const SizedBox(height: 92.45),
+                      /// 결제하기 버튼
                       CustomButton(
                         onPressed: () {
                           context.push(RoutePath.payment_complete);

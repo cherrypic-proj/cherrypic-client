@@ -2,7 +2,6 @@ import 'package:cherrypic/presentation/screens/store/components/store_type_selec
 import 'package:cherrypic/presentation/widgets/custom_sub_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../../core/router/route_path.dart';
 import '../../widgets/custom_button.dart';
 
@@ -66,6 +65,7 @@ class StoreSubsInfo extends StatelessWidget {
                   if (storeType == StoreType.basic) {
                     /// 앨범 생성하기 페이지로 로직 추가
                   } else {
+                    /// 우선은 go를 사용 -> 추후 수정 예정
                     context.go(RoutePath.payment_method);
                   }
                 },

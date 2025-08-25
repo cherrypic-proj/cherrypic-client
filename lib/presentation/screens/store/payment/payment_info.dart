@@ -4,6 +4,7 @@ import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import '../../../widgets/custom_box_card.dart';
 
+/// 결제 정보
 class PaymentInfo extends StatelessWidget {
   final PaymentInfoViewModel viewModel;
 
@@ -18,6 +19,7 @@ class PaymentInfo extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 13.5),
           child: Column(
             children: [
+              /// 상품 금액 Row
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -38,6 +40,7 @@ class PaymentInfo extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 12),
+              /// 구독 정보 Row
               Padding(
                 padding: const EdgeInsets.only(left: 25),
                 child: Column(
@@ -62,6 +65,7 @@ class PaymentInfo extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 6),
+                    /// 다음 결제 날짜 Row
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -88,6 +92,7 @@ class PaymentInfo extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 21),
+        /// 점선
         SizedBox(
           width: double.infinity,
           height: 1,
@@ -96,6 +101,7 @@ class PaymentInfo extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 10),
+        /// 총 결제 금액 Row
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 13.5),
           child: Row(
@@ -119,6 +125,7 @@ class PaymentInfo extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 10),
+        /// 점선
         SizedBox(
           width: double.infinity,
           height: 1,

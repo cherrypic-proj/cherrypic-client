@@ -11,5 +11,6 @@ class PaymentInfoViewModel {
   String get nextPaymentDate => model.nextPaymentDate;
   String get formattedTotalPrice => '월 ${_format(model.totalPrice)}원';
 
+  /// 금액 format
   String _format(int value) => NumberFormat('#,###').format(value);
 }

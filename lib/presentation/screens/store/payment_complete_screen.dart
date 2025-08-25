@@ -19,6 +19,7 @@ class PaymentCompleteScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  /// 앨범 구독 시작 로고
                   Image.asset(
                     'assets/images/payment_complete.png',
                     width: 240.61,
@@ -26,6 +27,7 @@ class PaymentCompleteScreen extends StatelessWidget {
                     fit: BoxFit.contain,
                   ),
                   const SizedBox(height: 51.75),
+                  /// 앨범 생성하기 버튼
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30),
                     child: CustomButton(
