@@ -25,7 +25,3 @@ class RoutePath {
   static const String store_subs_info = '/store/store_subs_info';
   static const albumDetail = '/album/:albumId';
 }
-
-class RouteName {
-  static const albumDetail = 'albumDetail';
-}

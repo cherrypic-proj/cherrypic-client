@@ -1,7 +1,7 @@
 // main_album_header.dart
 import 'package:cherrypic/presentation/widgets/album/album_badge_type.dart';
 import 'package:cherrypic/presentation/widgets/custom_album_app_bar.dart';
-import 'package:cherrypic/presentation/widgets/custom_album_badge.dart';
+import 'package:cherrypic/presentation/screens/main/detail/Header/components/custom_album_badge.dart';
 import 'package:cherrypic/presentation/widgets/custom_gauge_bar.dart';
 import 'package:flutter/material.dart';
 import 'album_header_model.dart';
