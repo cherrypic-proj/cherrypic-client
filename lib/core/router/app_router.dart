@@ -102,8 +102,6 @@ final List<String> shellRoutes = [
 
   /// store
   RoutePath.store,
-  RoutePath.payment_method,
-  RoutePath.payment_complete,
 ];
 
 // GoRouter

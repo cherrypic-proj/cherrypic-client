@@ -65,8 +65,7 @@ class StoreSubsInfo extends StatelessWidget {
                   if (storeType == StoreType.basic) {
                     /// 앨범 생성하기 페이지로 로직 추가
                   } else {
-                    /// 우선은 go를 사용 -> 추후 수정 예정
-                    context.go(RoutePath.payment_method);
+                    context.push(RoutePath.payment_method);
                   }
                 },
                 variant: AppButtonVariant.filled,

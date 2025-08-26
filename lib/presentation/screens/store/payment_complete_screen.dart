@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_sub_app_bar.dart';
-import '../../widgets/menu_button.dart';
 
 class PaymentCompleteScreen extends StatelessWidget {
   const PaymentCompleteScreen({super.key});
@@ -10,10 +9,9 @@ class PaymentCompleteScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const CustomSubAppBar(title: 'CherryPic 정기 구독'),
       body: Column(
         children: [
-          MenuButton(iconType: EventStoreIconType.store, title: '스토어'),
-          const CustomSubAppBar(title: ''),
           Expanded(
             child: Center(
               child: Column(

@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 import '../../../core/constants/font.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_sub_app_bar.dart';
-import '../../widgets/menu_button.dart';
 import 'payment/payment_info.dart';
 import 'components/payment_method_box.dart';
 
@@ -26,10 +25,9 @@ class PaymentMethodScreen extends StatelessWidget {
     final viewModel = PaymentInfoViewModel(model);
 
     return Scaffold(
+      appBar: const CustomSubAppBar(title: 'CherryPic 정기 구독'),
       body: Column(
         children: [
-          MenuButton(iconType: EventStoreIconType.store, title: '스토어'),
-          const CustomSubAppBar(title: ''),
           Expanded(
             child: Column(
               children: [
