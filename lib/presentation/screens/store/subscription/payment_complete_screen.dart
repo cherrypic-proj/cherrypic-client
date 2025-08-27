@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../widgets/custom_button.dart';
-import '../../widgets/custom_sub_app_bar.dart';
+import '../../../widgets/custom_button.dart';
+import '../../../widgets/custom_sub_app_bar.dart';
 
 class PaymentCompleteScreen extends StatelessWidget {
   const PaymentCompleteScreen({super.key});

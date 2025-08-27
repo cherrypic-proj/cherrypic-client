@@ -22,9 +22,11 @@ class RoutePath {
   static const String eventList = '/event/event_list_screen';
 
   static const String store = '/store/store_main_screen';
-  static const String store_subs_info = '/store/store_subs_info';
-  static const String payment_method = '/store/payment_method_screen';
-  static const String payment_complete = '/store/payment_complete_screen';
+  static const String store_subs_info = '/store/subscription/store_subs_info';
+  static const String payment_method = '/store/subscription/payment_method_screen';
+  static const String payment_complete = '/store/subscription/payment_complete_screen';
+
+  static const String photo_printing = '/store/photo_printing/photo_printing_screen';
 
   static const albumDetail = '/album/:albumId';
 }

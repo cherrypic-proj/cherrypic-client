@@ -5,11 +5,11 @@ import 'package:cherrypic/presentation/screens/store/payment/payment_info_view_m
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/constants/font.dart';
-import '../../widgets/custom_button.dart';
-import '../../widgets/custom_sub_app_bar.dart';
-import 'payment/payment_info.dart';
-import 'components/payment_method_box.dart';
+import '../../../../core/constants/font.dart';
+import '../../../widgets/custom_button.dart';
+import '../../../widgets/custom_sub_app_bar.dart';
+import '../payment/payment_info.dart';
+import '../components/payment_method_box.dart';
 
 class PaymentMethodScreen extends StatelessWidget {
   const PaymentMethodScreen({super.key});
