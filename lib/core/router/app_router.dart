@@ -13,6 +13,11 @@ import 'package:cherrypic/presentation/screens/my_page/notice/notice_screen.dart
 import 'package:cherrypic/presentation/screens/my_page/settings/setting_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/album_payment_info/album_payment_info_screen.dart';
 import 'package:cherrypic/presentation/screens/store/photo_printing/photo_printing_screen.dart';
+import 'package:cherrypic/presentation/screens/store/photo_printing/service_step/select_address_screen.dart';
+import 'package:cherrypic/presentation/screens/store/photo_printing/service_step/select_album_screen.dart';
+import 'package:cherrypic/presentation/screens/store/photo_printing/service_step/select_image_screen.dart';
+import 'package:cherrypic/presentation/screens/store/photo_printing/service_step/select_option_screen.dart';
+import 'package:cherrypic/presentation/screens/store/photo_printing/service_step/select_payment_screen.dart';
 import 'package:cherrypic/presentation/screens/store/subscription/payment_complete_screen.dart';
 import 'package:cherrypic/presentation/screens/store/subscription/payment_method_screen.dart';
 import 'package:cherrypic/presentation/screens/store/store_main_screen.dart';
@@ -87,6 +92,14 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
   RoutePath.payment_complete: (context, state) => const PaymentCompleteScreen(),
 
   RoutePath.photo_printing: (context, state) => const PhotoPrintingScreen(),
+  RoutePath.select_album: (context, state) => const SelectAlbumScreen(),
+  RoutePath.select_image: (context, state) => const SelectImageScreen(),
+  RoutePath.select_option: (context, state) => const SelectOptionScreen(),
+  RoutePath.select_address: (context, state) => const SelectAddressScreen(),
+  RoutePath.select_payment: (context, state) {
+    final totalAmount = state.extra as int? ?? 0;
+    return SelectPaymentScreen(totalAmount: totalAmount);
+  },
 };
 
 // 앱바 고정 경로 목록 -> 여기 적으면 앱바 고정됨.

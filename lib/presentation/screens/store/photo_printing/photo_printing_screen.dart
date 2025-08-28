@@ -1,6 +1,8 @@
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../core/router/route_path.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_sub_app_bar.dart';
 
@@ -115,7 +117,7 @@ class PhotoPrintingScreen extends StatelessWidget {
                     variant: AppButtonVariant.outlinedStatic,
                     text: '인화하러 가기',
                     onPressed: () {
-
+                      context.push(RoutePath.select_album);
                     },
                   ),
 

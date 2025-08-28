@@ -27,6 +27,11 @@ class RoutePath {
   static const String payment_complete = '/store/subscription/payment_complete_screen';
 
   static const String photo_printing = '/store/photo_printing/photo_printing_screen';
+  static const String select_album = '/store/photo_printing/service_step/select_album_screen';
+  static const String select_image = '/store/photo_printing/service_step/select_image_screen';
+  static const String select_option = '/store/photo_printing/service_step/select_option_screen';
+  static const String select_address = '/store/photo_printing/service_step/select_address_screen';
+  static const String select_payment = '/store/photo_printing/service_step/select_payment_screen';
 
   static const albumDetail = '/album/:albumId';
 }
