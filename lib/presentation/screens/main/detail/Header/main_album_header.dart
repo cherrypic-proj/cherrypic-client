@@ -1,9 +1,11 @@
 // main_album_header.dart
+import 'package:cherrypic/core/router/route_path.dart';
 import 'package:cherrypic/presentation/widgets/album/album_badge_type.dart';
 import 'package:cherrypic/presentation/widgets/custom_album_app_bar.dart';
 import 'package:cherrypic/presentation/screens/main/detail/Header/components/custom_album_badge.dart';
 import 'package:cherrypic/presentation/widgets/custom_gauge_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'album_header_model.dart';
 
 class MainAlbumHeader extends StatelessWidget {
@@ -19,9 +21,19 @@ class MainAlbumHeader extends StatelessWidget {
         child: Column(
           children: [
             CustomAlbumAppBar(
-              title: '음식(양식, 중식, 한식...)',
+              // data 모델에서 제목, 뱃지 타입 등을 가져오도록 수정
+              title: data.title,
               profileImagePath: 'assets/images/albumCover.png',
               badgeType: AlbumBadgeType.pro,
+              // [이 부분 추가] 설정 버튼을 눌렀을 때의 동작 정의
+              onSettings: () {
+                // 현재 앨범의 ID를 가지고 앨범 설정 페이지로 이동합니다.
+                final path = RoutePath.albumSetting.replaceFirst(
+                  ':albumId',
+                  data.albumId.toString(), // data 모델에서 현재 앨범 ID를 가져옴
+                );
+                context.push(path);
+              },
             ),
             Stack(
               children: [

@@ -1,6 +1,7 @@
 class RoutePath {
   static const String home = '/';
   static const String albumAdd = '/album/add';
+  static const String albumSetting = '/album/:albumId/setting';
 
   static const String myPage = '/my_page/my_page_screen';
   static const String myPage_notice = '/my_page/notice/notice_screen';
