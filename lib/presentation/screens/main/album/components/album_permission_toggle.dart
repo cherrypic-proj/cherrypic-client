@@ -57,22 +57,8 @@ class AlbumPermissionToggle extends StatelessWidget {
         ),
         Switch(
           value: isPermissionEnabled,
+          activeThumbColor: AppColor.mainRed,
           onChanged: onPermissionToggled,
-          // 스위치가 켜졌을 때 원(thumb)의 색상
-          thumbColor: MaterialStateProperty.resolveWith<Color>((states) {
-            if (states.contains(MaterialState.selected)) {
-              return AppColor.mainRed; // 켜졌을 때 색상
-            }
-            return null; // 꺼졌을 때는 기본값 사용
-          }),
-          // 스위치가 켜졌을 때 배경 트랙의 색상
-          trackColor: MaterialStateProperty.resolveWith<Color>((states) {
-            if (states.contains(MaterialState.selected)) {
-              // 일반적으로 트랙은 원보다 약간 투명하게 설정합니다.
-              return AppColor.mainRed.withOpacity(0.5);
-            }
-            return null; // 꺼졌을 때는 기본값 사용
-          }),
         ),
       ],
     );
