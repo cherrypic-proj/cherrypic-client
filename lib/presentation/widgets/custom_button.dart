@@ -3,6 +3,7 @@ import 'package:cherrypic/core/constants/font.dart';
 import 'package:flutter/material.dart';
 
 enum AppButtonVariant { filled, outlined, disabled, outlinedStatic, address }
+
 enum AppButtonShape { rounded, squared, capsule }
 
 enum CustomButtonType {
@@ -63,7 +64,7 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isDisabled =
         variant == AppButtonVariant.disabled ||
-            (onPressed == null && variant != AppButtonVariant.outlinedStatic);
+        (onPressed == null && variant != AppButtonVariant.outlinedStatic);
 
     Color bgColor;
     Color fgColor;
@@ -111,21 +112,30 @@ class CustomButton extends StatelessWidget {
 
     final styleByType = _getStyleByType(type);
 
-    final child = Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          text?.isNotEmpty == true ? text! : styleByType.text,
-          style: styleByType.fontStyle.copyWith(
-            fontWeight: type == CustomButtonType.addAddress ? FontWeight.w500 : FontWeight.w800,
-          ),
-        ),
-        if (iconPath != null) ...[
-          const SizedBox(width: 0),
+    // [수정] 아이콘 유무에 따라 child를 다르게 구성
+    final textWidget = Text(
+      text?.isNotEmpty == true ? text! : styleByType.text,
+      style: styleByType.fontStyle.copyWith(
+        fontWeight: type == CustomButtonType.addAddress
+            ? FontWeight.w500
+            : FontWeight.w800,
+      ),
+    );
+
+    final Widget child;
+    if (iconPath != null) {
+      child = Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          textWidget,
+          const SizedBox(width: 8),
           Image.asset(iconPath!, width: 24, height: 24),
         ],
-      ],
-    );
+      );
+    } else {
+      child = textWidget;
+    }
 
     final style = ButtonStyle(
       backgroundColor: WidgetStateProperty.all(bgColor),
@@ -140,22 +150,24 @@ class CustomButton extends StatelessWidget {
           side: border ?? BorderSide.none,
         ),
       ),
+      elevation: WidgetStateProperty.all(0),
     );
 
     final button = variant == AppButtonVariant.outlined
         ? OutlinedButton(
-      onPressed: isDisabled ? null : onPressed,
-      style: style,
-      child: child,
-    )
+            onPressed: isDisabled ? null : onPressed,
+            style: style,
+            child: child,
+          )
         : ElevatedButton(
-      onPressed: isDisabled ? null : onPressed,
-      style: style,
-      child: child,
-    );
+            onPressed: isDisabled ? null : onPressed,
+            style: style,
+            child: child,
+          );
 
     return SizedBox(
-      width: width ?? styleByType.width ?? MediaQuery.of(context).size.width - 40,
+      width:
+          width ?? styleByType.width ?? MediaQuery.of(context).size.width - 40,
       child: button,
     );
   }

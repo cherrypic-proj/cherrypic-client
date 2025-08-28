@@ -69,19 +69,39 @@ class AlbumPermissionToggle extends StatelessWidget {
       height: 350,
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 15),
       decoration: BoxDecoration(
+        color: Colors.white,
         border: Border.all(color: Colors.grey.shade300),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
         children: [
-          SizedBox(height: 45, child: TextField(controller: searchController!)),
+          // [수정] 검색창 UI 개선
+          TextField(
+            controller: searchController,
+            decoration: InputDecoration(
+              hintText: '멤버 검색',
+              hintStyle: AppFont.size16.copyWith(color: Colors.grey.shade500),
+              filled: true,
+              fillColor: const Color(0xFFF8F8F8), // 밝은 회색 배경
+              suffixIcon: const Icon(Icons.search, color: Colors.grey),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide.none,
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: 15,
+              ),
+            ),
+          ),
           const SizedBox(height: 20),
           Expanded(
             child: ListView.separated(
               itemCount: members!.length,
               itemBuilder: (context, index) =>
                   _buildMemberListItem(members![index]),
-              separatorBuilder: (context, index) => const SizedBox(height: 25),
+              // [수정] 리스트 아이템 간 간격 축소
+              separatorBuilder: (context, index) => const SizedBox(height: 15),
             ),
           ),
         ],
@@ -116,6 +136,13 @@ class AlbumPermissionToggle extends StatelessWidget {
           DropdownButton<String>(
             value: member.role,
             underline: const SizedBox.shrink(),
+            isDense: true,
+            icon: Icon(
+              Icons.keyboard_arrow_down,
+              color: Colors.grey.shade700,
+              size: 20,
+            ),
+            style: AppFont.size14.copyWith(color: Colors.grey.shade700),
             items: roles
                 .map(
                   (String value) => DropdownMenuItem<String>(

@@ -69,7 +69,6 @@ class _AlbumEditScreenState extends State<AlbumEditScreen> {
                   const AlbumTypeSelector(),
                   const SizedBox(height: 50),
 
-                  // [수정] 기존 멤버 관리 UI를 컴포넌트로 대체
                   AlbumPermissionToggle(
                     isPermissionEnabled: _viewModel.isPermissionEnabled,
                     onPermissionToggled: _viewModel.togglePermission,
@@ -77,7 +76,7 @@ class _AlbumEditScreenState extends State<AlbumEditScreen> {
                     searchController: _viewModel.searchController,
                     onUpdateRole: _viewModel.updateMemberRole,
                     onKickMember: _viewModel.kickMember,
-                    showMemberList: true, // 설정 화면에서는 멤버 리스트를 보여줌
+                    showMemberList: true,
                   ),
                   const SizedBox(height: 40),
 
@@ -98,8 +97,6 @@ class _AlbumEditScreenState extends State<AlbumEditScreen> {
     );
   }
 
-  // [제거] _buildMemberManagementSection, _buildMemberListBox, _buildMemberListItem 함수 삭제
-
   Widget _buildBottomButtons() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -114,8 +111,19 @@ class _AlbumEditScreenState extends State<AlbumEditScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
+              padding: EdgeInsets.zero, // 버튼 내부 패딩 제거
             ),
-            child: Text('앨범 삭제', style: AppFont.size16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '앨범 삭제',
+                  style: AppFont.size16.copyWith(fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(width: 6),
+                const Icon(Icons.delete, size: 16, color: Colors.white),
+              ],
+            ),
           ),
         ),
         const SizedBox(width: 20),
@@ -129,8 +137,25 @@ class _AlbumEditScreenState extends State<AlbumEditScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
+              padding: EdgeInsets.zero, // 버튼 내부 패딩 제거
             ),
-            child: Text('앨범 구독 해지', style: AppFont.size16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '앨범 구독 해지',
+                  // [수정] fontWeight 추가
+                  style: AppFont.size16.copyWith(fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(width: 6),
+                // [추가] 아이콘 추가
+                const Icon(
+                  Icons.remove_circle_outline,
+                  size: 16,
+                  color: Colors.white,
+                ),
+              ],
+            ),
           ),
         ),
       ],
