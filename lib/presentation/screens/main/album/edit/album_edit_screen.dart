@@ -5,7 +5,6 @@ import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/presentation/screens/main/album/components/album_cover_section.dart';
 import 'package:cherrypic/presentation/screens/main/album/components/album_type_selector.dart';
 import 'package:cherrypic/presentation/screens/main/album/edit/album_edit_view_model.dart';
-// [수정] AlbumPermissionToggle 경로
 import 'package:cherrypic/presentation/screens/main/album/components/album_permission_toggle.dart';
 import 'package:cherrypic/presentation/widgets/custom_button.dart';
 
@@ -111,7 +110,7 @@ class _AlbumEditScreenState extends State<AlbumEditScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-              padding: EdgeInsets.zero, // 버튼 내부 패딩 제거
+              padding: EdgeInsets.zero,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -137,18 +136,16 @@ class _AlbumEditScreenState extends State<AlbumEditScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-              padding: EdgeInsets.zero, // 버튼 내부 패딩 제거
+              padding: EdgeInsets.zero,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   '앨범 구독 해지',
-                  // [수정] fontWeight 추가
                   style: AppFont.size16.copyWith(fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(width: 6),
-                // [추가] 아이콘 추가
                 const Icon(
                   Icons.remove_circle_outline,
                   size: 16,

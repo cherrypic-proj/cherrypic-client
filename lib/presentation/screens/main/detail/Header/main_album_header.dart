@@ -21,16 +21,13 @@ class MainAlbumHeader extends StatelessWidget {
         child: Column(
           children: [
             CustomAlbumAppBar(
-              // data 모델에서 제목, 뱃지 타입 등을 가져오도록 수정
               title: data.title,
               profileImagePath: 'assets/images/albumCover.png',
               badgeType: AlbumBadgeType.pro,
-              // [이 부분 추가] 설정 버튼을 눌렀을 때의 동작 정의
               onSettings: () {
-                // 현재 앨범의 ID를 가지고 앨범 설정 페이지로 이동합니다.
                 final path = RoutePath.albumSetting.replaceFirst(
                   ':albumId',
-                  data.albumId.toString(), // data 모델에서 현재 앨범 ID를 가져옴
+                  data.albumId.toString(),
                 );
                 context.push(path);
               },

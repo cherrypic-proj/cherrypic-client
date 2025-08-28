@@ -17,25 +17,24 @@ class AlbumAddScreen extends StatefulWidget {
 
 class _AlbumAddScreenState extends State<AlbumAddScreen> {
   late final AlbumCoverViewModel _albumCoverViewModel;
-  late final AlbumAddViewModel _albumAddViewModel; // AlbumAddViewModel 추가
+  late final AlbumAddViewModel _albumAddViewModel;
 
   @override
   void initState() {
     super.initState();
     _albumCoverViewModel = AlbumCoverViewModel();
-    _albumAddViewModel = AlbumAddViewModel(); // ViewModel 초기화
+    _albumAddViewModel = AlbumAddViewModel();
   }
 
   @override
   void dispose() {
     _albumCoverViewModel.dispose();
-    _albumAddViewModel.dispose(); // ViewModel dispose
+    _albumAddViewModel.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // 두 개의 ViewModel 변경을 모두 감지하도록 Listenable.merge 사용
     return AnimatedBuilder(
       animation: Listenable.merge([_albumCoverViewModel, _albumAddViewModel]),
       builder: (context, child) {
@@ -67,12 +66,10 @@ class _AlbumAddScreenState extends State<AlbumAddScreen> {
                   const AlbumTypeSelector(),
                   const SizedBox(height: 50),
 
-                  // [수정] AlbumPermissionToggle 호출 방식 변경
                   AlbumPermissionToggle(
                     isPermissionEnabled: _albumAddViewModel.isPermissionEnabled,
                     onPermissionToggled: _albumAddViewModel.togglePermission,
-                    showMemberList: false, // 멤버 리스트를 보여주지 않음
-                    // 멤버 관련 파라미터는 전달할 필요 없음
+                    showMemberList: false,
                   ),
                   const SizedBox(height: 40),
 

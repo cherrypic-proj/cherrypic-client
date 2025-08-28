@@ -32,7 +32,6 @@ class AlbumPermissionToggle extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildHeader(),
-        // 스위치가 켜져 있고, 멤버 리스트를 보여줘야 할 경우에만 UI를 그림
         if (isPermissionEnabled && showMemberList) ...[
           const SizedBox(height: 20),
           _buildMemberListBox(),
@@ -75,14 +74,13 @@ class AlbumPermissionToggle extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // [수정] 검색창 UI 개선
           TextField(
             controller: searchController,
             decoration: InputDecoration(
               hintText: '멤버 검색',
               hintStyle: AppFont.size16.copyWith(color: Colors.grey.shade500),
               filled: true,
-              fillColor: const Color(0xFFF8F8F8), // 밝은 회색 배경
+              fillColor: const Color(0xFFF8F8F8),
               suffixIcon: const Icon(Icons.search, color: Colors.grey),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -100,7 +98,6 @@ class AlbumPermissionToggle extends StatelessWidget {
               itemCount: members!.length,
               itemBuilder: (context, index) =>
                   _buildMemberListItem(members![index]),
-              // [수정] 리스트 아이템 간 간격 축소
               separatorBuilder: (context, index) => const SizedBox(height: 15),
             ),
           ),
