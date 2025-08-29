@@ -1,8 +1,11 @@
+import 'package:cherrypic/core/constants/color.dart';
+import 'package:cherrypic/presentation/screens/store/photo_printing/service_step/print_option_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/constants/font.dart';
 import '../../../../../core/router/route_path.dart';
+import '../../../../widgets/custom_box_card.dart';
 import '../../../../widgets/custom_button.dart';
 import '../../../../widgets/custom_sub_app_bar.dart';
 
@@ -16,6 +19,20 @@ class SelectOptionScreen extends StatefulWidget {
 class _SelectOptionScreenState extends State<SelectOptionScreen> {
   bool isChecked = true;
   bool _buttonPressed = false;
+
+  late PrintOptionViewModel viewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    viewModel = PrintOptionViewModel();
+  }
+
+  @override
+  void dispose() {
+    viewModel.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,13 +65,74 @@ class _SelectOptionScreenState extends State<SelectOptionScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 53.5),
+                const SizedBox(height: 36.5),
 
-                /// 테스트용
-                Container(
-                  height: 2000,
-                  color: Colors.red,
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text.rich(
+                    TextSpan(
+                      text: '사진 사이즈',
+                      style: AppFont.size18.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: '*',
+                          style: TextStyle(color: AppColor.mainRed),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
+
+                const SizedBox(height: 15),
+
+                ...List.generate(viewModel.options.length, (index) {
+                  final model = viewModel.options[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: CustomBoxCard(
+                      selected: viewModel.isSelected(index),
+                      // borderColor: AppColor.subGrey,
+                      model: model,
+                        onTap: () {
+                          setState(() {
+                            viewModel.selectOption(index);
+                          });
+                        }
+                    ),
+                  );
+                }),
+
+                const SizedBox(height: 59.08),
+
+                /// 구분선
+                Container(height: 2, color: AppColor.subSlicer),
+
+                const SizedBox(height: 33.75),
+
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    '프레임 (선택)',
+                    style: AppFont.size18.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20.75),
+
+                AspectRatio(
+                  aspectRatio: 330 / 162,
+                  child: Image.asset(
+                    'assets/images/frame_size.png',
+                    fit: BoxFit.contain,
+                  ),
+                ),
+
                 const SizedBox(height: 150),
               ],
             ),
