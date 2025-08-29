@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/presentation/screens/main/album/edit/album_edit_view_model.dart';
-// 새로 만든 다이얼로그 import
 import 'package:cherrypic/presentation/widgets/dialogs/custom_confirm_dialog.dart';
 
 class AlbumPermissionToggle extends StatelessWidget {
