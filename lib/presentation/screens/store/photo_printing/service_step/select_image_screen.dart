@@ -47,40 +47,48 @@ class _SelectImageScreenState extends State<SelectImageScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 53.5),
                   ],
                 ),
+                const SizedBox(height: 53.5),
+
+                /// 테스트용
                 Container(
                   height: 2000,
                   color: Colors.red,
                 ),
+
+                const SizedBox(height: 150), // 버튼과 겹치지 않도록 여유 공간
               ],
             ),
           ),
 
-          /// 고정 버튼 영역
-          Positioned(
-            bottom: 126,
-            left: 30,
-            right: 30,
-            child: GestureDetector(
-              onTapDown: (_) {
-                if (isChecked) setState(() => _buttonPressed = true);
-              },
-              onTapUp: (_) {
-                if (isChecked) setState(() => _buttonPressed = false);
-              },
-              onTapCancel: () {
-                if (isChecked) setState(() => _buttonPressed = false);
-              },
-              child: CustomButton(
-                variant: isChecked
-                    ? (_buttonPressed
-                    ? AppButtonVariant.filled
-                    : AppButtonVariant.outlinedStatic)
-                    : AppButtonVariant.disabled,
-                text: '다음',
-                onPressed: isChecked ? () {context.push(RoutePath.select_option);} : null,
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 126, left: 30, right: 30),
+              child: GestureDetector(
+                onTapDown: (_) {
+                  if (isChecked) setState(() => _buttonPressed = true);
+                },
+                onTapUp: (_) {
+                  if (isChecked) setState(() => _buttonPressed = false);
+                },
+                onTapCancel: () {
+                  if (isChecked) setState(() => _buttonPressed = false);
+                },
+                child: CustomButton(
+                  variant: isChecked
+                      ? (_buttonPressed
+                      ? AppButtonVariant.filled
+                      : AppButtonVariant.outlinedStatic)
+                      : AppButtonVariant.disabled,
+                  text: '다음',
+                  onPressed: isChecked
+                      ? () {
+                    context.push(RoutePath.select_option);
+                  }
+                      : null,
+                ),
               ),
             ),
           ),

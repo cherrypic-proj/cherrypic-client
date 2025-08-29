@@ -31,6 +31,7 @@ class RoutePath {
   static const String select_image = '/store/photo_printing/service_step/select_image_screen';
   static const String select_option = '/store/photo_printing/service_step/select_option_screen';
   static const String select_address = '/store/photo_printing/service_step/select_address_screen';
+  static const String change_address = '/store/photo_printing/service_step/change_address_screen';
   static const String select_payment = '/store/photo_printing/service_step/select_payment_screen';
 
   static const albumDetail = '/album/:albumId';

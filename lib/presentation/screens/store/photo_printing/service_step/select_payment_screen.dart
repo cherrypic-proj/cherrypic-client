@@ -22,6 +22,7 @@ class SelectPaymentScreen extends StatefulWidget {
 class _SelectPaymentScreenState extends State<SelectPaymentScreen> {
   bool isChecked = true;
   bool _buttonPressed = false;
+
   String get formattedAmount => NumberFormat('#,###').format(widget.totalAmount);
 
   @override
@@ -30,7 +31,6 @@ class _SelectPaymentScreenState extends State<SelectPaymentScreen> {
       appBar: const CustomSubAppBar(title: '사진 인화 서비스'),
       body: Stack(
         children: [
-          /// 스크롤 가능한 영역
           SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 30),
             child: Column(
@@ -54,40 +54,48 @@ class _SelectPaymentScreenState extends State<SelectPaymentScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 53.5),
                   ],
                 ),
+                const SizedBox(height: 53.5),
+
+                /// 테스트용
                 Container(
                   height: 2000,
                   color: Colors.red,
                 ),
+
+                const SizedBox(height: 150),
               ],
             ),
           ),
 
-          /// 고정 버튼 영역
-          Positioned(
-            bottom: 126,
-            left: 30,
-            right: 30,
-            child: GestureDetector(
-              onTapDown: (_) {
-                if (isChecked) setState(() => _buttonPressed = true);
-              },
-              onTapUp: (_) {
-                if (isChecked) setState(() => _buttonPressed = false);
-              },
-              onTapCancel: () {
-                if (isChecked) setState(() => _buttonPressed = false);
-              },
-              child: CustomButton(
-                variant: isChecked
-                    ? (_buttonPressed
-                    ? AppButtonVariant.filled
-                    : AppButtonVariant.outlinedStatic)
-                    : AppButtonVariant.disabled,
-                text: '$formattedAmount원 결제하기',
-                onPressed: isChecked ? () {context.push(RoutePath.select_payment);} : null,
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 126, left: 30, right: 30),
+              child: GestureDetector(
+                onTapDown: (_) {
+                  if (isChecked) setState(() => _buttonPressed = true);
+                },
+                onTapUp: (_) {
+                  if (isChecked) setState(() => _buttonPressed = false);
+                },
+                onTapCancel: () {
+                  if (isChecked) setState(() => _buttonPressed = false);
+                },
+                child: CustomButton(
+                  variant: isChecked
+                      ? (_buttonPressed
+                      ? AppButtonVariant.filled
+                      : AppButtonVariant.outlinedStatic)
+                      : AppButtonVariant.disabled,
+                  text: '$formattedAmount원 결제하기',
+                  onPressed: isChecked
+                      ? () {
+                    context.push(RoutePath.select_payment);
+                  }
+                      : null,
+                ),
               ),
             ),
           ),

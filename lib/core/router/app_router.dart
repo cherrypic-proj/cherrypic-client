@@ -13,6 +13,7 @@ import 'package:cherrypic/presentation/screens/my_page/notice/notice_screen.dart
 import 'package:cherrypic/presentation/screens/my_page/settings/setting_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/album_payment_info/album_payment_info_screen.dart';
 import 'package:cherrypic/presentation/screens/store/photo_printing/photo_printing_screen.dart';
+import 'package:cherrypic/presentation/screens/store/photo_printing/service_step/change_address_screen.dart';
 import 'package:cherrypic/presentation/screens/store/photo_printing/service_step/select_address_screen.dart';
 import 'package:cherrypic/presentation/screens/store/photo_printing/service_step/select_album_screen.dart';
 import 'package:cherrypic/presentation/screens/store/photo_printing/service_step/select_image_screen.dart';
@@ -96,6 +97,7 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
   RoutePath.select_image: (context, state) => const SelectImageScreen(),
   RoutePath.select_option: (context, state) => const SelectOptionScreen(),
   RoutePath.select_address: (context, state) => const SelectAddressScreen(),
+  RoutePath.change_address: (context, state) => const ChangeAddressScreen(),
   RoutePath.select_payment: (context, state) {
     final totalAmount = state.extra as int? ?? 0;
     return SelectPaymentScreen(totalAmount: totalAmount);
