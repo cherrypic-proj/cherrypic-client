@@ -117,9 +117,11 @@ class AlbumPermissionToggle extends StatelessWidget {
           const SizedBox(height: 20),
           Expanded(
             child: ListView.separated(
-              itemCount: members!.length,
-              itemBuilder: (context, index) =>
-                  _buildMemberListItem(context, members![index]), // context 전달
+              itemCount: members?.length ?? 0,
+              itemBuilder: (context, index) => _buildMemberListItem(
+                context,
+                (members ?? [])[index],
+              ), // context 전달
               separatorBuilder: (context, index) => const SizedBox(height: 15),
             ),
           ),
