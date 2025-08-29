@@ -7,6 +7,7 @@ import 'package:cherrypic/presentation/screens/main/album/components/album_type_
 import 'package:cherrypic/presentation/screens/main/album/edit/album_edit_view_model.dart';
 import 'package:cherrypic/presentation/screens/main/album/components/album_permission_toggle.dart';
 import 'package:cherrypic/presentation/widgets/custom_button.dart';
+import 'package:cherrypic/presentation/widgets/dialogs/album_delete_dialog.dart';
 
 class AlbumEditScreen extends StatefulWidget {
   final int albumId;
@@ -29,6 +30,16 @@ class _AlbumEditScreenState extends State<AlbumEditScreen> {
   void dispose() {
     _viewModel.dispose();
     super.dispose();
+  }
+
+  // --- 앨범 삭제 확인 다이얼로그를 표시하는 함수 ---
+  void _showAlbumDeleteDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlbumDeleteDialog(viewModel: _viewModel);
+      },
+    );
   }
 
   @override
@@ -104,7 +115,7 @@ class _AlbumEditScreenState extends State<AlbumEditScreen> {
           width: 115,
           height: 40,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: _showAlbumDeleteDialog, // 다이얼로그 호출
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColor.mainRed,
               shape: RoundedRectangleBorder(
@@ -117,10 +128,17 @@ class _AlbumEditScreenState extends State<AlbumEditScreen> {
               children: [
                 Text(
                   '앨범 삭제',
-                  style: AppFont.size16.copyWith(fontWeight: FontWeight.w600),
+                  style: AppFont.size16.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
                 ),
                 const SizedBox(width: 6),
-                const Icon(Icons.delete, size: 16, color: Colors.white),
+                Image.asset(
+                  'assets/images/trash_icon.png',
+                  width: 24,
+                  height: 24,
+                ),
               ],
             ),
           ),
@@ -143,7 +161,10 @@ class _AlbumEditScreenState extends State<AlbumEditScreen> {
               children: [
                 Text(
                   '앨범 구독 해지',
-                  style: AppFont.size16.copyWith(fontWeight: FontWeight.w600),
+                  style: AppFont.size16.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
                 ),
                 const SizedBox(width: 6),
                 const Icon(

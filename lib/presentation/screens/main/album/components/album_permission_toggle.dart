@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/presentation/screens/main/album/edit/album_edit_view_model.dart';
+// 새로 만든 다이얼로그 import
+import 'package:cherrypic/presentation/widgets/dialogs/custom_confirm_dialog.dart';
 
 class AlbumPermissionToggle extends StatelessWidget {
   final bool isPermissionEnabled;
@@ -26,6 +28,26 @@ class AlbumPermissionToggle extends StatelessWidget {
     this.onKickMember,
   });
 
+  // --- 멤버 내보내기 확인 다이얼로그를 표시하는 함수 ---
+  void _showKickConfirmDialog(BuildContext context, Member member) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return CustomConfirmDialog(
+          title: '내보내기',
+          content: '${member.name} 님을 앨범에서 내보내시겠습니까?',
+          confirmButtonText: '내보내기',
+          cancelButtonText: '취소',
+          onConfirm: () {
+            if (onKickMember != null) {
+              onKickMember!(member);
+            }
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -34,7 +56,7 @@ class AlbumPermissionToggle extends StatelessWidget {
         _buildHeader(),
         if (isPermissionEnabled && showMemberList) ...[
           const SizedBox(height: 20),
-          _buildMemberListBox(),
+          _buildMemberListBox(context), // context 전달
         ],
       ],
     );
@@ -63,7 +85,8 @@ class AlbumPermissionToggle extends StatelessWidget {
     );
   }
 
-  Widget _buildMemberListBox() {
+  Widget _buildMemberListBox(BuildContext context) {
+    // context 받도록 수정
     return Container(
       height: 350,
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 15),
@@ -97,7 +120,7 @@ class AlbumPermissionToggle extends StatelessWidget {
             child: ListView.separated(
               itemCount: members!.length,
               itemBuilder: (context, index) =>
-                  _buildMemberListItem(members![index]),
+                  _buildMemberListItem(context, members![index]), // context 전달
               separatorBuilder: (context, index) => const SizedBox(height: 15),
             ),
           ),
@@ -106,7 +129,8 @@ class AlbumPermissionToggle extends StatelessWidget {
     );
   }
 
-  Widget _buildMemberListItem(Member member) {
+  Widget _buildMemberListItem(BuildContext context, Member member) {
+    // context 받도록 수정
     const roles = ['방장', '일반회원', '읽기 전용'];
     return SizedBox(
       height: 45,
@@ -120,7 +144,8 @@ class AlbumPermissionToggle extends StatelessWidget {
           Text(member.name, style: AppFont.size16),
           const Spacer(),
           TextButton(
-            onPressed: () => onKickMember!(member),
+            onPressed: () =>
+                _showKickConfirmDialog(context, member), // 다이얼로그 호출
             child: Text(
               '내보내기',
               style: AppFont.size14.copyWith(
