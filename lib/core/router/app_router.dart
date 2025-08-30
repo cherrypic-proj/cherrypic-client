@@ -98,10 +98,7 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
   RoutePath.select_option: (context, state) => const SelectOptionScreen(),
   RoutePath.select_address: (context, state) => const SelectAddressScreen(),
   RoutePath.change_address: (context, state) => const ChangeAddressScreen(),
-  RoutePath.select_payment: (context, state) {
-    final totalAmount = state.extra as int? ?? 0;
-    return SelectPaymentScreen(totalAmount: totalAmount);
-  },
+  RoutePath.select_payment: (context, state) => const SelectPaymentScreen(),
 };
 
 // 앱바 고정 경로 목록 -> 여기 적으면 앱바 고정됨.
