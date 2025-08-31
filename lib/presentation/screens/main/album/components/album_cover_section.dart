@@ -19,7 +19,7 @@ class _AlbumCoverSectionState extends State<AlbumCoverSection> {
   @override
   void initState() {
     super.initState();
-    _textController = TextEditingController();
+    _textController = TextEditingController(text: widget.viewModel.albumName);
     _textController.addListener(() {
       widget.viewModel.updateAlbumName(_textController.text);
     });
@@ -39,6 +39,7 @@ class _AlbumCoverSectionState extends State<AlbumCoverSection> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            // 앨범 커버 미리보기
             // 앨범 커버 미리보기
             Container(
               width: 210,
@@ -61,24 +62,59 @@ class _AlbumCoverSectionState extends State<AlbumCoverSection> {
                     width: 210,
                     height: 224,
                     decoration: const BoxDecoration(
-                      color: Colors.grey,
+                      // 배경색은 이미지가 없을 때만 보이도록 ClipRRect 안으로 이동
                       borderRadius: BorderRadius.vertical(
                         top: Radius.circular(12),
                       ),
                     ),
-                    child: widget.viewModel.coverImage != null
-                        ? ClipRRect(
-                            borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(12),
-                            ),
-                            child: Image.memory(
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(12),
+                      ),
+                      child: widget.viewModel.coverImage != null
+                          // 1. 새로 선택한 이미지가 있을 경우 (Uint8List)
+                          ? Image.memory(
                               widget.viewModel.coverImage!,
                               fit: BoxFit.cover,
+                              width: double.infinity,
+                            )
+                          // 2. 기존 네트워크 이미지가 있을 경우 (String URL)
+                          : (widget.viewModel.coverImageUrl != null &&
+                                widget.viewModel.coverImageUrl!.isNotEmpty)
+                          ? Image.network(
+                              widget.viewModel.coverImageUrl!,
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              loadingBuilder:
+                                  (context, child, loadingProgress) {
+                                    if (loadingProgress == null) return child;
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  },
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  color: Colors.grey.shade200,
+                                  child: const Center(
+                                    child: Icon(
+                                      Icons.error_outline,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                          // 3. 표시할 이미지가 아무것도 없을 경우
+                          : Container(
+                              color: Colors.grey.shade200,
+                              child: const Center(
+                                child: Text(
+                                  '앨범 커버가 표시됩니다',
+                                  style: AppFont.size14,
+                                ),
+                              ),
                             ),
-                          )
-                        : const Center(
-                            child: Text('앨범 커버가 표시됩니다', style: AppFont.size14),
-                          ),
+                    ),
                   ),
                   Container(
                     width: 210,

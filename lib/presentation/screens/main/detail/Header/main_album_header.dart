@@ -1,9 +1,11 @@
 // main_album_header.dart
+import 'package:cherrypic/core/router/route_path.dart';
 import 'package:cherrypic/presentation/widgets/album/album_badge_type.dart';
 import 'package:cherrypic/presentation/widgets/custom_album_app_bar.dart';
 import 'package:cherrypic/presentation/screens/main/detail/Header/components/custom_album_badge.dart';
 import 'package:cherrypic/presentation/widgets/custom_gauge_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'album_header_model.dart';
 
 class MainAlbumHeader extends StatelessWidget {
@@ -19,9 +21,16 @@ class MainAlbumHeader extends StatelessWidget {
         child: Column(
           children: [
             CustomAlbumAppBar(
-              title: '음식(양식, 중식, 한식...)',
+              title: data.title,
               profileImagePath: 'assets/images/albumCover.png',
               badgeType: AlbumBadgeType.pro,
+              onSettings: () {
+                final path = RoutePath.albumSetting.replaceFirst(
+                  ':albumId',
+                  data.albumId.toString(),
+                );
+                context.push(path);
+              },
             ),
             Stack(
               children: [

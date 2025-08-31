@@ -2,6 +2,7 @@ import 'package:cherrypic/core/router/route_path.dart';
 import 'package:cherrypic/presentation/screens/event/event_list_detail/event_list_screen.dart';
 import 'package:cherrypic/presentation/screens/event/event_main_screen.dart';
 import 'package:cherrypic/presentation/screens/main/album/add/album_add_screen.dart';
+import 'package:cherrypic/presentation/screens/main/album/edit/album_edit_screen.dart';
 import 'package:cherrypic/presentation/screens/main/detail/album_detail_screen.dart';
 import 'package:cherrypic/presentation/screens/main/home_tab/main_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/address_management/add_address_screen.dart';
@@ -55,6 +56,15 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
     return AlbumDetailScreen(albumId: albumId);
   },
 
+  RoutePath.albumSetting: (context, state) {
+    final idStr =
+        state.pathParameters['albumId'] ??
+        state.uri.queryParameters['albumId'] ??
+        '-1';
+    final albumId = int.tryParse(idStr) ?? -1;
+    return AlbumEditScreen(albumId: albumId);
+  },
+
   /// myPage
   RoutePath.myPage: (context, state) => const MyPageScreen(),
   RoutePath.myPage_notice: (context, state) => const NoticeScreen(),
@@ -84,7 +94,7 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
   RoutePath.store_subs_info: (context, state) {
     final typeParam = state.uri.queryParameters['type'];
     final storeType = StoreType.values.firstWhere(
-          (e) => e.name == typeParam,
+      (e) => e.name == typeParam,
       orElse: () => StoreType.basic,
     );
     return StoreSubsInfo(storeType: storeType);
