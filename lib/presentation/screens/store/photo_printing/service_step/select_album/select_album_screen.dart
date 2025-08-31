@@ -2,9 +2,8 @@ import 'package:cherrypic/core/constants/font.dart';
 import 'package:cherrypic/core/router/route_path.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../../widgets/custom_button.dart';
 import '../../../../../widgets/custom_sub_app_bar.dart';
+import '../../../components/fixed_button_footer.dart';
 
 class SelectAlbumScreen extends StatefulWidget {
   const SelectAlbumScreen({super.key});
@@ -15,7 +14,6 @@ class SelectAlbumScreen extends StatefulWidget {
 
 class _SelectAlbumScreenState extends State<SelectAlbumScreen> {
   bool isChecked = true;
-  bool _buttonPressed = false;
 
   int selectedAlbumId = 1;
 
@@ -63,38 +61,15 @@ class _SelectAlbumScreenState extends State<SelectAlbumScreen> {
             ),
           ),
 
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 126, left: 30, right: 30),
-              child: GestureDetector(
-                onTapDown: (_) {
-                  if (isChecked) setState(() => _buttonPressed = true);
-                },
-                onTapUp: (_) {
-                  if (isChecked) setState(() => _buttonPressed = false);
-                },
-                onTapCancel: () {
-                  if (isChecked) setState(() => _buttonPressed = false);
-                },
-                child: CustomButton(
-                  variant: isChecked
-                      ? (_buttonPressed
-                      ? AppButtonVariant.filled
-                      : AppButtonVariant.outlinedStatic)
-                      : AppButtonVariant.disabled,
-                  text: '다음',
-                  onPressed: isChecked
-                      ? () {
-                    context.push(
-                      RoutePath.select_image,
-                      extra: selectedAlbumId,
-                    );
-                  }
-                      : null,
-                ),
-              ),
-            ),
+          FixedButtonFooter(
+            text: '다음',
+            isEnabled: isChecked,
+            onPressed: () {
+              context.push(
+                RoutePath.select_image,
+                extra: selectedAlbumId,
+              );
+            },
           ),
         ],
       ),

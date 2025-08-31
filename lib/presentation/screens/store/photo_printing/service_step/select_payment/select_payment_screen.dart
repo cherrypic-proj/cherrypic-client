@@ -7,8 +7,8 @@ import 'package:go_router/go_router.dart';
 import '../../../../../../core/constants/color.dart';
 import '../../../../../../core/constants/font.dart';
 import '../../../../../../core/router/route_path.dart';
-import '../../../../../widgets/custom_button.dart';
 import '../../../../../widgets/custom_sub_app_bar.dart';
+import '../../../components/fixed_button_footer.dart';
 import '../../../components/payment_method_box.dart';
 
 class SelectPaymentScreen extends StatefulWidget {
@@ -23,7 +23,6 @@ class SelectPaymentScreen extends StatefulWidget {
 
 class _SelectPaymentScreenState extends State<SelectPaymentScreen> {
   bool isChecked = true;
-  bool _buttonPressed = false;
 
   PaymentMethodType _selectedMethod = PaymentMethodType.kakao;
 
@@ -142,35 +141,14 @@ class _SelectPaymentScreenState extends State<SelectPaymentScreen> {
             ),
           ),
 
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 126, left: 30, right: 30),
-              child: GestureDetector(
-                onTapDown: (_) {
-                  if (isChecked) setState(() => _buttonPressed = true);
-                },
-                onTapUp: (_) {
-                  if (isChecked) setState(() => _buttonPressed = false);
-                },
-                onTapCancel: () {
-                  if (isChecked) setState(() => _buttonPressed = false);
-                },
-                child: CustomButton(
-                  variant: isChecked
-                      ? (_buttonPressed
-                      ? AppButtonVariant.filled
-                      : AppButtonVariant.outlinedStatic)
-                      : AppButtonVariant.disabled,
-                  text: viewModel.formatPrice(model.totalPrice),
-                  onPressed: isChecked
-                      ? () {
-                    context.push(RoutePath.select_payment);
-                  }
-                      : null,
-                ),
-              ),
-            ),
+          FixedButtonFooter(
+            text: '다음',
+            isEnabled: isChecked,
+            onPressed: isChecked
+                ? () {
+              context.go(RoutePath.home);
+            }
+                : null,
           ),
         ],
       ),

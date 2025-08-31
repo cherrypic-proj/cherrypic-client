@@ -5,8 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../../../../../core/constants/font.dart';
 import '../../../../../../core/router/route_path.dart';
 import '../../../../../widgets/address_box_card.dart';
-import '../../../../../widgets/custom_button.dart';
 import '../../../../../widgets/custom_sub_app_bar.dart';
+import '../../../components/fixed_button_footer.dart';
 
 class SelectAddressScreen extends StatefulWidget {
   const SelectAddressScreen({super.key});
@@ -17,7 +17,6 @@ class SelectAddressScreen extends StatefulWidget {
 
 class _SelectAddressScreenState extends State<SelectAddressScreen> {
   bool isChecked = true;
-  bool _buttonPressed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -95,38 +94,17 @@ class _SelectAddressScreenState extends State<SelectAddressScreen> {
             ),
           ),
 
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 126, left: 30, right: 30),
-              child: GestureDetector(
-                onTapDown: (_) {
-                  if (isChecked) setState(() => _buttonPressed = true);
-                },
-                onTapUp: (_) {
-                  if (isChecked) setState(() => _buttonPressed = false);
-                },
-                onTapCancel: () {
-                  if (isChecked) setState(() => _buttonPressed = false);
-                },
-                child: CustomButton(
-                  variant: isChecked
-                      ? (_buttonPressed
-                      ? AppButtonVariant.filled
-                      : AppButtonVariant.outlinedStatic)
-                      : AppButtonVariant.disabled,
-                  text: '다음',
-                  onPressed: isChecked
-                      ? () {
-                    context.push(
-                      RoutePath.select_payment,
-                      extra: 22200,
-                    );
-                  }
-                      : null,
-                ),
-              ),
-            ),
+          FixedButtonFooter(
+            text: '다음',
+            isEnabled: isChecked,
+            onPressed: isChecked
+                ? () {
+              context.push(
+                RoutePath.select_payment,
+                extra: 22200,
+              );
+            }
+                : null,
           ),
         ],
       ),
