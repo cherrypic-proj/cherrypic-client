@@ -25,6 +25,8 @@ class _SelectPaymentScreenState extends State<SelectPaymentScreen> {
   bool isChecked = true;
   bool _buttonPressed = false;
 
+  PaymentMethodType _selectedMethod = PaymentMethodType.kakao;
+
   late final PrintPaymentInfoModel model;
   late final PrintPaymentInfoViewModel viewModel;
 
@@ -84,9 +86,25 @@ class _SelectPaymentScreenState extends State<SelectPaymentScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          PaymentMethodBox(type: PaymentMethodType.kakao),
+                          PaymentMethodBox(
+                            type: PaymentMethodType.kakao,
+                            isSelected: _selectedMethod == PaymentMethodType.kakao,
+                            onTap: () {
+                              setState(() {
+                                _selectedMethod = PaymentMethodType.kakao;
+                              });
+                            },
+                          ),
                           const SizedBox(width: 70),
-                          PaymentMethodBox(type: PaymentMethodType.toss),
+                          PaymentMethodBox(
+                            type: PaymentMethodType.toss,
+                            isSelected: _selectedMethod == PaymentMethodType.toss,
+                            onTap: () {
+                              setState(() {
+                                _selectedMethod = PaymentMethodType.toss;
+                              });
+                            },
+                          ),
                         ],
                       ),
                     ],

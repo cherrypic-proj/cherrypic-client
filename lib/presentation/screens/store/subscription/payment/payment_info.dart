@@ -1,8 +1,9 @@
-import 'package:cherrypic/presentation/screens/store/payment/payment_info_view_model.dart';
+import 'package:cherrypic/presentation/screens/store/subscription/payment/payment_info_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
-import '../../../widgets/custom_box_card.dart';
+
+import '../../../../widgets/custom_box_card.dart';
 
 /// 결제 정보
 class PaymentInfo extends StatelessWidget {

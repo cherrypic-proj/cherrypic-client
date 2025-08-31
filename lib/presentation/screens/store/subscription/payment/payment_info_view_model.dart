@@ -1,4 +1,4 @@
-import 'package:cherrypic/presentation/screens/store/payment/payment_info_model.dart';
+import 'package:cherrypic/presentation/screens/store/subscription/payment/payment_info_model.dart';
 import 'package:intl/intl.dart';
 
 class PaymentInfoViewModel {

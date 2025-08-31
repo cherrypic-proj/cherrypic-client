@@ -5,39 +5,48 @@ import '../../../../core/constants/font.dart';
 /// 결제수단 선택 박스
 class PaymentMethodBox extends StatelessWidget {
   final PaymentMethodType type;
+  final bool isSelected;
+  final VoidCallback onTap;
 
   const PaymentMethodBox({
     super.key,
     required this.type,
+    required this.isSelected,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          padding: type.padding,
-          height: 54,
-          width: 101,
-          decoration: BoxDecoration(
-            border: Border.all(color: AppColor.subSlicer),
-            borderRadius: BorderRadius.circular(4),
+    return GestureDetector(
+      onTap: onTap, // 전체 터치 시 실행
+      child: Column(
+        children: [
+          Container(
+            padding: type.padding,
+            height: 54,
+            width: 101,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: isSelected ? AppColor.mainRed : AppColor.subSlicer,
+              ),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Image.asset(
+              type.imagePath,
+              width: 73,
+              fit: BoxFit.contain,
+            ),
           ),
-          child: Image.asset(
-            type.imagePath,
-            width: 73,
-            fit: BoxFit.contain,
+          const SizedBox(height: 10),
+          Text(
+            type.label,
+            style: AppFont.size12.copyWith(
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+            ),
           ),
-        ),
-        const SizedBox(height: 10),
-        Text(
-          type.label,
-          style: AppFont.size12.copyWith(
-            fontWeight: FontWeight.w500,
-            color: Colors.black,
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
