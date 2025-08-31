@@ -1,19 +1,19 @@
-import 'package:cherrypic/core/constants/font.dart';
-import 'package:cherrypic/core/router/route_path.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../widgets/custom_button.dart';
-import '../../../../widgets/custom_sub_app_bar.dart';
+import '../../../../../../core/constants/font.dart';
+import '../../../../../../core/router/route_path.dart';
+import '../../../../../widgets/custom_button.dart';
+import '../../../../../widgets/custom_sub_app_bar.dart';
 
-class SelectAlbumScreen extends StatefulWidget {
-  const SelectAlbumScreen({super.key});
+class SelectImageScreen extends StatefulWidget {
+  const SelectImageScreen({super.key});
 
   @override
-  State<SelectAlbumScreen> createState() => _SelectAlbumScreenState();
+  State<SelectImageScreen> createState() => _SelectImageScreenState();
 }
 
-class _SelectAlbumScreenState extends State<SelectAlbumScreen> {
+class _SelectImageScreenState extends State<SelectImageScreen> {
   bool isChecked = true;
   bool _buttonPressed = false;
 
@@ -23,6 +23,7 @@ class _SelectAlbumScreenState extends State<SelectAlbumScreen> {
       appBar: const CustomSubAppBar(title: '사진 인화 서비스'),
       body: Stack(
         children: [
+          /// 스크롤 가능한 영역
           SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 30),
             child: Column(
@@ -31,7 +32,7 @@ class _SelectAlbumScreenState extends State<SelectAlbumScreen> {
                 Row(
                   children: [
                     Image.asset(
-                      'assets/images/circle_one.png',
+                      'assets/images/circle_two.png',
                       height: 25,
                       width: 25,
                     ),
@@ -39,7 +40,7 @@ class _SelectAlbumScreenState extends State<SelectAlbumScreen> {
                     Align(
                       alignment: Alignment.topLeft,
                       child: Text(
-                        '인화할 사진이 있는 앨범을 선택하세요.',
+                        '인화할 사진을 선택하세요.',
                         style: AppFont.size18.copyWith(
                           fontWeight: FontWeight.w700,
                           color: Colors.black,
@@ -84,7 +85,7 @@ class _SelectAlbumScreenState extends State<SelectAlbumScreen> {
                   text: '다음',
                   onPressed: isChecked
                       ? () {
-                    context.push(RoutePath.select_image);
+                    context.push(RoutePath.select_option);
                   }
                       : null,
                 ),

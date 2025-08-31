@@ -1,4 +1,4 @@
-import 'package:cherrypic/presentation/screens/store/photo_printing/service_step/print_option_model.dart';
+import 'package:cherrypic/presentation/screens/store/photo_printing/service_step/select_option/print_option_model.dart';
 import 'package:flutter/material.dart';
 import '../../../core/constants/color.dart';
 import '../../widgets/address_box_card.dart';

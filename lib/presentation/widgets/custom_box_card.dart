@@ -2,7 +2,7 @@ import 'package:cherrypic/core/constants/color.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/constants/font.dart';
-import '../screens/store/photo_printing/service_step/print_option_model.dart';
+import '../screens/store/photo_printing/service_step/select_option/print_option_model.dart';
 
 class CustomBoxCard extends StatelessWidget {
   final bool selected;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/constants/color.dart';
+import '../../../../../../core/constants/color.dart';
 import 'print_option_model.dart';
 
 class PrintOptionViewModel extends ChangeNotifier {

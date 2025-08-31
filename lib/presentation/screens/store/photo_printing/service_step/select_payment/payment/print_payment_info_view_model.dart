@@ -1,4 +1,4 @@
-import 'package:cherrypic/presentation/screens/store/photo_printing/payment/print_payment_info_model.dart';
+import 'package:cherrypic/presentation/screens/store/photo_printing/service_step/select_payment/payment/print_payment_info_model.dart';
 import 'package:intl/intl.dart';
 
 class PrintPaymentInfoViewModel {

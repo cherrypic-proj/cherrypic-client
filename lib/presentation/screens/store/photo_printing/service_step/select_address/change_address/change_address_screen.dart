@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../widgets/address_box_card.dart';
-import '../../../../widgets/common_popup_dialog.dart';
-import '../../../../widgets/custom_button.dart';
-import '../../../../widgets/custom_sub_app_bar.dart';
+import '../../../../../../widgets/address_box_card.dart';
+import '../../../../../../widgets/common_popup_dialog.dart';
+import '../../../../../../widgets/custom_button.dart';
+import '../../../../../../widgets/custom_sub_app_bar.dart';
 import 'change_address_view_model.dart';
-import '../../../my_page/address_management/add_address_screen.dart';
+import '../../../../../my_page/address_management/add_address_screen.dart';
 
 class ChangeAddressScreen extends StatefulWidget {
   const ChangeAddressScreen({super.key});
