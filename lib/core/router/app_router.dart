@@ -104,7 +104,10 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
 
   RoutePath.photo_printing: (context, state) => const PhotoPrintingScreen(),
   RoutePath.select_album: (context, state) => const SelectAlbumScreen(),
-  RoutePath.select_image: (context, state) => const SelectImageScreen(),
+  RoutePath.select_image: (context, state) {
+      final albumId = state.extra as int;
+      return SelectImageScreen(albumId: albumId);
+  },
   RoutePath.select_option: (context, state) => const SelectOptionScreen(),
   RoutePath.select_address: (context, state) => const SelectAddressScreen(),
   RoutePath.change_address: (context, state) => const ChangeAddressScreen(),

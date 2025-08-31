@@ -17,6 +17,8 @@ class _SelectAlbumScreenState extends State<SelectAlbumScreen> {
   bool isChecked = true;
   bool _buttonPressed = false;
 
+  int selectedAlbumId = 1;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,7 +86,10 @@ class _SelectAlbumScreenState extends State<SelectAlbumScreen> {
                   text: '다음',
                   onPressed: isChecked
                       ? () {
-                    context.push(RoutePath.select_image);
+                    context.push(
+                      RoutePath.select_image,
+                      extra: selectedAlbumId,
+                    );
                   }
                       : null,
                 ),
