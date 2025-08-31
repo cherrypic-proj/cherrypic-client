@@ -130,8 +130,8 @@ class _SelectPaymentScreenState extends State<SelectPaymentScreen> {
                       ),
 
                       const SizedBox(height: 28),
+                      /// 결제 금액 정보
                       PrintPaymentInfo(viewModel: viewModel, model: model,),
-
                     ],
                   ),
                 ),
@@ -141,6 +141,7 @@ class _SelectPaymentScreenState extends State<SelectPaymentScreen> {
             ),
           ),
 
+          /// 고정 위치 버튼
           FixedButtonFooter(
             text: '다음',
             isEnabled: isChecked,

@@ -92,6 +92,7 @@ class PrintPaymentInfo extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
+              /// 이벤트 Row
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -112,6 +113,7 @@ class PrintPaymentInfo extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 12),
+              /// 프로모션 Row
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -132,6 +134,7 @@ class PrintPaymentInfo extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 12),
+              /// 배송비 Row
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

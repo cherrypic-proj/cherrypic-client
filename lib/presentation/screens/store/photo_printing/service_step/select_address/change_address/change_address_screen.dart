@@ -26,6 +26,7 @@ class _ChangeAddressScreenState extends State<ChangeAddressScreen> {
       create: (_) => ChangeAddressViewModel()..loadAddresses(),
       child: Scaffold(
         appBar: const CustomSubAppBar(title: '배송지 변경'),
+        /// 배송지 list
         body: Consumer<ChangeAddressViewModel>(
           builder: (context, viewModel, _) {
             return Stack(
@@ -59,6 +60,7 @@ class _ChangeAddressScreenState extends State<ChangeAddressScreen> {
                                 ),
                               );
                             },
+                            /// 삭제 팝업
                             onDelete: () {
                               showDialog(
                                 context: context,

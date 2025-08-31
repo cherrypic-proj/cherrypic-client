@@ -87,13 +87,13 @@ class _SelectOptionScreenState extends State<SelectOptionScreen> {
 
                 const SizedBox(height: 15),
 
+                /// 옵션 리스트
                 ...List.generate(viewModel.options.length, (index) {
                   final model = viewModel.options[index];
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 16),
                     child: CustomBoxCard(
                       selected: viewModel.isSelected(index),
-                      // borderColor: AppColor.subGrey,
                       model: model,
                         onTap: () {
                           setState(() {
@@ -124,6 +124,7 @@ class _SelectOptionScreenState extends State<SelectOptionScreen> {
 
                 const SizedBox(height: 20.75),
 
+                /// 화면 크기에 따라 고정 비율에 맞게 크기 조정
                 AspectRatio(
                   aspectRatio: 330 / 162,
                   child: Image.asset(
@@ -137,6 +138,7 @@ class _SelectOptionScreenState extends State<SelectOptionScreen> {
             ),
           ),
 
+          /// 고정 위치 버튼
           FixedButtonFooter(
             text: '다음',
             isEnabled: isChecked,

@@ -6,8 +6,10 @@ class PrintPaymentInfoViewModel {
 
   PrintPaymentInfoViewModel(this.model);
 
+  /// 일반 금액 표시
   String formatPrice(int value) => '${_format(value)}원';
 
+  /// 할인 금액 표시
   String discountPrice(int value) => '-${_format(value)}원';
 
   /// 금액 format

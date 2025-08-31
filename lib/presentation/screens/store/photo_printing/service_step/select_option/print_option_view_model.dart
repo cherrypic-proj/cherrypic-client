@@ -3,6 +3,7 @@ import '../../../../../../core/constants/color.dart';
 import 'print_option_model.dart';
 
 class PrintOptionViewModel extends ChangeNotifier {
+  /// 옵션 리스트
   final List<PrintOptionModel> _options = [
     PrintOptionModel(
       title: '일반 인화',

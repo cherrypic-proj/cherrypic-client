@@ -31,7 +31,7 @@ class ImageListScreen extends StatelessWidget {
             LayoutBuilder(
               builder: (context, constraints) {
                 final screenWidth = constraints.maxWidth;
-                final itemSize = (screenWidth) / 3;
+                final itemSize = (screenWidth) / 3; /// 이미지 한 행 당 3개만
 
                 return Wrap(
                   children: group.imageUrls.map((url) {
@@ -40,6 +40,7 @@ class ImageListScreen extends StatelessWidget {
                       onTap: () => viewModel.toggleImageSelection(url),
                       child: Stack(
                         children: [
+                          /// 이미지 띄우기
                           Image.network(
                             url,
                             width: itemSize,
@@ -47,6 +48,7 @@ class ImageListScreen extends StatelessWidget {
                             fit: BoxFit.cover,
                           ),
                           if (isSelected)
+                            /// 이미지 선택 시, 사진 테두리 설정
                             Positioned.fill(
                               child: Container(
                                 decoration: BoxDecoration(
@@ -58,6 +60,7 @@ class ImageListScreen extends StatelessWidget {
                               ),
                             ),
                           if (isSelected)
+                            /// 이미지 선택 시, 체크 아이콘
                             Positioned(
                               top: 6,
                               right: 6,

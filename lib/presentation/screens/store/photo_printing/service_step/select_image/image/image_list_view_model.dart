@@ -50,7 +50,7 @@ class ImageListViewModel extends ChangeNotifier {
         ),
       ];
     } else {
-      // 다른 albumId에 대한 처리
+      /// 다른 albumId에 대한 처리
     }
 
     notifyListeners();

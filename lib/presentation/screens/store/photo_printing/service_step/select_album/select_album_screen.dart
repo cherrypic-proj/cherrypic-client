@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../../widgets/custom_sub_app_bar.dart';
 import '../../../components/fixed_button_footer.dart';
+import 'album_list/album_list_screen.dart';
 
 class SelectAlbumScreen extends StatefulWidget {
   const SelectAlbumScreen({super.key});
@@ -50,17 +51,15 @@ class _SelectAlbumScreenState extends State<SelectAlbumScreen> {
                 ),
                 const SizedBox(height: 53.5),
 
-                /// 테스트용
-                Container(
-                  height: 2000,
-                  color: Colors.red,
-                ),
+                /// 앨범 리스트 띄우기
+                AlbumListScreen(),
 
-                const SizedBox(height: 150), // 버튼과 겹치지 않도록 여유 공간
+                const SizedBox(height: 150), /// 버튼과 겹치지 않도록 여유 공간
               ],
             ),
           ),
 
+          /// 위치 고정 버튼
           FixedButtonFooter(
             text: '다음',
             isEnabled: isChecked,

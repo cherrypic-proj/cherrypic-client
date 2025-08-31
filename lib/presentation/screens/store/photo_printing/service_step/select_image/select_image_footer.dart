@@ -7,7 +7,7 @@ import '../../../../../../core/router/route_path.dart';
 import '../../../../../widgets/custom_button.dart';
 import 'image/image_list_view_model.dart';
 
-
+/// 고정 위치 버튼(몇장 선택했는지 알림 창 + 다음 버튼)
 class SelectImageFooter extends StatefulWidget {
   const SelectImageFooter({super.key});
 
