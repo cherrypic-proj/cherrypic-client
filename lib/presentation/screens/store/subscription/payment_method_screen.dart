@@ -1,18 +1,26 @@
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/router/route_path.dart';
-import 'package:cherrypic/presentation/screens/store/payment/payment_info_model.dart';
-import 'package:cherrypic/presentation/screens/store/payment/payment_info_view_model.dart';
+import 'package:cherrypic/presentation/screens/store/subscription/payment/payment_info.dart';
+
+import 'package:cherrypic/presentation/screens/store/subscription/payment/payment_info_model.dart';
+import 'package:cherrypic/presentation/screens/store/subscription/payment/payment_info_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/constants/font.dart';
-import '../../widgets/custom_button.dart';
-import '../../widgets/custom_sub_app_bar.dart';
-import 'payment/payment_info.dart';
-import 'components/payment_method_box.dart';
+import '../../../../core/constants/font.dart';
+import '../../../widgets/custom_button.dart';
+import '../../../widgets/custom_sub_app_bar.dart';
+import '../components/payment_method_box.dart';
 
-class PaymentMethodScreen extends StatelessWidget {
+class PaymentMethodScreen extends StatefulWidget {
   const PaymentMethodScreen({super.key});
+
+  @override
+  State<PaymentMethodScreen> createState() => _PaymentMethodScreenState();
+}
+
+class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
+  PaymentMethodType _selectedMethod = PaymentMethodType.kakao;
 
   @override
   Widget build(BuildContext context) {
@@ -52,9 +60,25 @@ class PaymentMethodScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          PaymentMethodBox(type: PaymentMethodType.kakao),
+                          PaymentMethodBox(
+                            type: PaymentMethodType.kakao,
+                            isSelected: _selectedMethod == PaymentMethodType.kakao,
+                            onTap: () {
+                              setState(() {
+                                _selectedMethod = PaymentMethodType.kakao;
+                              });
+                            },
+                          ),
                           const SizedBox(width: 70),
-                          PaymentMethodBox(type: PaymentMethodType.toss),
+                          PaymentMethodBox(
+                            type: PaymentMethodType.toss,
+                            isSelected: _selectedMethod == PaymentMethodType.toss,
+                            onTap: () {
+                              setState(() {
+                                _selectedMethod = PaymentMethodType.toss;
+                              });
+                            },
+                          ),
                         ],
                       ),
                     ],

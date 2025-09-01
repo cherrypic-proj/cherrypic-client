@@ -1,3 +1,4 @@
+import 'package:cherrypic/presentation/screens/store/photo_printing/service_step/select_option/print_option_model.dart';
 import 'package:flutter/material.dart';
 import '../../../core/constants/color.dart';
 import '../../widgets/address_box_card.dart';
@@ -33,12 +34,14 @@ class _BoxCardTestState extends State<BoxCardTest> {
               CustomBoxCard(
                 selected: isSelected[0],
                 borderColor: AppColor.mainRed,
-                dotColor: AppColor.mainRed,
-                title: '일반인화',
-                subtitle: '3×5” (89×127mm)',
-                priceText: '장당 300원 X 2장 → 600원',
-                priceColor: AppColor.mainRed,
-                divideColor: AppColor.mainRed,
+                model: PrintOptionModel(
+                  title: '일반인화',
+                  subtitle: '3×5” (89×127mm)',
+                  priceText: '장당 300원 X 2장 → 600원',
+                  priceColor: AppColor.mainRed,
+                  divideColor: AppColor.mainRed,
+                  dotColor: AppColor.mainRed,
+                ),
                 onTap: () {
                   setState(() {
                     isSelected[0] = !isSelected[0];
@@ -50,12 +53,14 @@ class _BoxCardTestState extends State<BoxCardTest> {
               CustomBoxCard(
                 selected: isSelected[1],
                 borderColor: AppColor.subGrey,
-                dotColor: AppColor.subGrey,
-                title: '일반인화',
-                subtitle: '3×5” (89×127mm)',
-                priceText: '장당 300원 X 2장 → 600원',
-                priceColor: AppColor.mainRed,
-                divideColor: AppColor.mainRed,
+                model: PrintOptionModel(
+                  title: '일반인화',
+                  subtitle: '3×5” (89×127mm)',
+                  priceText: '장당 300원 X 2장 → 600원',
+                  priceColor: AppColor.mainRed,
+                  divideColor: AppColor.mainRed,
+                  dotColor: AppColor.subGrey,
+                ),
                 onTap: () {
                   setState(() {
                     isSelected[1] = !isSelected[1];
@@ -66,12 +71,14 @@ class _BoxCardTestState extends State<BoxCardTest> {
               CustomBoxCard(
                 selected: isSelected[2],
                 borderColor: AppColor.subDarkGreen,
-                dotColor: AppColor.subDarkGreen,
-                priceColor: AppColor.subDarkGreen,
-                title: '일반인화',
-                subtitle: '3×5” (89×127mm)',
-                priceText: '장당 300원 X 2장 → 600원',
-                divideColor: AppColor.subDarkGreen,
+                model: PrintOptionModel(
+                  title: '일반인화',
+                  subtitle: '3×5” (89×127mm)',
+                  priceText: '장당 300원 X 2장 → 600원',
+                  priceColor: AppColor.subDarkGreen,
+                  divideColor: AppColor.subDarkGreen,
+                  dotColor: AppColor.subDarkGreen,
+                ),
                 onTap: () {
                   setState(() {
                     isSelected[2] = !isSelected[2];

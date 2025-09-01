@@ -23,9 +23,17 @@ class RoutePath {
   static const String eventList = '/event/event_list_screen';
 
   static const String store = '/store/store_main_screen';
-  static const String store_subs_info = '/store/store_subs_info';
-  static const String payment_method = '/store/payment_method_screen';
-  static const String payment_complete = '/store/payment_complete_screen';
+  static const String store_subs_info = '/store/subscription/store_subs_info';
+  static const String payment_method = '/store/subscription/payment_method_screen';
+  static const String payment_complete = '/store/subscription/payment_complete_screen';
+
+  static const String photo_printing = '/store/photo_printing/photo_printing_screen';
+  static const String select_album = '/store/photo_printing/service_step/select_album/select_album_screen';
+  static const String select_image = '/store/photo_printing/service_step/select_image/select_image_screen';
+  static const String select_option = '/store/photo_printing/service_step/select_option/select_option_screen';
+  static const String select_address = '/store/photo_printing/service_step/select_address/select_address_screen';
+  static const String change_address = '/store/photo_printing/service_step/change_address/change_address_screen';
+  static const String select_payment = '/store/photo_printing/service_step/select_payment/select_payment_screen';
 
   static const albumDetail = '/album/:albumId';
 }

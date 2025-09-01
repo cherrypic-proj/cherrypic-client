@@ -77,7 +77,9 @@ class AlbumPermissionToggle extends StatelessWidget {
         ),
         Switch(
           value: isPermissionEnabled,
-          activeThumbColor: AppColor.mainRed,
+          // activeThumbColor: AppColor.mainRed,
+          /// activeTumColor가 없다고 오류가 떠서 일단 activeTrackColor로 대체.
+          activeTrackColor: AppColor.mainRed,
           onChanged: onPermissionToggled,
         ),
       ],

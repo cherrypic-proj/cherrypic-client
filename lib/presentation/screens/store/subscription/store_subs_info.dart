@@ -2,8 +2,8 @@ import 'package:cherrypic/presentation/screens/store/components/store_type_selec
 import 'package:cherrypic/presentation/widgets/custom_sub_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/router/route_path.dart';
-import '../../widgets/custom_button.dart';
+import '../../../../core/router/route_path.dart';
+import '../../../widgets/custom_button.dart';
 
 class StoreSubsInfo extends StatelessWidget {
   final StoreType storeType;

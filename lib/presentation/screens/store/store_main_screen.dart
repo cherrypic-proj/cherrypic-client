@@ -28,7 +28,11 @@ class StoreMainScreen extends StatelessWidget {
                           const SizedBox(height: 72),
 
                           /// 사진 인화 서비스 배너
-                          PhotoPrintingBanner(),
+                          PhotoPrintingBanner(
+                            onTap: () {
+                              context.push(RoutePath.photo_printing);
+                            },
+                          ),
                           const SizedBox(height: 57),
 
                           /// 정기 구독 Selector Title 과 SubTitle
