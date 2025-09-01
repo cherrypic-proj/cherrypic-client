@@ -139,7 +139,7 @@ class PrintPaymentInfo extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '베송비',
+                    '배송비',
                     style: AppFont.size14.copyWith(
                       fontWeight: FontWeight.w500,
                       color: Colors.black,
