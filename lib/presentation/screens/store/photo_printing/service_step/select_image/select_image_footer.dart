@@ -49,7 +49,7 @@ class _SelectImageFooterState extends State<SelectImageFooter> {
 
           /// 고정 버튼
           Padding(
-            padding: const EdgeInsets.only(bottom: 126, left: 30, right: 30),
+            padding: const EdgeInsets.only(bottom: 40, left: 30, right: 30),
             child: GestureDetector(
               onTapDown: (_) {
                 if (isChecked) setState(() => _buttonPressed = true);

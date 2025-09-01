@@ -26,7 +26,7 @@ class _FixedButtonFooterState extends State<FixedButtonFooter> {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 126, left: 30, right: 30),
+        padding: const EdgeInsets.only(bottom: 40, left: 30, right: 30),
         child: GestureDetector(
           onTapDown: (_) {
             if (widget.isEnabled) setState(() => _buttonPressed = true);
