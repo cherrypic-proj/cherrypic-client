@@ -23,10 +23,11 @@ class _FixedButtonFooterState extends State<FixedButtonFooter> {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 40, left: 30, right: 30),
+    /// SafeArea 사용
+    return SafeArea(
+      minimum: const EdgeInsets.only(left: 30, right: 30),
+      child: Align(
+        alignment: Alignment.bottomCenter,
         child: GestureDetector(
           onTapDown: (_) {
             if (widget.isEnabled) setState(() => _buttonPressed = true);
