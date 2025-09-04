@@ -7,6 +7,7 @@ import 'package:cherrypic/presentation/screens/main/detail/album_detail_screen.d
 import 'package:cherrypic/presentation/screens/main/home_tab/main_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/address_management/add_address_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/address_management/address_management_screen.dart';
+import 'package:cherrypic/presentation/screens/my_page/album_payment_info/info/payment_info_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/album_subscription_history/album_subscription_history_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/delete_account/delete_account_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/my_page_screen.dart';
@@ -28,6 +29,7 @@ import 'package:cherrypic/presentation/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../presentation/screens/my_page/album_payment_info/album_payment_info_model.dart';
 import '../../presentation/screens/store/components/store_type_selector.dart';
 
 // 앱바 고정 UI 레퍼
@@ -70,6 +72,10 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
   RoutePath.myPage_notice: (context, state) => const NoticeScreen(),
   RoutePath.myPage_album_payment_info: (context, state) =>
       const AlbumPaymentInfoScreen(),
+  RoutePath.myPage_payment_info: (context, state) {
+    final item = state.extra as AlbumPaymentInfoModel;
+    return PaymentInfoScreen(item: item);
+  },
   RoutePath.myPage_address_management: (context, state) =>
       const AddressManagementScreen(),
   RoutePath.myPage_add_address: (context, state) => const AddAddressScreen(),
