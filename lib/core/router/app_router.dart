@@ -27,7 +27,10 @@ import 'package:cherrypic/presentation/screens/store/subscription/store_subs_inf
 import 'package:cherrypic/presentation/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
+import '../../presentation/screens/login/login_screen.dart';
+import '../../presentation/screens/login/login_view_model.dart';
 import '../../presentation/screens/store/components/store_type_selector.dart';
 
 // 앱바 고정 UI 레퍼
@@ -43,6 +46,11 @@ class ScaffoldWithNavBar extends StatelessWidget {
 
 // 경로별 화면 빌더 매핑 -> 여기 작성 필수!
 final Map<String, GoRouterWidgetBuilder> routeBuilders = {
+  RoutePath.login: (context, state) => ChangeNotifierProvider(
+    create: (_) => LoginViewModel(),
+    child: const LoginScreen(),
+  ),
+
   RoutePath.home: (context, state) => const MainScreen(),
   RoutePath.albumAdd: (context, state) => const AlbumAddScreen(),
 
@@ -134,7 +142,8 @@ final List<String> shellRoutes = [
 
 // GoRouter
 final GoRouter appRouter = GoRouter(
-  initialLocation: RoutePath.home,
+  // initialLocation: RoutePath.home,
+  initialLocation: RoutePath.login,
   routes: [
     // 앱바 없는 개별 라우트들
     ...routeBuilders.keys
