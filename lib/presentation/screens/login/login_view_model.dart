@@ -35,30 +35,32 @@ class LoginViewModel with ChangeNotifier {
     notifyListeners(); // UI에게 '로딩 시작'을 알림
 
     try {
-      // TODO: 실제 소셜 로그인 SDK를 통해 idToken을 받아오는 로직 구현 필요
-      // 현재는 더미 토큰으로 진행합니다.
-      const idToken = 'DUMMY_ID_TOKEN_FOR_TEST';
+      // ViewModel은 더 이상 토큰을 신경쓰지 않습니다.
+      // Repository에게 '카카오 로그인 처리해줘' 라고 요청만 보냅니다.
+      await _authRepository.socialLogin(provider.name);
 
-      // Repository를 통해 서버에 로그인 요청
-      final response = await _authRepository.socialLogin(
-        provider.name,
-        idToken,
-      );
-
-      // TODO: 성공 시 토큰 저장 로직 구현 (예: Secure Storage)
-      // print('로그인 성공! AccessToken: ${response.accessToken}');
-
+      // ... (성공 처리 로직 동일)
       _loginSuccess = true;
+
     } on ApiException catch (e) {
       _errorMessage = e.message;
     } on ApiBusinessException catch (e) {
       _errorMessage = e.message;
     } catch (e) {
-      _errorMessage = '알 수 없는 오류가 발생했습니다.';
+      _errorMessage = e.toString(); // 상세한 에러 확인을 위해 e.toString() 사용
     } finally {
       _isLoading = false;
-      notifyListeners(); // UI에게 '로딩 끝' 및 최종 결과를 알림
+      notifyListeners();
     }
+  }
+
+  void loginWithKakao() {
+    _login(SocialLoginProvider.KAKAO);
+  }
+
+  void loginWithApple() {
+    _login(SocialLoginProvider.APPLE);
+  }
   }
 
   // View에서 호출할 함수들

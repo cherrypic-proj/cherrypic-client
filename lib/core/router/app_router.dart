@@ -48,7 +48,12 @@ class ScaffoldWithNavBar extends StatelessWidget {
 // 경로별 화면 빌더 매핑 -> 여기 작성 필수!
 final Map<String, GoRouterWidgetBuilder> routeBuilders = {
   RoutePath.login: (context, state) => ChangeNotifierProvider(
-    create: (_) => LoginViewModel(AuthRepository()),
+    create: (_) => LoginViewModel(
+      AuthRepository(
+        remoteDataSource: AuthRemoteDataSource(),
+        kakaoDataSource: KakaoAuthDataSource(),
+      ),
+    ),
     child: const LoginScreen(),
   ),
 

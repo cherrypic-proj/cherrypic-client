@@ -25,6 +25,9 @@ dependencies:
     cached_network_image: ^3.3.1 # 네트워크 이미지 캐싱 및 최적화
     percent_indicator: ^4.2.2 #게이지 바
 
+    # 로그인
+    kakao_flutter_sdk_user: ^1.9.7+3
+
     # 포맷 처리
     intl: ^0.18.1 # 숫자, 날짜, 통화 등 포맷 처리
 
