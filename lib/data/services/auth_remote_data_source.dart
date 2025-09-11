@@ -12,7 +12,6 @@ class AuthRemoteDataSource {
 
   AuthRemoteDataSource({Dio? dio}) : _dio = dio ?? DioClient().dio;
 
-  // 소셜 로그인 API 호출
   Future<LoginResponseDto> socialLogin(
     String provider,
     SocialLoginRequestDto requestDto,
@@ -24,18 +23,23 @@ class AuthRemoteDataSource {
         data: requestDto.toJson(),
       );
 
-      // 공통 응답 규격 처리
-      final apiResponse = ApiResponse.fromJson(
-        response.data,
-        (json) => LoginResponseDto.fromJson(json as Map<String, dynamic>),
-      );
-
-      // 성공 시 데이터 반환
-      return apiResponse.data!;
+      // [수정] statusCode를 확인하는 로직 추가
+      if (response.statusCode == 204) {
+        // 성공했지만 본문이 없으므로, 비어있는 성공 객체를 반환하여 앱이 멈추지 않도록 함
+        return LoginResponseDto(
+          accessToken: 'success',
+          refreshToken: 'success',
+        );
+      } else {
+        // 204가 아닌 다른 성공 코드(200 등)의 경우 기존 로직대로 처리
+        final apiResponse = ApiResponse.fromJson(
+          response.data,
+          (json) => LoginResponseDto.fromJson(json as Map<String, dynamic>),
+        );
+        return apiResponse.data!;
+      }
     } on DioException catch (e) {
-      // Dio 에러(네트워크, 타임아웃 등) 발생 시 ErrorHandler로 예외 통일
       throw ErrorHandler.handle(e);
     }
-    // ApiBusinessException(서버 정의 에러)은 ApiResponse에서 자동으로 throw 처리
   }
 }
