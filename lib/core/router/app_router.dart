@@ -1,4 +1,5 @@
 import 'package:cherrypic/core/router/route_path.dart';
+import 'package:cherrypic/data/repositories/auth_repository.dart';
 import 'package:cherrypic/presentation/screens/event/event_list_detail/event_list_screen.dart';
 import 'package:cherrypic/presentation/screens/event/event_main_screen.dart';
 import 'package:cherrypic/presentation/screens/main/album/add/album_add_screen.dart';
@@ -47,7 +48,7 @@ class ScaffoldWithNavBar extends StatelessWidget {
 // 경로별 화면 빌더 매핑 -> 여기 작성 필수!
 final Map<String, GoRouterWidgetBuilder> routeBuilders = {
   RoutePath.login: (context, state) => ChangeNotifierProvider(
-    create: (_) => LoginViewModel(),
+    create: (_) => LoginViewModel(AuthRepository()),
     child: const LoginScreen(),
   ),
 
@@ -113,8 +114,8 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
   RoutePath.photo_printing: (context, state) => const PhotoPrintingScreen(),
   RoutePath.select_album: (context, state) => const SelectAlbumScreen(),
   RoutePath.select_image: (context, state) {
-      final albumId = state.extra as int;
-      return SelectImageScreen(albumId: albumId);
+    final albumId = state.extra as int;
+    return SelectImageScreen(albumId: albumId);
   },
   RoutePath.select_option: (context, state) => const SelectOptionScreen(),
   RoutePath.select_address: (context, state) => const SelectAddressScreen(),
