@@ -1,5 +1,6 @@
 import 'package:cherrypic/core/router/route_path.dart';
 import 'package:cherrypic/data/repositories/auth_repository.dart';
+import 'package:cherrypic/data/services/apple_auth_data_source.dart';
 import 'package:cherrypic/data/services/auth_remote_data_source.dart';
 import 'package:cherrypic/data/services/kakao_auth_data_source.dart';
 import 'package:cherrypic/presentation/screens/event/event_list_detail/event_list_screen.dart';
@@ -52,9 +53,9 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
   RoutePath.login: (context, state) => ChangeNotifierProvider(
     create: (_) => LoginViewModel(
       AuthRepository(
-        // 이 클래스들을 사용하기 위해 import가 필요합니다.
         remoteDataSource: AuthRemoteDataSource(),
         kakaoDataSource: KakaoAuthDataSource(),
+        appleDataSource: AppleAuthDataSource(),
       ),
     ),
     child: const LoginScreen(),
