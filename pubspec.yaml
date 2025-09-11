@@ -30,6 +30,9 @@ dependencies:
 
     # 포맷 처리
     intl: ^0.18.1 # 숫자, 날짜, 통화 등 포맷 처리
+    flutter_dotenv: ^6.0.0
+    dio_cookie_manager: ^3.3.0
+    cookie_jar: ^4.0.8
 
 dev_dependencies:
     flutter_test:
@@ -41,7 +44,7 @@ flutter:
 
     assets:
         - assets/images/
-
+        - .env
     fonts:
         - family: Koulen
           fonts:

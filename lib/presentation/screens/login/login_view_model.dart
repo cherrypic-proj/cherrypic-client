@@ -35,35 +35,24 @@ class LoginViewModel with ChangeNotifier {
     notifyListeners(); // UI에게 '로딩 시작'을 알림
 
     try {
-      // ViewModel은 더 이상 토큰을 신경쓰지 않습니다.
-      // Repository에게 '카카오 로그인 처리해줘' 라고 요청만 보냅니다.
+      // Repository에게 소셜 로그인 처리를 요청합니다.
       await _authRepository.socialLogin(provider.name);
 
-      // ... (성공 처리 로직 동일)
       _loginSuccess = true;
-
     } on ApiException catch (e) {
       _errorMessage = e.message;
     } on ApiBusinessException catch (e) {
       _errorMessage = e.message;
     } catch (e) {
-      _errorMessage = e.toString(); // 상세한 에러 확인을 위해 e.toString() 사용
+      _errorMessage = e.toString();
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  void loginWithKakao() {
-    _login(SocialLoginProvider.KAKAO);
-  }
-
-  void loginWithApple() {
-    _login(SocialLoginProvider.APPLE);
-  }
-  }
-
   // View에서 호출할 함수들
+  // 이 부분만 남기고 중복된 코드를 삭제합니다.
   void loginWithKakao() {
     _login(SocialLoginProvider.KAKAO);
   }
