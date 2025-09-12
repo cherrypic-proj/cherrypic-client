@@ -1,3 +1,9 @@
+def dotEnvFile = new File("$rootDir/../../.env")
+def properties = new Properties()
+if (dotEnvFile.exists()) {
+    properties.load(new FileInputStream(dotEnvFile))
+}
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -19,15 +25,16 @@ android {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
 
-    defaultConfig {
+     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.cherrypic"
+        applicationId = "today.cherrypic.android"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        minSdk = 21 
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        resValue "string", "kakao_app_key", properties.getProperty("KAKAO_NATIVE_APP_KEY")
     }
 
     buildTypes {
