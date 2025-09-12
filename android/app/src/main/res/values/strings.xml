@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">cherrypic</string>
+    <!-- 🔑 카카오 네이티브 앱 키 (앞에 kakao 접두어 붙이기) -->
+<!--    <string name="kakao_app_key">kakao1234567890abcdef</string>-->
+</resources>
