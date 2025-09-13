@@ -3,6 +3,7 @@ import 'package:cherrypic/core/constants/font.dart';
 import 'package:flutter/material.dart';
 import '../album_payment_info_view_model.dart';
 
+/// pro & premium 토글 버튼
 class TypeToggle extends StatelessWidget {
   final AlbumFilterType selected;
   final ValueChanged<AlbumFilterType> onChanged;  

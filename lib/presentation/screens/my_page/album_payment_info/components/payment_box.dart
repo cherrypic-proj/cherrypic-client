@@ -80,7 +80,7 @@ class PaymentBox extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       model.title,
-                      style: AppFont.size14.copyWith(
+                      style: AppFont.size20.copyWith(
                         color: badgeType.textColor,
                         fontWeight: FontWeight.w600,
                       ),

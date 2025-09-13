@@ -30,6 +30,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../presentation/screens/my_page/album_payment_info/album_payment_info_model.dart';
+import '../../presentation/screens/my_page/album_payment_info/info/payment_info_view_model.dart';
 import '../../presentation/screens/store/components/store_type_selector.dart';
 
 // 앱바 고정 UI 레퍼
@@ -74,7 +75,8 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
       const AlbumPaymentInfoScreen(),
   RoutePath.myPage_payment_info: (context, state) {
     final item = state.extra as AlbumPaymentInfoModel;
-    return PaymentInfoScreen(item: item);
+    // final viewModel = state.extra as PaymentInfoViewModel;
+    return PaymentInfoScreen(item: item,  viewModel: PaymentInfoViewModel(),);
   },
   RoutePath.myPage_address_management: (context, state) =>
       const AddressManagementScreen(),
