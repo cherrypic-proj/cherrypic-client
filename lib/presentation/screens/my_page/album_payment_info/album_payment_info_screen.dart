@@ -8,6 +8,7 @@ import '../../../../core/router/route_path.dart';
 import '../../../widgets/custom_sub_app_bar.dart';
 import 'album_payment_info_view_model.dart';
 import 'album_payment_info_model.dart';
+import 'components/type_toggle.dart';
 
 /// 구독 및 결제 정보 화면
 class AlbumPaymentInfoScreen extends StatefulWidget {
@@ -38,7 +39,7 @@ class _AlbumPaymentInfoScreenState extends State<AlbumPaymentInfoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomSubAppBar(title: '앨범 및 결제정보'),
+      appBar: const CustomSubAppBar(title: '앨범 결제정보'),
       backgroundColor: Colors.white,
       body: Column(
         children: [
@@ -48,7 +49,15 @@ class _AlbumPaymentInfoScreenState extends State<AlbumPaymentInfoScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: Column(
                   children: [
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 28),
+
+                    // pro/premium 토글
+                    TypeToggle(
+                      selected: viewModel.selectedFilter,
+                      onChanged: (type) => viewModel.changeFilter(type),
+                    ),
+
+                    const SizedBox(height: 35),
 
                     _buildSubscriptionList(viewModel.displayedItems),
 
