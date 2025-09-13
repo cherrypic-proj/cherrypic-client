@@ -10,7 +10,7 @@ class AppleAuthDataSource {
           AppleIDAuthorizationScopes.email,
           AppleIDAuthorizationScopes.fullName,
         ],
-        // 안드로이드 기기의 경우, 웹뷰로 띄우기
+        // 안드로이드의 경우, 웹뷰로 띄우기
         webAuthenticationOptions: WebAuthenticationOptions(
           clientId: dotenv.env['APPLE_SERVICE_ID'] ?? '',
           redirectUri: Uri.parse(
