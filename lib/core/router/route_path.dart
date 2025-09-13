@@ -1,4 +1,6 @@
 class RoutePath {
+  static const String login = '/login/login_screen';
+
   static const String home = '/';
   static const String albumAdd = '/album/add';
   static const String albumSetting = '/album/:albumId/setting';

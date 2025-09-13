@@ -10,4 +10,6 @@ class AppColor {
   static const Color highlightBlue = Color(0xFF0073FF);
   static const Color subDarkGrey = Color(0xFF313131);
   static const Color lightCyan = Color(0xFFDFF3F8);
+
+  static const Color kakaoBg = Color(0xFFFEE500);
 }
