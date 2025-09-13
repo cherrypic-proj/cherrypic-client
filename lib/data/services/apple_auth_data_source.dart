@@ -1,3 +1,4 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class AppleAuthDataSource {
@@ -9,6 +10,13 @@ class AppleAuthDataSource {
           AppleIDAuthorizationScopes.email,
           AppleIDAuthorizationScopes.fullName,
         ],
+        // 안드로이드 기기의 경우, 웹뷰로 띄우기
+        webAuthenticationOptions: WebAuthenticationOptions(
+          clientId: dotenv.env['APPLE_SERVICE_ID'] ?? '',
+          redirectUri: Uri.parse(
+              dotenv.env['APPLE_REDIRECT_URI'] ?? '',
+          ),
+        ),
       );
 
       // 서버에 전달할 ID 토큰

@@ -39,6 +39,18 @@
                 android:resource="@style/NormalTheme" />
         </activity>
 
+        <activity android:name="com.linusu.flutter_web_auth_2.CallbackActivity"
+            android:exported="true">
+            <intent-filter android:label="flutter_web_auth_2">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="cherrypic"
+                    android:host="callback" />
+            </intent-filter>
+        </activity>
+
         <!-- Flutter 자동 생성용 메타데이터 -->
         <meta-data
             android:name="flutterEmbedding"
