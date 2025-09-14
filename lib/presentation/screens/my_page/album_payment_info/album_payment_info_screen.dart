@@ -1,63 +1,14 @@
 import 'package:cherrypic/presentation/screens/my_page/album_payment_info/components/payment_box.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/color.dart';
 import '../../../../core/constants/font.dart';
-import '../../../widgets/album/album_badge_type.dart';
+import '../../../../core/router/route_path.dart';
 import '../../../widgets/custom_sub_app_bar.dart';
 import 'album_payment_info_view_model.dart';
-import 'components/album_badge_toggle.dart';
-import 'components/album_payment_info_model.dart';
-
-/// 구독 및 결제 정보 리스트
-const List<AlbumPaymentInfoModel> albumPaymentInfoItems = [
-  AlbumPaymentInfoModel(
-    badgeType: AlbumBadgeType.basic,
-    title: '음식(양식, 중식, 한식, 일식) 음식 음식',
-    createDate: '2025/06/23',
-    price: '무료',
-  ),
-  AlbumPaymentInfoModel(
-    badgeType: AlbumBadgeType.pro,
-    title: '프랑스 여행_2025. 06. 24',
-    createDate: '2025/06/23',
-    startDate: '2025/05/25',
-    nextDate: '2025/08/25',
-    price: '월 3,900원',
-  ),
-  AlbumPaymentInfoModel(
-    badgeType: AlbumBadgeType.premium,
-    title: '호주 여행',
-    createDate: '2025/06/23',
-    startDate: '2025/06/28',
-    nextDate: '2025/08/25',
-    price: '월 5,900원',
-  ),
-  AlbumPaymentInfoModel(
-    badgeType: AlbumBadgeType.pro,
-    title: '등반',
-    createDate: '2025/06/23',
-    startDate: '2025/07/01',
-    nextDate: '2025/09/01',
-    price: '월 3,900원',
-  ),
-  AlbumPaymentInfoModel(
-    badgeType: AlbumBadgeType.premium,
-    title: '호주 여행',
-    createDate: '2025/06/23',
-    startDate: '2025/06/28',
-    nextDate: '2025/08/25',
-    price: '월 5,900원',
-  ),
-  AlbumPaymentInfoModel(
-    badgeType: AlbumBadgeType.pro,
-    title: '프랑스 여행_2025. 06. 24',
-    createDate: '2025/06/23',
-    startDate: '2025/05/25',
-    nextDate: '2025/08/25',
-    price: '월 3,900원',
-  ),
-];
+import 'album_payment_info_model.dart';
+import 'components/type_toggle.dart';
 
 /// 구독 및 결제 정보 화면
 class AlbumPaymentInfoScreen extends StatefulWidget {
@@ -88,7 +39,7 @@ class _AlbumPaymentInfoScreenState extends State<AlbumPaymentInfoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomSubAppBar(title: '앨범 및 결제정보'),
+      appBar: const CustomSubAppBar(title: '앨범 결제정보'),
       backgroundColor: Colors.white,
       body: Column(
         children: [
@@ -98,32 +49,13 @@ class _AlbumPaymentInfoScreenState extends State<AlbumPaymentInfoScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: Column(
                   children: [
-                    const SizedBox(height: 35),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: RichText(
-                        text: TextSpan(
-                          text: '앨범',
-                          style: AppFont.size18.copyWith(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: ' (${viewModel.allItems.length})',
-                              style: AppFont.size14.copyWith(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                    const SizedBox(height: 28),
+
+                    // pro/premium 토글
+                    TypeToggle(
+                      selected: viewModel.selectedFilter,
+                      onChanged: (type) => viewModel.changeFilter(type),
                     ),
-
-                    const SizedBox(height: 19),
-
-                    AlbumBadgeToggle(viewModel: viewModel.badgeToggleViewModel),
 
                     const SizedBox(height: 35),
 
@@ -173,7 +105,16 @@ class _AlbumPaymentInfoScreenState extends State<AlbumPaymentInfoScreen> {
         final item = items[index];
         return Padding(
           padding: EdgeInsets.only(bottom: index == items.length - 1 ? 0 : 30),
-          child: PaymentBox(model: item),
+          child: PaymentBox(
+            model: item,
+            showDates: false,
+            onTap: () {
+              context.push(
+                RoutePath.myPage_payment_info,
+                extra: item,
+              );
+            },
+          ),
         );
       },
     );

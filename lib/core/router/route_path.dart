@@ -17,6 +17,7 @@ class RoutePath {
       '/my_page/album_subscription_history/album_subscription_history_screen';
   static const String myPage_album_payment_info =
       '/my_page/album_payment_info/album_payment_info_screen';
+  static const String myPage_payment_info = '/my_page/album_payment_info/info/payment_info_screen';
   static const String myPage_setting = '/my_page/settings/setting_screen';
   static const String myPage_delete_account =
       '/my_page/delete_account/delete_account_screen';

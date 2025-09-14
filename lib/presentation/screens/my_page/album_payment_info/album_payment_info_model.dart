@@ -1,4 +1,4 @@
-import '../../../../widgets/album/album_badge_type.dart';
+import '../../../widgets/album/album_badge_type.dart';
 
 class AlbumPaymentInfoModel {
   final AlbumBadgeType badgeType;
