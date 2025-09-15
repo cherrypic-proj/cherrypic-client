@@ -151,21 +151,22 @@ final List<String> shellRoutes = [
 ];
 
 // GoRouter
-final GoRouter appRouter = GoRouter(
-  // initialLocation: RoutePath.home,
-  initialLocation: RoutePath.login,
-  routes: [
-    // 앱바 없는 개별 라우트들
-    ...routeBuilders.keys
-        .where((path) => !shellRoutes.contains(path))
-        .map((path) => GoRoute(path: path, builder: routeBuilders[path]!)),
+GoRouter createAppRouter(String initialRoute) {
+  return GoRouter(
+    initialLocation: initialRoute,
+    routes: [
+      // 앱바 없는 개별 라우트들
+      ...routeBuilders.keys
+          .where((path) => !shellRoutes.contains(path))
+          .map((path) => GoRoute(path: path, builder: routeBuilders[path]!)),
 
-    // 앱바 고정 ShellRoute
-    ShellRoute(
-      builder: (context, state, child) => ScaffoldWithNavBar(child: child),
-      routes: shellRoutes.map((path) {
-        return GoRoute(path: path, builder: routeBuilders[path]!);
-      }).toList(),
-    ),
-  ],
-);
+      // 앱바 고정 ShellRoute
+      ShellRoute(
+        builder: (context, state, child) => ScaffoldWithNavBar(child: child),
+        routes: shellRoutes.map((path) {
+          return GoRoute(path: path, builder: routeBuilders[path]!);
+        }).toList(),
+      ),
+    ],
+  );
+}

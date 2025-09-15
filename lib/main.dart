@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:cherrypic/data/services/auto_login_service.dart';
+import 'package:cherrypic/core/router/route_path.dart';
 import 'app/cherrypic_app.dart';
 
 // main 함수를 async로 변경합니다.
@@ -14,6 +16,11 @@ void main() async {
   // .env 파일에서 불러온 네이티브 앱 키로 카카오 SDK를 초기화합니다.
   KakaoSdk.init(nativeAppKey: dotenv.env['KAKAO_NATIVE_APP_KEY']);
 
+  // 자동 로그인 체크
+  final autoLoginService = AutoLoginService();
+  final isLoggedIn = await autoLoginService.checkAutoLogin();
+  final initialRoute = isLoggedIn ? RoutePath.home : RoutePath.login;
+
   // 모든 초기화가 끝난 후 앱을 실행합니다.
-  runApp(const CherrypicApp());
+  runApp(CherrypicApp(initialRoute: initialRoute));
 }
