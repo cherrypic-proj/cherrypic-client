@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:cherrypic/core/router/app_router.dart';
 
 class CherrypicApp extends StatelessWidget {
-  const CherrypicApp({super.key});
+  final String initialRoute;
+
+  const CherrypicApp({super.key, required this.initialRoute});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routerConfig: appRouter,
+      routerConfig: createAppRouter(initialRoute), // GoRouter를 동적으로 생성
       title: 'Cherrypic',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

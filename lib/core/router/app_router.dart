@@ -1,4 +1,8 @@
 import 'package:cherrypic/core/router/route_path.dart';
+import 'package:cherrypic/data/repositories/auth_repository.dart';
+import 'package:cherrypic/data/services/apple_auth_data_source.dart';
+import 'package:cherrypic/data/services/auth_remote_data_source.dart';
+import 'package:cherrypic/data/services/kakao_auth_data_source.dart';
 import 'package:cherrypic/presentation/screens/event/event_list_detail/event_list_screen.dart';
 import 'package:cherrypic/presentation/screens/event/event_main_screen.dart';
 import 'package:cherrypic/presentation/screens/main/album/add/album_add_screen.dart';
@@ -50,7 +54,13 @@ class ScaffoldWithNavBar extends StatelessWidget {
 // 경로별 화면 빌더 매핑 -> 여기 작성 필수!
 final Map<String, GoRouterWidgetBuilder> routeBuilders = {
   RoutePath.login: (context, state) => ChangeNotifierProvider(
-    create: (_) => LoginViewModel(),
+    create: (_) => LoginViewModel(
+      AuthRepository(
+        remoteDataSource: AuthRemoteDataSource(),
+        kakaoDataSource: KakaoAuthDataSource(),
+        appleDataSource: AppleAuthDataSource(),
+      ),
+    ),
     child: const LoginScreen(),
   ),
 
@@ -121,8 +131,8 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
   RoutePath.photo_printing: (context, state) => const PhotoPrintingScreen(),
   RoutePath.select_album: (context, state) => const SelectAlbumScreen(),
   RoutePath.select_image: (context, state) {
-      final albumId = state.extra as int;
-      return SelectImageScreen(albumId: albumId);
+    final albumId = state.extra as int;
+    return SelectImageScreen(albumId: albumId);
   },
   RoutePath.select_option: (context, state) => const SelectOptionScreen(),
   RoutePath.select_address: (context, state) => const SelectAddressScreen(),
@@ -149,21 +159,22 @@ final List<String> shellRoutes = [
 ];
 
 // GoRouter
-final GoRouter appRouter = GoRouter(
-  // initialLocation: RoutePath.home,
-  initialLocation: RoutePath.login,
-  routes: [
-    // 앱바 없는 개별 라우트들
-    ...routeBuilders.keys
-        .where((path) => !shellRoutes.contains(path))
-        .map((path) => GoRoute(path: path, builder: routeBuilders[path]!)),
+GoRouter createAppRouter(String initialRoute) {
+  return GoRouter(
+    initialLocation: initialRoute,
+    routes: [
+      // 앱바 없는 개별 라우트들
+      ...routeBuilders.keys
+          .where((path) => !shellRoutes.contains(path))
+          .map((path) => GoRoute(path: path, builder: routeBuilders[path]!)),
 
-    // 앱바 고정 ShellRoute
-    ShellRoute(
-      builder: (context, state, child) => ScaffoldWithNavBar(child: child),
-      routes: shellRoutes.map((path) {
-        return GoRoute(path: path, builder: routeBuilders[path]!);
-      }).toList(),
-    ),
-  ],
-);
+      // 앱바 고정 ShellRoute
+      ShellRoute(
+        builder: (context, state, child) => ScaffoldWithNavBar(child: child),
+        routes: shellRoutes.map((path) {
+          return GoRoute(path: path, builder: routeBuilders[path]!);
+        }).toList(),
+      ),
+    ],
+  );
+}

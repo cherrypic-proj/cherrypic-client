@@ -1,3 +1,14 @@
+import java.util.Properties
+import java.io.FileInputStream
+
+// .env 파일 읽어오기
+val dotEnvFile = File(rootDir.parentFile, ".env")
+val properties = Properties().apply {
+    if (dotEnvFile.exists()) {
+        load(FileInputStream(dotEnvFile))
+    }
+}
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -20,20 +31,21 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.cherrypic"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        applicationId = "today.cherrypic.android"
+        minSdk = 21
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        // .env 값 가져오기
+        val kakaoAppKey = properties.getProperty("KAKAO_NATIVE_APP_KEY") ?: ""
+
+        // manifestPlaceholders 로 넘겨줌
+        manifestPlaceholders["kakao_app_key"] = "kakao$kakaoAppKey"
     }
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
         }
     }
