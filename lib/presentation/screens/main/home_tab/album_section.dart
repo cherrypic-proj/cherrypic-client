@@ -1,9 +1,11 @@
 import 'package:cherrypic/core/router/route_path.dart';
 import 'package:cherrypic/core/constants/font.dart';
+import 'package:cherrypic/presentation/screens/main/home_tab/main_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:cherrypic/presentation/widgets/album/album_card.dart';
 import 'package:cherrypic/presentation/widgets/album/album_badge_type.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class AlbumSection extends StatefulWidget {
   const AlbumSection({super.key});
@@ -13,24 +15,29 @@ class AlbumSection extends StatefulWidget {
 }
 
 class _AlbumSectionState extends State<AlbumSection> {
-  // API 연결 전까지 빈 리스트로 설정
-  final List<Map<String, dynamic>> albums = [];
-
-  // TODO: API 연결 시 실제 데이터로 대체할 예정
-  // final List<Map<String, dynamic>> albums = [
-  //   {
-  //     'id': 1,
-  //     'title': '가족여행',
-  //     'badgeType': AlbumBadgeType.basic,
-  //     'isLiked': false,
-  //   },
-  //   // ... 더 많은 앨범 데이터
-  // ];
+  @override
+  void initState() {
+    super.initState();
+    // 페이지 로드 시 앨범 데이터 가져오기
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<MainViewModel>().loadAlbums();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: albums.isEmpty ? _buildEmptyState() : _buildAlbumGrid(),
+    return Consumer<MainViewModel>(
+      builder: (context, viewModel, child) {
+        if (viewModel.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (viewModel.albums.isEmpty) {
+          return _buildEmptyState();
+        }
+
+        return _buildAlbumGrid(viewModel.albums);
+      },
     );
   }
 
@@ -51,7 +58,7 @@ class _AlbumSectionState extends State<AlbumSection> {
   }
 
   // 앨범이 있을 때 보여줄 그리드
-  Widget _buildAlbumGrid() {
+  Widget _buildAlbumGrid(List<Map<String, dynamic>> albums) {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Align(
@@ -64,7 +71,7 @@ class _AlbumSectionState extends State<AlbumSection> {
             return SizedBox(
               width: 150,
               child: AlbumCard(
-                imageUrl: '', // TODO: 실제 앨범 커버 이미지 URL로 변경
+                imageUrl: album['imageUrl'] ?? '',
                 title: album['title'],
                 badgeType: album['badgeType'],
                 isLiked: album['isLiked'],
@@ -77,9 +84,7 @@ class _AlbumSectionState extends State<AlbumSection> {
                   context.push(path);
                 },
                 onLikeToggle: () {
-                  setState(() {
-                    album['isLiked'] = !album['isLiked'];
-                  });
+                  context.read<MainViewModel>().toggleAlbumLike(album['id']);
                 },
                 isSelected: true,
               ),
