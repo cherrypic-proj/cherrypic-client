@@ -38,7 +38,7 @@ class MainViewModel extends ChangeNotifier {
       final response = await _albumRepository.getAlbums(
         type: type,
         status: status ?? 'ACTIVE', // 기본적으로 활성화된 앨범만 조회
-        keyword: keyword ?? _searchKeyword.isNotEmpty ? _searchKeyword : null,
+        keyword: keyword ?? (_searchKeyword.isNotEmpty ? _searchKeyword : null),
         size: 20,
         direction: 'DESC',
       );

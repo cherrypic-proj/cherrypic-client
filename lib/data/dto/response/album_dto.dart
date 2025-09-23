@@ -1,47 +1,47 @@
 import 'package:cherrypic/presentation/widgets/album/album_badge_type.dart';
 
 class AlbumDto {
-  final int id;
+  final int albumId;
   final String title;
-  final String? coverImageUrl;
+  final String? coverUrl;
   final String type; // BASIC, PRO, PREMIUM
+  final int price;
   final String status; // ACTIVE, CANCELED, EXPIRED
-  final bool isLiked;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final bool marked; // 좋아요 표시
+  final String createdAt;
 
   AlbumDto({
-    required this.id,
+    required this.albumId,
     required this.title,
-    this.coverImageUrl,
+    this.coverUrl,
     required this.type,
+    required this.price,
     required this.status,
-    required this.isLiked,
+    required this.marked,
     required this.createdAt,
-    required this.updatedAt,
   });
 
   factory AlbumDto.fromJson(Map<String, dynamic> json) {
     return AlbumDto(
-      id: json['id'],
+      albumId: json['albumId'],
       title: json['title'],
-      coverImageUrl: json['coverImageUrl'],
+      coverUrl: json['coverUrl'],
       type: json['type'],
+      price: json['price'],
       status: json['status'],
-      isLiked: json['isLiked'] ?? false,
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      marked: json['marked'] ?? false,
+      createdAt: json['createdAt'],
     );
   }
 
   // UI에서 사용할 형태로 변환
   Map<String, dynamic> toAlbumData() {
     return {
-      'id': id,
+      'id': albumId,
       'title': title,
-      'imageUrl': coverImageUrl ?? '',
+      'imageUrl': coverUrl ?? '',
       'badgeType': _typeToBadgeType(),
-      'isLiked': isLiked,
+      'isLiked': marked,
     };
   }
 
@@ -61,22 +61,16 @@ class AlbumDto {
 
 class AlbumListResponseDto {
   final List<AlbumDto> albums;
-  final int totalCount;
-  final bool hasNext;
+  final bool isLast;
 
-  AlbumListResponseDto({
-    required this.albums,
-    required this.totalCount,
-    required this.hasNext,
-  });
+  AlbumListResponseDto({required this.albums, required this.isLast});
 
   factory AlbumListResponseDto.fromJson(Map<String, dynamic> json) {
     return AlbumListResponseDto(
-      albums: (json['albums'] as List)
+      albums: (json['content'] as List? ?? [])
           .map((albumJson) => AlbumDto.fromJson(albumJson))
           .toList(),
-      totalCount: json['totalCount'],
-      hasNext: json['hasNext'],
+      isLast: json['isLast'] ?? true,
     );
   }
 }
