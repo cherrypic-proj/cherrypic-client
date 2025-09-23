@@ -32,7 +32,7 @@ class AlbumDto {
       price: json['price'] ?? 0,
       status: json['status'],
       marked: json['marked'] ?? false,
-      createdAt: json['createdAt'],
+      createdAt: json['createdAt'] ?? '',
     );
   }
 
