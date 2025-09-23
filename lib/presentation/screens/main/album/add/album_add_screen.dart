@@ -18,7 +18,6 @@ class AlbumAddScreen extends StatefulWidget {
 class _AlbumAddScreenState extends State<AlbumAddScreen> {
   late final AlbumCoverViewModel _albumCoverViewModel;
   late final AlbumAddViewModel _albumAddViewModel;
-  final GlobalKey<_AlbumTypeSelectorState> _typeSelectorKey = GlobalKey();
 
   @override
   void initState() {
@@ -169,7 +168,6 @@ class _AlbumAddScreenState extends State<AlbumAddScreen> {
                   const SizedBox(height: 80),
 
                   AlbumTypeSelector(
-                    key: _typeSelectorKey,
                     onTypeSelected: (type) {
                       _albumAddViewModel.setSelectedAlbumType(type);
                     },

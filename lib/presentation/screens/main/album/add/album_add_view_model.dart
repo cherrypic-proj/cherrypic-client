@@ -4,6 +4,7 @@ import 'package:cherrypic/data/album/repositories/payment_repository.dart';
 import 'package:cherrypic/data/album/services/iamport_service.dart';
 import 'package:cherrypic/presentation/screens/main/album/components/album_type_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:iamport_flutter/iamport_payment.dart';
 
 class AlbumAddViewModel extends ChangeNotifier {
   final AlbumRepository _albumRepository;

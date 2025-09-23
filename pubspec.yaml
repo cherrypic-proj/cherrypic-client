@@ -37,6 +37,9 @@ dependencies:
     cookie_jar: ^4.0.8
     path_provider: ^2.1.5
 
+    # 결제
+    iamport_flutter: ^0.10.21
+
 dev_dependencies:
     flutter_test:
         sdk: flutter

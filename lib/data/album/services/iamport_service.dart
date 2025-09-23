@@ -1,4 +1,3 @@
-import 'package:iamport_flutter/iamport_payment.dart';
 import 'package:iamport_flutter/model/payment_data.dart';
 
 class IamportService {
@@ -6,13 +5,13 @@ class IamportService {
   static const String userCode = 'iamport'; // 테스트 가맹점 코드
 
   // 결제 데이터 생성
-  static IamportPayment createPaymentData({
+  static PaymentData createPaymentData({
     required String merchantUid,
     required String name,
     required int amount,
     required String buyerName,
   }) {
-    return IamportPayment(
+    return PaymentData(
       pg: 'html5_inicis', // PG사 (테스트용 - 이니시스)
       payMethod: 'card', // 결제 방법
       name: name, // 상품명
