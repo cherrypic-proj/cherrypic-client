@@ -1,8 +1,8 @@
 import 'package:cherrypic/core/router/route_path.dart';
-import 'package:cherrypic/data/repositories/auth_repository.dart';
-import 'package:cherrypic/data/services/apple_auth_data_source.dart';
-import 'package:cherrypic/data/services/auth_remote_data_source.dart';
-import 'package:cherrypic/data/services/kakao_auth_data_source.dart';
+import 'package:cherrypic/data/login/repositories/auth_repository.dart';
+import 'package:cherrypic/data/login/services/apple_auth_data_source.dart';
+import 'package:cherrypic/data/login/services/auth_remote_data_source.dart';
+import 'package:cherrypic/data/login/services/kakao_auth_data_source.dart';
 import 'package:cherrypic/presentation/screens/event/event_list_detail/event_list_screen.dart';
 import 'package:cherrypic/presentation/screens/event/event_main_screen.dart';
 import 'package:cherrypic/presentation/screens/main/album/add/album_add_screen.dart';
@@ -94,7 +94,7 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
   RoutePath.myPage_payment_info: (context, state) {
     final item = state.extra as AlbumPaymentInfoModel;
     // final viewModel = state.extra as PaymentInfoViewModel;
-    return PaymentInfoScreen(item: item,  viewModel: PaymentInfoViewModel(),);
+    return PaymentInfoScreen(item: item, viewModel: PaymentInfoViewModel());
   },
   RoutePath.myPage_address_management: (context, state) =>
       const AddressManagementScreen(),

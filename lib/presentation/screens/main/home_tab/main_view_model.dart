@@ -1,4 +1,4 @@
-import 'package:cherrypic/presentation/screens/main/home_tab/album_repository.dart';
+import 'package:cherrypic/data/album/repositories/album_repository.dart';
 import 'package:flutter/material.dart';
 
 class MainViewModel extends ChangeNotifier {

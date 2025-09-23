@@ -1,7 +1,8 @@
 import 'package:cherrypic/core/network/api_response.dart';
 import 'package:cherrypic/core/network/dio_client.dart';
 import 'package:cherrypic/core/network/error_handler.dart';
-import 'package:cherrypic/data/dto/response/album_dto.dart';
+import 'package:cherrypic/data/album/dto/response/album_dto.dart';
+import 'package:cherrypic/data/album/dto/request/album_create_request_dto.dart';
 import 'package:dio/dio.dart';
 
 class AlbumRemoteDataSource {
@@ -49,6 +50,22 @@ class AlbumRemoteDataSource {
   Future<void> toggleAlbumLike(int albumId) async {
     try {
       await _dio.post('/albums/$albumId/like');
+    } on DioException catch (e) {
+      throw ErrorHandler.handle(e);
+    }
+  }
+
+  // 앨범 생성 (추가된 메서드)
+  Future<AlbumDto> createAlbum(AlbumCreateRequestDto requestDto) async {
+    try {
+      final response = await _dio.post('/albums', data: requestDto.toJson());
+
+      final apiResponse = ApiResponse.fromJson(
+        response.data,
+        (json) => AlbumDto.fromJson(json as Map<String, dynamic>),
+      );
+
+      return apiResponse.data!;
     } on DioException catch (e) {
       throw ErrorHandler.handle(e);
     }

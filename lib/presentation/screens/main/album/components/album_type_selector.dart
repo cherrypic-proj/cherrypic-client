@@ -1,10 +1,22 @@
-// lib/presentation/screens/album/components/album_type_selector.dart
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:flutter/material.dart';
 
+enum AlbumType {
+  basic('BASIC', 'Basic 앨범', 0),
+  pro('PRO', 'Cherrypic Pro 앨범', 3900),
+  premium('PREMIUM', 'CherryPic Premium 앨범', 5900);
+
+  const AlbumType(this.apiValue, this.displayName, this.price);
+  final String apiValue;
+  final String displayName;
+  final int price;
+}
+
 class AlbumTypeSelector extends StatefulWidget {
-  const AlbumTypeSelector({super.key});
+  final ValueChanged<AlbumType?>? onTypeSelected;
+
+  const AlbumTypeSelector({super.key, this.onTypeSelected});
 
   @override
   State<AlbumTypeSelector> createState() => _AlbumTypeSelectorState();
@@ -15,13 +27,6 @@ class _AlbumTypeSelectorState extends State<AlbumTypeSelector> {
     viewportFraction: 1.0,
     initialPage: 0,
   );
-
-  // 표시 순서: Basic → Pro → Premium
-  final List<String> _titles = const [
-    'Basic 앨범',
-    'Cherrypic Pro 앨범',
-    'CherryPic Premium 앨범',
-  ];
 
   final List<String> _unselectedImages = const [
     'assets/images/basic_album_unselected.png',
@@ -47,16 +52,23 @@ class _AlbumTypeSelectorState extends State<AlbumTypeSelector> {
     setState(() {
       if (_selectedIndex == index) {
         _selectedIndex = null;
+        widget.onTypeSelected?.call(null);
       } else {
         _selectedIndex = index;
+        widget.onTypeSelected?.call(AlbumType.values[index]);
       }
     });
   }
 
+  // 외부에서 선택된 타입을 가져올 수 있는 메서드
+  AlbumType? getSelectedType() {
+    return _selectedIndex != null ? AlbumType.values[_selectedIndex!] : null;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final double cardW = 333;
-    final double cardH = 420;
+    const double cardW = 333;
+    const double cardH = 420;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -164,7 +176,7 @@ class _AlbumTypeSelectorState extends State<AlbumTypeSelector> {
                           ),
                         ),
                         TextSpan(
-                          text: _titles[_selectedIndex!],
+                          text: AlbumType.values[_selectedIndex!].displayName,
                           style: AppFont.size14.copyWith(
                             fontWeight: FontWeight.w600,
                             color: Colors.black,
@@ -176,7 +188,7 @@ class _AlbumTypeSelectorState extends State<AlbumTypeSelector> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () => setState(() => _selectedIndex = null),
+                  onTap: () => _onTapCard(_selectedIndex!), // 토글로 선택 해제
                   child: Text(
                     '취소',
                     style: AppFont.size14.copyWith(

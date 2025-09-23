@@ -2,8 +2,8 @@ import 'package:cherrypic/core/network/api_path.dart';
 import 'package:cherrypic/core/network/api_response.dart';
 import 'package:cherrypic/core/network/dio_client.dart';
 import 'package:cherrypic/core/network/error_handler.dart';
-import 'package:cherrypic/data/dto/request/social_login_request_dto.dart';
-import 'package:cherrypic/data/dto/response/login_response_dto.dart';
+import 'package:cherrypic/data/login/dto/request/social_login_request_dto.dart';
+import 'package:cherrypic/data/login/dto/response/login_response_dto.dart';
 import 'package:dio/dio.dart';
 
 // 서버와 실제 데이터 통신을 담당하는 클래스

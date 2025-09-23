@@ -1,8 +1,8 @@
-import 'package:cherrypic/data/dto/request/social_login_request_dto.dart';
-import 'package:cherrypic/data/dto/response/login_response_dto.dart';
-import 'package:cherrypic/data/services/apple_auth_data_source.dart'; // <-- Apple DataSource 임포트
-import 'package:cherrypic/data/services/auth_remote_data_source.dart';
-import 'package:cherrypic/data/services/kakao_auth_data_source.dart';
+import 'package:cherrypic/data/login/dto/request/social_login_request_dto.dart';
+import 'package:cherrypic/data/login/dto/response/login_response_dto.dart';
+import 'package:cherrypic/data/login/services/apple_auth_data_source.dart'; // <-- Apple DataSource 임포트
+import 'package:cherrypic/data/login/services/auth_remote_data_source.dart';
+import 'package:cherrypic/data/login/services/kakao_auth_data_source.dart';
 
 class AuthRepository {
   final AuthRemoteDataSource _remoteDataSource;
