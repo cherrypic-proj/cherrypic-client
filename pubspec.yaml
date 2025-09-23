@@ -23,6 +23,7 @@ dependencies:
     wechat_assets_picker: ^9.8.0 # 갤러리 뷰어
     flutter_image_compress: ^2.1.0 # 이미지 압축 처리
     cached_network_image: ^3.3.1 # 네트워크 이미지 캐싱 및 최적화
+    crypto: ^3.0.3
     percent_indicator: ^4.2.2 #게이지 바
 
     # 로그인

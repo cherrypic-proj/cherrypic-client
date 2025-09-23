@@ -20,6 +20,8 @@ class _AlbumCoverSectionState extends State<AlbumCoverSection> {
   void initState() {
     super.initState();
     _textController = TextEditingController(text: widget.viewModel.albumName);
+    // controller에 listener를 다는 것보다 TextField의 onChanged를 사용하는 것이
+    // 더 직관적일 수 있지만, 현재 구조도 정상적으로 동작하므로 그대로 두었습니다.
     _textController.addListener(() {
       widget.viewModel.updateAlbumName(_textController.text);
     });
@@ -40,7 +42,6 @@ class _AlbumCoverSectionState extends State<AlbumCoverSection> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // 앨범 커버 미리보기
-            // 앨범 커버 미리보기
             Container(
               width: 210,
               height: 294,
@@ -58,27 +59,21 @@ class _AlbumCoverSectionState extends State<AlbumCoverSection> {
               ),
               child: Column(
                 children: [
+                  // ... (이미지 표시 부분은 동일)
                   Container(
                     width: 210,
                     height: 224,
-                    decoration: const BoxDecoration(
-                      // 배경색은 이미지가 없을 때만 보이도록 ClipRRect 안으로 이동
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(12),
-                      ),
-                    ),
+                    // ...
                     child: ClipRRect(
                       borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(12),
                       ),
                       child: widget.viewModel.coverImage != null
-                          // 1. 새로 선택한 이미지가 있을 경우 (Uint8List)
                           ? Image.memory(
                               widget.viewModel.coverImage!,
                               fit: BoxFit.cover,
                               width: double.infinity,
                             )
-                          // 2. 기존 네트워크 이미지가 있을 경우 (String URL)
                           : (widget.viewModel.coverImageUrl != null &&
                                 widget.viewModel.coverImageUrl!.isNotEmpty)
                           ? Image.network(
@@ -104,7 +99,6 @@ class _AlbumCoverSectionState extends State<AlbumCoverSection> {
                                 );
                               },
                             )
-                          // 3. 표시할 이미지가 아무것도 없을 경우
                           : Container(
                               color: Colors.grey.shade200,
                               child: const Center(
@@ -127,7 +121,8 @@ class _AlbumCoverSectionState extends State<AlbumCoverSection> {
                     ),
                     child: Center(
                       child: Text(
-                        widget.viewModel.albumName,
+                        // ✨ 여기만 수정했습니다!
+                        widget.viewModel.albumDisplayName,
                         style: AppFont.size14,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -143,7 +138,7 @@ class _AlbumCoverSectionState extends State<AlbumCoverSection> {
             ),
             const SizedBox(height: 55),
 
-            // 앨범 커버 타이틀
+            // ... (버튼 및 나머지 UI 부분은 동일)
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
@@ -155,8 +150,6 @@ class _AlbumCoverSectionState extends State<AlbumCoverSection> {
               ),
             ),
             const SizedBox(height: 20),
-
-            // 버튼 2개
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -164,9 +157,7 @@ class _AlbumCoverSectionState extends State<AlbumCoverSection> {
                   width: 112,
                   height: 37,
                   child: TextButton(
-                    onPressed: () {
-                      widget.viewModel.selectImageType(true);
-                    },
+                    onPressed: () => widget.viewModel.selectImageType(true),
                     style: TextButton.styleFrom(
                       backgroundColor: widget.viewModel.isDefaultSelected
                           ? AppColor.mainRed
@@ -219,8 +210,6 @@ class _AlbumCoverSectionState extends State<AlbumCoverSection> {
               ],
             ),
             const SizedBox(height: 60),
-
-            // 앨범 이름
             const SizedBox(height: 12),
             CustomLabeledTextField(
               controller: _textController,

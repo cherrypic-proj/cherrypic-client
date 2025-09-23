@@ -1,7 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:cherrypic/data/album/dto/request/album_create_request_dto.dart';
 import 'package:cherrypic/data/album/repositories/album_repository.dart';
 import 'package:cherrypic/data/album/repositories/payment_repository.dart';
 import 'package:cherrypic/data/album/services/iamport_service.dart';
+import 'package:cherrypic/data/album/services/image_upload_service.dart';
 import 'package:cherrypic/presentation/screens/main/album/components/album_type_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:iamport_flutter/iamport_payment.dart';
@@ -9,12 +12,15 @@ import 'package:iamport_flutter/iamport_payment.dart';
 class AlbumAddViewModel extends ChangeNotifier {
   final AlbumRepository _albumRepository;
   final PaymentRepository _paymentRepository;
+  final ImageUploadService _imageUploadService;
 
   AlbumAddViewModel({
     AlbumRepository? albumRepository,
     PaymentRepository? paymentRepository,
+    ImageUploadService? imageUploadService,
   }) : _albumRepository = albumRepository ?? AlbumRepository(),
-       _paymentRepository = paymentRepository ?? PaymentRepository();
+       _paymentRepository = paymentRepository ?? PaymentRepository(),
+       _imageUploadService = imageUploadService ?? ImageUploadService();
 
   // 상태 변수들
   bool _isPermissionEnabled = false;
@@ -41,13 +47,13 @@ class AlbumAddViewModel extends ChangeNotifier {
   // 무료 앨범 생성
   Future<bool> createFreeAlbum({
     required String albumName,
-    String? coverImageUrl,
+    Uint8List? coverImage,
   }) async {
     _selectedAlbumType = AlbumType.basic; // 무료는 BASIC
     return await _createAlbum(
       albumName: albumName,
-      coverImageUrl: coverImageUrl,
-      paymentId: null, // 무료는 paymentId 없음
+      coverImage: coverImage,
+      paymentId: null,
     );
   }
 
@@ -55,7 +61,7 @@ class AlbumAddViewModel extends ChangeNotifier {
   Future<bool> createPaidAlbumWithPayment(
     BuildContext context, {
     required String albumName,
-    String? coverImageUrl,
+    Uint8List? coverImage,
   }) async {
     if (_selectedAlbumType == null || _selectedAlbumType!.price == 0) {
       _error = '유료 앨범 타입을 선택해주세요.';
@@ -79,7 +85,7 @@ class AlbumAddViewModel extends ChangeNotifier {
       // 앨범 생성
       final success = await _createAlbum(
         albumName: albumName,
-        coverImageUrl: coverImageUrl,
+        coverImage: coverImage,
         paymentId: paymentId,
       );
 
@@ -97,7 +103,7 @@ class AlbumAddViewModel extends ChangeNotifier {
   // 실제 앨범 생성 로직
   Future<bool> _createAlbum({
     required String albumName,
-    String? coverImageUrl,
+    Uint8List? coverImage,
     int? paymentId,
   }) async {
     if (_selectedAlbumType == null) {
@@ -113,12 +119,22 @@ class AlbumAddViewModel extends ChangeNotifier {
     }
 
     try {
+      String? coverUrl;
+
+      // 이미지가 있으면 업로드
+      if (coverImage != null) {
+        coverUrl = await _imageUploadService.uploadCoverImage(coverImage);
+      }
+
       final requestDto = AlbumCreateRequestDto(
         title: albumName.trim(),
-        coverUrl: coverImageUrl,
+        coverUrl: coverUrl,
         type: _selectedAlbumType!.apiValue,
         paymentId: paymentId,
-        permissionControl: _isPermissionEnabled,
+        // BASIC 타입은 항상 권한 부여 비활성화
+        permissionControl: _selectedAlbumType!.apiValue == 'BASIC'
+            ? false
+            : _isPermissionEnabled,
       );
 
       await _albumRepository.createAlbum(requestDto);

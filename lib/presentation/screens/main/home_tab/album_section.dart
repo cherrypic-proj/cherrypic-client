@@ -43,7 +43,7 @@ class _AlbumSectionState extends State<AlbumSection> {
   Widget _buildEmptyState() {
     return Column(
       children: [
-        const SizedBox(height: 80),
+        const SizedBox(height: 80), // 위쪽 여백 추가
         Center(
           child: Image.asset(
             'assets/images/main_empty.png',
@@ -70,36 +70,34 @@ class _AlbumSectionState extends State<AlbumSection> {
       },
       child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        child: Align(
-          alignment: Alignment.center,
-          child: Wrap(
-            spacing: 20,
-            runSpacing: 35,
-            children: List.generate(albums.length, (index) {
-              final album = albums[index];
-              return SizedBox(
-                width: 150,
-                child: AlbumCard(
-                  imageUrl: album['imageUrl'] ?? '',
-                  title: album['title'],
-                  badgeType: album['badgeType'],
-                  isLiked: album['isLiked'],
-                  onTap: () {
-                    final albumId = album['id'].toString();
-                    final path = RoutePath.albumDetail.replaceFirst(
-                      ':albumId',
-                      albumId,
-                    );
-                    context.push(path);
-                  },
-                  onLikeToggle: () {
-                    context.read<MainViewModel>().toggleAlbumLike(album['id']);
-                  },
-                  isSelected: true,
-                ),
-              );
-            }),
-          ),
+        child: Wrap(
+          alignment: WrapAlignment.start, // 왼쪽 정렬로 변경
+          spacing: 20, // 가로 아이템 간의 간격
+          runSpacing: 35, // 세로 아이템 간의 간격
+          children: List.generate(albums.length, (index) {
+            final album = albums[index];
+            return SizedBox(
+              width: 150,
+              child: AlbumCard(
+                imageUrl: album['imageUrl'] ?? '',
+                title: album['title'],
+                badgeType: album['badgeType'],
+                isLiked: album['isLiked'],
+                onTap: () {
+                  final albumId = album['id'].toString();
+                  final path = RoutePath.albumDetail.replaceFirst(
+                    ':albumId',
+                    albumId,
+                  );
+                  context.push(path);
+                },
+                onLikeToggle: () {
+                  context.read<MainViewModel>().toggleAlbumLike(album['id']);
+                },
+                isSelected: true,
+              ),
+            );
+          }),
         ),
       ),
     );

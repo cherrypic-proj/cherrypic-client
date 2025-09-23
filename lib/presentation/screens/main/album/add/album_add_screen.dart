@@ -95,9 +95,9 @@ class _AlbumAddScreenState extends State<AlbumAddScreen> {
     final selectedType = _albumAddViewModel.selectedAlbumType;
     final albumName = _albumCoverViewModel.albumName;
 
-    // 기본값이면 빈 문자열로 처리
     final cleanAlbumName = albumName == '앨범 이름이 표시됩니다' ? '' : albumName;
 
+    // 이 부분에서 selectedType이 null이면서 price를 체크하려고 해서 오류 발생
     if (selectedType == null) {
       _showErrorDialog('앨범 유형을 선택해주세요.');
       return;
@@ -112,18 +112,17 @@ class _AlbumAddScreenState extends State<AlbumAddScreen> {
 
     bool success = false;
 
+    // null 체크 후 안전하게 접근
     if (selectedType.price == 0) {
-      // 무료 앨범 (BASIC)
       success = await _albumAddViewModel.createFreeAlbum(
         albumName: cleanAlbumName,
-        coverImageUrl: _albumCoverViewModel.coverImageUrl,
+        coverImage: _albumCoverViewModel.coverImage,
       );
     } else {
-      // 유료 앨범 (PRO, PREMIUM) - 결제 포함
       success = await _albumAddViewModel.createPaidAlbumWithPayment(
         context,
         albumName: cleanAlbumName,
-        coverImageUrl: _albumCoverViewModel.coverImageUrl,
+        coverImage: _albumCoverViewModel.coverImage,
       );
     }
 

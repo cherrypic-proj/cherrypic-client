@@ -1,3 +1,5 @@
+// lib/data/album/dto/response/album_dto.dart (수정 완료)
+
 import 'package:cherrypic/presentation/widgets/album/album_badge_type.dart';
 
 class AlbumDto {
@@ -6,7 +8,7 @@ class AlbumDto {
   final String? coverUrl;
   final String type; // BASIC, PRO, PREMIUM
   final int price;
-  final String status; // ACTIVE, CANCELED, EXPIRED
+  final String? status; // ACTIVE, CANCELED, EXPIRED (null 허용)
   final bool marked; // 좋아요 표시
   final String createdAt;
 
@@ -16,7 +18,7 @@ class AlbumDto {
     this.coverUrl,
     required this.type,
     required this.price,
-    required this.status,
+    this.status, // null 허용
     required this.marked,
     required this.createdAt,
   });
@@ -27,7 +29,7 @@ class AlbumDto {
       title: json['title'],
       coverUrl: json['coverUrl'],
       type: json['type'],
-      price: json['price'],
+      price: json['price'] ?? 0,
       status: json['status'],
       marked: json['marked'] ?? false,
       createdAt: json['createdAt'],
