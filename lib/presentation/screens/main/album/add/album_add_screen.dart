@@ -33,6 +33,7 @@ class _AlbumAddScreenState extends State<AlbumAddScreen> {
     super.dispose();
   }
 
+  // --- (Dialog 관련 메서드는 동일) ---
   void _showLoadingDialog() {
     showDialog(
       context: context,
@@ -81,8 +82,8 @@ class _AlbumAddScreenState extends State<AlbumAddScreen> {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.pop(context); // 다이얼로그 닫기
-              context.pop(); // 앨범 추가 화면 닫기
+              Navigator.pop(context);
+              context.pop();
             },
             child: const Text('확인'),
           ),
@@ -94,10 +95,8 @@ class _AlbumAddScreenState extends State<AlbumAddScreen> {
   Future<void> _createAlbum() async {
     final selectedType = _albumAddViewModel.selectedAlbumType;
     final albumName = _albumCoverViewModel.albumName;
-
     final cleanAlbumName = albumName == '앨범 이름이 표시됩니다' ? '' : albumName;
 
-    // 이 부분에서 selectedType이 null이면서 price를 체크하려고 해서 오류 발생
     if (selectedType == null) {
       _showErrorDialog('앨범 유형을 선택해주세요.');
       return;
@@ -112,7 +111,6 @@ class _AlbumAddScreenState extends State<AlbumAddScreen> {
 
     bool success = false;
 
-    // null 체크 후 안전하게 접근
     if (selectedType.price == 0) {
       success = await _albumAddViewModel.createFreeAlbum(
         albumName: cleanAlbumName,
@@ -140,6 +138,10 @@ class _AlbumAddScreenState extends State<AlbumAddScreen> {
     return AnimatedBuilder(
       animation: Listenable.merge([_albumCoverViewModel, _albumAddViewModel]),
       builder: (context, child) {
+        final bool isButtonEnabled = _albumAddViewModel.isCreateButtonEnabled(
+          _albumCoverViewModel.albumName,
+        );
+
         return Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.white,
@@ -180,15 +182,13 @@ class _AlbumAddScreenState extends State<AlbumAddScreen> {
                   ),
                   const SizedBox(height: 40),
 
-                  // 앨범 생성 버튼
                   CustomButton(
                     text: _albumAddViewModel.isLoading ? '생성 중...' : '앨범 생성',
-                    onPressed: _albumAddViewModel.isLoading
-                        ? null
-                        : _createAlbum,
+                    onPressed: isButtonEnabled && !_albumAddViewModel.isLoading
+                        ? _createAlbum
+                        : null, // 조건이 충족되지 않으면 null로 비활성화
                   ),
 
-                  // 에러 메시지 표시
                   if (_albumAddViewModel.error != null) ...[
                     const SizedBox(height: 16),
                     Container(

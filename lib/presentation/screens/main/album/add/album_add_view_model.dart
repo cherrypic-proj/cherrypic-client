@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-
 import 'package:cherrypic/data/album/dto/request/album_create_request_dto.dart';
 import 'package:cherrypic/data/album/repositories/album_repository.dart';
 import 'package:cherrypic/data/album/repositories/payment_repository.dart';
@@ -22,25 +21,37 @@ class AlbumAddViewModel extends ChangeNotifier {
        _paymentRepository = paymentRepository ?? PaymentRepository(),
        _imageUploadService = imageUploadService ?? ImageUploadService();
 
-  // 상태 변수들
   bool _isPermissionEnabled = false;
   bool _isLoading = false;
   String? _error;
   AlbumType? _selectedAlbumType;
 
-  // Getters
   bool get isPermissionEnabled => _isPermissionEnabled;
   bool get isLoading => _isLoading;
   String? get error => _error;
   AlbumType? get selectedAlbumType => _selectedAlbumType;
 
+  bool isCreateButtonEnabled(String albumName) {
+    // 앨범 이름이 비어있지 않고, 초기 안내 문구가 아니며, 앨범 타입이 선택되었는지 확인
+    final isAlbumNameValid =
+        albumName.trim().isNotEmpty && albumName != '앨범 이름이 표시됩니다';
+    final isAlbumTypeSelected = _selectedAlbumType != null;
+    return isAlbumNameValid && isAlbumTypeSelected;
+  }
+
   void togglePermission(bool value) {
+    if (_selectedAlbumType == AlbumType.basic && value) {
+      return; // 아무것도 하지 않고 종료
+    }
     _isPermissionEnabled = value;
     notifyListeners();
   }
 
   void setSelectedAlbumType(AlbumType? type) {
     _selectedAlbumType = type;
+    if (type == AlbumType.basic) {
+      _isPermissionEnabled = false;
+    }
     notifyListeners();
   }
 
@@ -74,7 +85,6 @@ class AlbumAddViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // 결제 진행
       final paymentId = await _processPaymentWithUI(context);
       if (paymentId == null) {
         _isLoading = false;
@@ -82,7 +92,6 @@ class AlbumAddViewModel extends ChangeNotifier {
         return false;
       }
 
-      // 앨범 생성
       final success = await _createAlbum(
         albumName: albumName,
         coverImage: coverImage,
@@ -120,8 +129,6 @@ class AlbumAddViewModel extends ChangeNotifier {
 
     try {
       String? coverUrl;
-
-      // 이미지가 있으면 업로드
       if (coverImage != null) {
         coverUrl = await _imageUploadService.uploadCoverImage(coverImage);
       }
@@ -131,7 +138,6 @@ class AlbumAddViewModel extends ChangeNotifier {
         coverUrl: coverUrl,
         type: _selectedAlbumType!.apiValue,
         paymentId: paymentId,
-        // BASIC 타입은 항상 권한 부여 비활성화
         permissionControl: _selectedAlbumType!.apiValue == 'BASIC'
             ? false
             : _isPermissionEnabled,
@@ -148,13 +154,11 @@ class AlbumAddViewModel extends ChangeNotifier {
   // UI에서 아임포트 결제를 실행하는 메서드
   Future<int?> _processPaymentWithUI(BuildContext context) async {
     try {
-      // 1. 결제 준비
       final readyResponse = await _paymentRepository.readyPayment(
         type: _selectedAlbumType!.apiValue,
-        albumId: null, // 첫 생성시 null
+        albumId: null,
       );
 
-      // 2. 결제 데이터 생성
       final paymentData = IamportService.createPaymentData(
         merchantUid: readyResponse.merchantUid,
         name: _selectedAlbumType!.displayName,
@@ -162,7 +166,6 @@ class AlbumAddViewModel extends ChangeNotifier {
         buyerName: readyResponse.buyerName,
       );
 
-      // 3. 아임포트 결제 실행
       final result = await Navigator.push(
         context,
         MaterialPageRoute(
@@ -189,11 +192,9 @@ class AlbumAddViewModel extends ChangeNotifier {
         ),
       );
 
-      // 4. 결제 결과 확인
       if (result != null && IamportService.isPaymentSuccessful(result)) {
         final impUid = IamportService.getImpUid(result);
         if (impUid != null) {
-          // 5. 결제 검증
           final verifyResponse = await _paymentRepository.verifyPayment(impUid);
           return verifyResponse.paymentId;
         }
