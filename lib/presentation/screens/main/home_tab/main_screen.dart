@@ -25,7 +25,7 @@ class MainScreen extends StatelessWidget {
               const SizedBox(height: 16),
               const AdBannerPlaceholder(),
               const SizedBox(height: 16),
-              // 검색창 추가
+              // 검색창
               Consumer<MainViewModel>(
                 builder: (context, viewModel, child) {
                   return Container(
@@ -42,7 +42,7 @@ class MainScreen extends StatelessWidget {
                         hintStyle: AppFont.size14.copyWith(
                           color: Colors.grey.shade600,
                         ),
-                        prefixIcon: Icon(
+                        suffixIcon: Icon(
                           Icons.search,
                           color: Colors.grey.shade600,
                           size: 20,
