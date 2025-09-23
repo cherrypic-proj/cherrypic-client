@@ -1,4 +1,6 @@
 PODS:
+  - app_links (6.4.1):
+    - Flutter
   - Flutter (1.0.0)
   - flutter_image_compress_common (1.0.0):
     - Flutter
@@ -6,6 +8,10 @@ PODS:
     - SDWebImage
     - SDWebImageWebPCoder
   - flutter_web_auth_2 (3.0.0):
+    - Flutter
+  - iamport_flutter (0.0.1):
+    - Flutter
+  - iamport_webview_flutter (0.0.1):
     - Flutter
   - kakao_flutter_sdk_common (1.9.7-3):
     - Flutter
@@ -51,9 +57,12 @@ PODS:
     - FlutterMacOS
 
 DEPENDENCIES:
+  - app_links (from `.symlinks/plugins/app_links/ios`)
   - Flutter (from `Flutter`)
   - flutter_image_compress_common (from `.symlinks/plugins/flutter_image_compress_common/ios`)
   - flutter_web_auth_2 (from `.symlinks/plugins/flutter_web_auth_2/ios`)
+  - iamport_flutter (from `.symlinks/plugins/iamport_flutter/ios`)
+  - iamport_webview_flutter (from `.symlinks/plugins/iamport_webview_flutter/ios`)
   - kakao_flutter_sdk_common (from `.symlinks/plugins/kakao_flutter_sdk_common/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - photo_manager (from `.symlinks/plugins/photo_manager/ios`)
@@ -71,12 +80,18 @@ SPEC REPOS:
     - SDWebImageWebPCoder
 
 EXTERNAL SOURCES:
+  app_links:
+    :path: ".symlinks/plugins/app_links/ios"
   Flutter:
     :path: Flutter
   flutter_image_compress_common:
     :path: ".symlinks/plugins/flutter_image_compress_common/ios"
   flutter_web_auth_2:
     :path: ".symlinks/plugins/flutter_web_auth_2/ios"
+  iamport_flutter:
+    :path: ".symlinks/plugins/iamport_flutter/ios"
+  iamport_webview_flutter:
+    :path: ".symlinks/plugins/iamport_webview_flutter/ios"
   kakao_flutter_sdk_common:
     :path: ".symlinks/plugins/kakao_flutter_sdk_common/ios"
   path_provider_foundation:
@@ -95,9 +110,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/video_player_avfoundation/darwin"
 
 SPEC CHECKSUMS:
+  app_links: 3dbc685f76b1693c66a6d9dd1e9ab6f73d97dc0a
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_image_compress_common: 1697a328fd72bfb335507c6bca1a65fa5ad87df1
   flutter_web_auth_2: 5c8d9dcd7848b5a9efb086d24e7a9adcae979c80
+  iamport_flutter: f270e0517eb5df7a6e03b976c4f6803f86557f18
+  iamport_webview_flutter: 8ba550569efb70160727ef56eac2ee5468a78cbd
   kakao_flutter_sdk_common: 600d55b532da0bd37268a529e1add49302477710
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
   Mantle: c5aa8794a29a022dfbbfc9799af95f477a69b62d

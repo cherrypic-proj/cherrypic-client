@@ -57,47 +57,51 @@ class _AlbumSectionState extends State<AlbumSection> {
 
   // 앨범이 있을 때 보여줄 그리드
   Widget _buildAlbumGrid(List<Map<String, dynamic>> albums) {
-    return NotificationListener<ScrollNotification>(
-      onNotification: (ScrollNotification scrollInfo) {
-        // 스크롤이 끝에 도달했을 때 추가 로드
-        if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-          final viewModel = context.read<MainViewModel>();
-          if (!viewModel.isLoading) {
-            viewModel.loadMoreAlbums();
-          }
-        }
-        return false;
-      },
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        child: Wrap(
-          alignment: WrapAlignment.start, // 왼쪽 정렬로 변경
-          spacing: 20, // 가로 아이템 간의 간격
-          runSpacing: 35, // 세로 아이템 간의 간격
-          children: List.generate(albums.length, (index) {
-            final album = albums[index];
-            return SizedBox(
-              width: 150,
-              child: AlbumCard(
-                imageUrl: album['imageUrl'] ?? '',
-                title: album['title'],
-                badgeType: album['badgeType'],
-                isLiked: album['isLiked'],
-                onTap: () {
-                  final albumId = album['id'].toString();
-                  final path = RoutePath.albumDetail.replaceFirst(
-                    ':albumId',
-                    albumId,
-                  );
-                  context.push(path);
-                },
-                onLikeToggle: () {
-                  context.read<MainViewModel>().toggleAlbumLike(album['id']);
-                },
-                isSelected: true,
-              ),
-            );
-          }),
+    final screenWidth = MediaQuery.of(context).size.width;
+    const cardWidth = 150.0;
+    const horizontalPadding = 20.0;
+    const spacing = 20.0;
+
+    final availableWidth = screenWidth - (horizontalPadding * 2);
+    final itemsPerRow = (availableWidth + spacing) ~/ (cardWidth + spacing);
+    final wrapWidth = (itemsPerRow * cardWidth) + ((itemsPerRow - 1) * spacing);
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(
+        horizontal: horizontalPadding,
+        vertical: 20,
+      ),
+      child: Center(
+        child: SizedBox(
+          width: wrapWidth,
+          child: Wrap(
+            alignment: WrapAlignment.start,
+            spacing: spacing,
+            runSpacing: 35,
+            children: albums.map((album) {
+              return SizedBox(
+                width: cardWidth,
+                child: AlbumCard(
+                  imageUrl: album['imageUrl'] ?? '',
+                  title: album['title'],
+                  badgeType: album['badgeType'],
+                  isLiked: album['isLiked'],
+                  onTap: () {
+                    final albumId = album['id'].toString();
+                    final path = RoutePath.albumDetail.replaceFirst(
+                      ':albumId',
+                      albumId,
+                    );
+                    context.push(path);
+                  },
+                  onLikeToggle: () {
+                    context.read<MainViewModel>().toggleAlbumLike(album['id']);
+                  },
+                  isSelected: true,
+                ),
+              );
+            }).toList(),
+          ),
         ),
       ),
     );
