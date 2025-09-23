@@ -14,14 +14,46 @@ class MainScreen extends StatelessWidget {
     return Scaffold(
       extendBody: true,
       backgroundColor: Colors.white,
-      // appBar: const CustomAppBar(),
       body: SafeArea(
         bottom: false,
         child: Column(
-          children: const [
-            SizedBox(height: 16),
-            AdBannerPlaceholder(),
-            Expanded(child: AlbumSection()),
+          children: [
+            const SizedBox(height: 16),
+            const AdBannerPlaceholder(),
+            const SizedBox(height: 16),
+            // 검색창 추가
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 36.5),
+              height: 40,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: TextField(
+                style: AppFont.size14,
+                decoration: InputDecoration(
+                  hintText: '앨범을 검색하세요',
+                  hintStyle: AppFont.size14.copyWith(
+                    color: Colors.grey.shade600,
+                  ),
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Colors.grey.shade600,
+                    size: 20,
+                  ),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 10,
+                  ),
+                ),
+                onChanged: (value) {
+                  // TODO: 검색 기능 구현
+                },
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Expanded(child: AlbumSection()),
           ],
         ),
       ),
