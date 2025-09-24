@@ -200,6 +200,7 @@
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				89D3633068BCE0E02040A6E0 /* [CP] Embed Pods Frameworks */,
+				07A3AAA32E845F9F00D170F2 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -271,6 +272,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		07A3AAA32E845F9F00D170F2 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# 프로젝트 최상위에 있는 .env 파일 경로\nENV_FILE=\"${PROJECT_DIR}/../.env\"\n\n# 스크립트로 생성할 파일 경로\nXCCONFIG_FILE=\"${SRCROOT}/Flutter/Generated.xcconfig\"\n\n# 기존 파일 삭제\nrm -f \"$XCCONFIG_FILE\"\n\n# .env 파일이 존재할 경우, KAKAO_NATIVE_APP_KEY 값을 읽어 XCCONFIG_FILE에 쓴다.\nif [ -f \"$ENV_FILE\" ]; then\n  grep \"KAKAO_NATIVE_APP_KEY\" \"$ENV_FILE\" > \"$XCCONFIG_FILE\"\nfi\n";
+		};
 		2C1E9991C8B281045EBA0480 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
