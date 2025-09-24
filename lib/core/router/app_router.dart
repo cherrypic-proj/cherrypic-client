@@ -25,8 +25,8 @@ import 'package:cherrypic/presentation/screens/store/photo_printing/service_step
 import 'package:cherrypic/presentation/screens/store/photo_printing/service_step/select_image/select_image_screen.dart';
 import 'package:cherrypic/presentation/screens/store/photo_printing/service_step/select_option/select_option_screen.dart';
 import 'package:cherrypic/presentation/screens/store/photo_printing/service_step/select_payment/select_payment_screen.dart';
-import 'package:cherrypic/presentation/screens/store/subscription/payment_complete_screen.dart';
-import 'package:cherrypic/presentation/screens/store/subscription/payment_method_screen.dart';
+import 'package:cherrypic/presentation/screens/main/home_tab/payment_complete_screen.dart';
+import 'package:cherrypic/presentation/screens/main/home_tab/payment_method_screen.dart';
 import 'package:cherrypic/presentation/screens/store/store_main_screen.dart';
 import 'package:cherrypic/presentation/screens/store/subscription/store_subs_info.dart';
 import 'package:cherrypic/presentation/widgets/custom_app_bar.dart';
@@ -125,7 +125,13 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
     );
     return StoreSubsInfo(storeType: storeType);
   },
-  RoutePath.payment_method: (context, state) => const PaymentMethodScreen(),
+  RoutePath.payment_method: (context, state) {
+    final extra = state.extra as Map<String, dynamic>?;
+    return PaymentMethodScreen(
+      subscriptionType: extra?['subscriptionType'],
+      albumData: extra?['albumData'],
+    );
+  },
   RoutePath.payment_complete: (context, state) => const PaymentCompleteScreen(),
 
   RoutePath.photo_printing: (context, state) => const PhotoPrintingScreen(),

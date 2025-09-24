@@ -2,7 +2,7 @@ import 'package:cherrypic/core/network/api_response.dart';
 import 'package:cherrypic/core/network/dio_client.dart';
 import 'package:cherrypic/core/network/error_handler.dart';
 import 'package:cherrypic/data/album/dto/request/payment_ready_request_dto.dart';
-import 'package:cherrypic/data/album/dto/request/payment_ready_response_dto.dart';
+import 'package:cherrypic/data/album/dto/response/payment_ready_response_dto.dart';
 import 'package:cherrypic/data/album/dto/request/payment_verify_request_dto.dart';
 import 'package:dio/dio.dart';
 

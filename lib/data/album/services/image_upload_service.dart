@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
 import 'package:cherrypic/core/network/dio_client.dart';
@@ -50,24 +49,5 @@ class ImageUploadService {
     } catch (e) {
       throw Exception('이미지 업로드 실패: $e');
     }
-  }
-
-  // 이미지 확장자 감지 (옵션)
-  String _detectImageExtension(Uint8List bytes) {
-    if (bytes.length >= 2) {
-      // JPEG
-      if (bytes[0] == 0xFF && bytes[1] == 0xD8) {
-        return 'JPEG';
-      }
-      // PNG
-      if (bytes.length >= 8 &&
-          bytes[0] == 0x89 &&
-          bytes[1] == 0x50 &&
-          bytes[2] == 0x4E &&
-          bytes[3] == 0x47) {
-        return 'PNG';
-      }
-    }
-    return 'JPEG'; // 기본값
   }
 }

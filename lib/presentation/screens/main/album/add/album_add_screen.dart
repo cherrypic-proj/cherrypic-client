@@ -1,3 +1,4 @@
+import 'package:cherrypic/core/router/route_path.dart';
 import 'package:cherrypic/presentation/screens/main/album/add/album_add_view_model.dart';
 import 'package:cherrypic/presentation/screens/main/album/components/album_cover_section.dart';
 import 'package:cherrypic/presentation/screens/main/album/components/album_cover_view_model.dart';
@@ -92,6 +93,32 @@ class _AlbumAddScreenState extends State<AlbumAddScreen> {
     );
   }
 
+  // 앨범 데이터 생성 메서드
+  Map<String, dynamic> _getAlbumData() {
+    final albumName = _albumCoverViewModel.albumName;
+    final cleanAlbumName = albumName == '앨범 이름이 표시됩니다' ? '' : albumName;
+
+    return {
+      'albumName': cleanAlbumName,
+      'coverImage': _albumCoverViewModel.coverImage,
+      'isPermissionEnabled': _albumAddViewModel.isPermissionEnabled,
+    };
+  }
+
+  // 구독 타입을 문자열로 변환
+  String _getSubscriptionTypeString(dynamic selectedType) {
+    if (selectedType == null) return 'basic';
+
+    // selectedType의 구조에 따라 적절히 변환
+    if (selectedType.toString().toLowerCase().contains('pro')) {
+      return 'pro';
+    } else if (selectedType.toString().toLowerCase().contains('premium')) {
+      return 'premium';
+    } else {
+      return 'basic';
+    }
+  }
+
   Future<void> _createAlbum() async {
     final selectedType = _albumAddViewModel.selectedAlbumType;
     final albumName = _albumCoverViewModel.albumName;
@@ -107,29 +134,31 @@ class _AlbumAddScreenState extends State<AlbumAddScreen> {
       return;
     }
 
-    _showLoadingDialog();
-
-    bool success = false;
-
+    // 무료 앨범인 경우 바로 생성
     if (selectedType.price == 0) {
-      success = await _albumAddViewModel.createFreeAlbum(
+      _showLoadingDialog();
+
+      bool success = await _albumAddViewModel.createFreeAlbum(
         albumName: cleanAlbumName,
         coverImage: _albumCoverViewModel.coverImage,
       );
+
+      _hideLoadingDialog();
+
+      if (success) {
+        _showSuccessDialog();
+      } else if (_albumAddViewModel.error != null) {
+        _showErrorDialog(_albumAddViewModel.error!);
+      }
     } else {
-      success = await _albumAddViewModel.createPaidAlbumWithPayment(
-        context,
-        albumName: cleanAlbumName,
-        coverImage: _albumCoverViewModel.coverImage,
+      // 유료 앨범인 경우 결제 화면으로 이동
+      final subscriptionType = _getSubscriptionTypeString(selectedType);
+      final albumData = _getAlbumData();
+
+      context.push(
+        RoutePath.payment_method,
+        extra: {'subscriptionType': subscriptionType, 'albumData': albumData},
       );
-    }
-
-    _hideLoadingDialog();
-
-    if (success) {
-      _showSuccessDialog();
-    } else if (_albumAddViewModel.error != null) {
-      _showErrorDialog(_albumAddViewModel.error!);
     }
   }
 

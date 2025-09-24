@@ -1,5 +1,5 @@
 import 'package:cherrypic/data/album/dto/request/payment_ready_request_dto.dart';
-import 'package:cherrypic/data/album/dto/request/payment_ready_response_dto.dart';
+import 'package:cherrypic/data/album/dto/response/payment_ready_response_dto.dart';
 import 'package:cherrypic/data/album/dto/request/payment_verify_request_dto.dart';
 import 'package:cherrypic/data/album/services/payment_remote_data_source.dart';
 
