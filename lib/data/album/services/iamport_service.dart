@@ -2,14 +2,10 @@ import 'package:cherrypic/presentation/screens/store/components/payment_method_b
 import 'package:iamport_flutter/model/payment_data.dart';
 
 class IamportService {
-  // 실제 가맹점 식별코드로 변경 필요 (아임포트에서 발급받은 코드)
-  // 테스트용: imp00000000, 실제용: imp + 고유번호
-  static const String userCode = 'iamport'; // 테스트 가맹점 코드
+  // React 코드와 동일한 가맹점 코드 사용
+  static const String userCode = 'imp14735503';
 
-  // 실제 서비스에서는 환경에 따라 분리
-  // static const String userCode = 'kakaopay.TC0ONETIME'; // 실제 카카오페이 가맹점 코드
-
-  // 카카오페이 결제 데이터 생성
+  // 기존 호환성을 위한 카카오페이 결제 데이터 생성
   static PaymentData createPaymentData({
     required String merchantUid,
     required String name,
@@ -17,22 +13,18 @@ class IamportService {
     required String buyerName,
   }) {
     return PaymentData(
-      pg: 'kakaopay.TC0ONETIME', // 실제 채널 키 사용
-      payMethod: 'card', // 결제 방법
-      name: name, // 상품명
-      merchantUid: merchantUid, // 고유 주문번호
-      amount: amount, // 결제 금액
-      buyerName: buyerName, // 구매자 이름
-      buyerTel: '010-1234-5678', // 구매자 전화번호 (실제 사용자 정보로 변경 필요)
-      buyerEmail: 'test@example.com', // 구매자 이메일 (실제 사용자 정보로 변경 필요)
-      buyerAddr: '서울특별시 강남구', // 구매자 주소
-      buyerPostcode: '06018', // 구매자 우편번호
-      appScheme: 'cherrypic', // 앱 스킴 (실제 앱의 URL Scheme으로 변경)
-      // 카카오페이 전용 설정
-      customData: {
-        'service_type': 'subscription', // 구독 서비스 표시
-        'platform': 'mobile_app', // 플랫폼 정보
-      },
+      pg: 'kakaopay', // React 코드와 동일
+      payMethod: 'card',
+      name: name, // 테스트 표시 제거 (React 코드와 동일)
+      merchantUid: merchantUid,
+      amount: amount, // 실제 금액 사용 (React 코드와 동일)
+      buyerName: buyerName,
+      buyerTel: '010-1234-5678',
+      buyerEmail: 'test@example.com',
+      buyerAddr: '서울시 강남구 신사동 661-16',
+      buyerPostcode: '06018',
+      appScheme: 'cherrypic',
+      customData: {'service_type': 'subscription', 'platform': 'mobile_app'},
     );
   }
 
@@ -44,7 +36,7 @@ class IamportService {
     required String buyerName,
   }) {
     return PaymentData(
-      pg: 'tosspay.tosstest', // 토스페이 PG 설정 (테스트: tosstest, 실제: 실제 가맹점코드)
+      pg: 'tosspay',
       payMethod: 'card',
       name: name,
       merchantUid: merchantUid,
@@ -52,61 +44,68 @@ class IamportService {
       buyerName: buyerName,
       buyerTel: '010-1234-5678',
       buyerEmail: 'test@example.com',
-      buyerAddr: '서울특별시 강남구',
+      buyerAddr: '서울시 강남구 신사동 661-16',
       buyerPostcode: '06018',
       appScheme: 'cherrypic',
       customData: {'service_type': 'subscription', 'platform': 'mobile_app'},
     );
   }
 
-  // 결제 결과 처리
+  // 결제 결과 처리 (React 코드 로직과 동일)
   static bool isPaymentSuccessful(Map<String, String> result) {
+    // React: rsp.success 체크
     final success = result['success'];
-    final errorCode = result['error_code'];
-    final errorMsg = result['error_msg'];
+    final impSuccess = result['imp_success'];
 
-    if (success == 'true') {
+    print('결제 결과 success 값: $success');
+    print('결제 결과 imp_success 값: $impSuccess');
+    print('전체 결과: $result');
+
+    // React 코드와 동일한 로직
+    if (success == 'true' || impSuccess == 'true') {
+      print('✅ 결제 성공');
       return true;
     } else {
-      // 결제 실패 로그
-      print('결제 실패: $errorCode - $errorMsg');
+      final errorCode = result['error_code'];
+      final errorMsg = result['error_msg'];
+      print('❌ 결제 실패: $errorCode - $errorMsg');
       return false;
     }
   }
 
-  // IMP UID 추출
+  // IMP UID 추출 (React: rsp 객체에서 추출)
   static String? getImpUid(Map<String, String> result) {
     return result['imp_uid'];
   }
 
-  // 결제 환경 설정 (개발/운영 분리)
+  // 환경별 결제 데이터 생성
   static PaymentData createPaymentDataForEnvironment({
     required String merchantUid,
     required String name,
     required int amount,
     required String buyerName,
     required PaymentMethodType paymentType,
-    bool isProduction = false, // 운영 환경 여부
+    bool isProduction = false,
   }) {
     String pg;
 
+    // React 코드 기반 PG 설정
     if (paymentType == PaymentMethodType.kakao) {
-      // 임시로 여러 형식을 시도해볼 수 있도록 설정
-      pg = 'kakaopay'; // 가장 기본적인 형식부터 시도
+      pg = 'kakaopay'; // React 코드와 동일
     } else {
-      pg = isProduction ? 'tosspay' : 'tosspay.tosstest';
+      pg = 'tosspay';
     }
 
     return PaymentData(
       pg: pg,
       payMethod: 'card',
-      name: name,
+      name: name, // React 코드처럼 원본 이름 사용
       merchantUid: merchantUid,
-      amount: amount,
+      amount: amount, // React 코드처럼 실제 금액 사용
       buyerName: buyerName,
       buyerTel: '010-1234-5678',
       buyerEmail: 'test@example.com',
-      buyerAddr: '서울특별시 강남구',
+      buyerAddr: '서울시 강남구 신사동 661-16',
       buyerPostcode: '06018',
       appScheme: 'cherrypic',
       customData: {
@@ -117,8 +116,6 @@ class IamportService {
     );
   }
 }
-
-// PaymentMethodType은 payment_method_box.dart에서 import하여 사용
 
 // 결제 결과 모델
 class PaymentResult {

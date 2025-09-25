@@ -26,6 +26,7 @@ class PaymentMethodScreen extends StatefulWidget {
 class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
   PaymentMethodType _selectedMethod = PaymentMethodType.kakao;
   bool _isProcessingPayment = false;
+  bool _callbackExecuted = false;
 
   // 구독 타입에 따른 결제 정보 생성
   PaymentInfoModel _getPaymentModel() {
@@ -54,9 +55,11 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
     }
   }
 
-  // 실제 결제 처리
+  // 실제 결제 처리 - mounted 체크 추가
   Future<void> _processPayment() async {
     if (_isProcessingPayment) return;
+
+    if (!mounted) return; // 초기 체크
 
     setState(() {
       _isProcessingPayment = true;
@@ -69,6 +72,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
         type: subscriptionType,
         albumId: null,
       );
+
+      if (!mounted) return; // API 응답 후 체크
 
       // 2. 아임포트 결제 데이터 생성
       final paymentData = IamportService.createPaymentDataForEnvironment(
@@ -105,11 +110,25 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
             userCode: IamportService.userCode,
             data: paymentData,
             callback: (result) {
+              // 중복 실행 방지
+              if (_callbackExecuted) return;
+              _callbackExecuted = true;
+
+              print('=== 아임포트 콜백 실행 ===');
+              print('전체 결과: $result');
+
+              // 반드시 Navigator.pop을 호출해야 함
               Navigator.pop(context, result);
             },
           ),
         ),
       );
+
+      print('Navigator.push 결과: $result');
+      print('result가 null인가? ${result == null}');
+
+      // 결제창에서 돌아온 후 mounted 체크
+      if (!mounted) return;
 
       if (result != null) {
         _handlePaymentResult(result);
@@ -117,21 +136,32 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
         _showErrorDialog('결제가 취소되었습니다.');
       }
     } catch (e) {
+      if (!mounted) return; // 에러 발생 시에도 체크
       _showErrorDialog('결제 준비 중 오류가 발생했습니다: ${e.toString()}');
     } finally {
-      setState(() {
-        _isProcessingPayment = false;
-      });
+      _callbackExecuted = false; // 플래그 리셋
+      if (mounted) {
+        setState(() {
+          _isProcessingPayment = false;
+        });
+      }
     }
   }
 
-  // 결제 결과 처리
+  // 결제 결과 처리 - mounted 체크 추가
   void _handlePaymentResult(Map<String, String> result) {
+    print('결제 결과: $result'); // 이 로그가 찍히는지 확인
+
+    if (!mounted) return; // 초기 체크
+
     final isSuccess = IamportService.isPaymentSuccessful(result);
     final impUid = IamportService.getImpUid(result);
+    print('결제 성공: $isSuccess, impUid: $impUid'); // 추가 로그
 
     if (isSuccess && impUid != null) {
       // 결제 성공 - 완료 화면으로 이동
+      if (!mounted) return; // 화면 이동 전 한번 더 체크
+
       context.pushReplacement(
         RoutePath.payment_complete,
         extra: {
@@ -149,7 +179,10 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
     }
   }
 
+  // 에러 다이얼로그 - mounted 체크 추가
   void _showErrorDialog(String message) {
+    if (!mounted) return; // 다이얼로그 표시 전 체크
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

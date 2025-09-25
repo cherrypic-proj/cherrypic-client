@@ -34,9 +34,11 @@ class _PaymentCompleteScreenState extends State<PaymentCompleteScreen> {
   bool _isCreatingAlbum = false;
   String? _errorMessage;
 
-  // 앨범 생성하기 버튼 클릭 시 호출
+  // 앨범 생성하기 버튼 클릭 시 호출 - mounted 체크 추가
   Future<void> _createAlbumWithPayment() async {
     if (_isCreatingAlbum) return;
+
+    if (!mounted) return; // 초기 체크
 
     setState(() {
       _isCreatingAlbum = true;
@@ -52,6 +54,9 @@ class _PaymentCompleteScreenState extends State<PaymentCompleteScreen> {
       final verifyResponse = await _paymentRepository.verifyPayment(
         widget.impUid!,
       );
+
+      if (!mounted) return; // API 응답 후 체크
+
       final paymentId = verifyResponse.paymentId;
 
       // 2. 앨범 데이터 준비
@@ -68,6 +73,8 @@ class _PaymentCompleteScreenState extends State<PaymentCompleteScreen> {
       if (coverImage != null) {
         coverUrl = await _imageUploadService.uploadCoverImage(coverImage);
       }
+
+      if (!mounted) return; // 이미지 업로드 후 체크
 
       // 4. 구독 타입을 API 값으로 변환
       String apiType;
@@ -93,20 +100,30 @@ class _PaymentCompleteScreenState extends State<PaymentCompleteScreen> {
 
       await _albumRepository.createAlbum(requestDto);
 
+      if (!mounted) return; // 앨범 생성 후 체크
+
       // 6. 성공 시 홈으로 이동
       _showSuccessDialog();
     } catch (e) {
+      if (!mounted) return; // 에러 발생 시에도 체크
+
       setState(() {
         _errorMessage = e.toString();
       });
     } finally {
-      setState(() {
-        _isCreatingAlbum = false;
-      });
+      // finally에서도 mounted 체크 후 setState
+      if (mounted) {
+        setState(() {
+          _isCreatingAlbum = false;
+        });
+      }
     }
   }
 
+  // 성공 다이얼로그 - mounted 체크 추가
   void _showSuccessDialog() {
+    if (!mounted) return; // 다이얼로그 표시 전 체크
+
     showDialog(
       context: context,
       barrierDismissible: false,

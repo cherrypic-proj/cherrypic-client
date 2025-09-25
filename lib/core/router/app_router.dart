@@ -132,8 +132,15 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
       albumData: extra?['albumData'],
     );
   },
-  RoutePath.payment_complete: (context, state) => const PaymentCompleteScreen(),
-
+  RoutePath.payment_complete: (context, state) {
+    final extra = state.extra as Map<String, dynamic>?;
+    return PaymentCompleteScreen(
+      subscriptionType: extra?['subscriptionType'],
+      albumData: extra?['albumData'],
+      impUid: extra?['impUid'],
+      isSuccess: extra?['isSuccess'] ?? false,
+    );
+  },
   RoutePath.photo_printing: (context, state) => const PhotoPrintingScreen(),
   RoutePath.select_album: (context, state) => const SelectAlbumScreen(),
   RoutePath.select_image: (context, state) {
