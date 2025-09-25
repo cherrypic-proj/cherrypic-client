@@ -135,4 +135,16 @@ class MainViewModel extends ChangeNotifier {
   Future<void> refresh() async {
     await loadAlbums(refresh: true);
   }
+
+  // 화면이 다시 보여질 때 호출 (새 앨범 추가 후 자동 새로고침용)
+  void onResume() {
+    debugPrint('MainViewModel.onResume() 호출');
+    refresh();
+  }
+
+  // 새 앨범이 추가되었을 때 호출
+  void onNewAlbumAdded() {
+    debugPrint('새 앨범 추가됨 - 목록 새로고침');
+    refresh();
+  }
 }
