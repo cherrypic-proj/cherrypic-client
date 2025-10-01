@@ -41,6 +41,9 @@ dependencies:
     # 결제
     iamport_flutter: ^0.10.21
 
+    # 공유
+    share_plus: ^7.2.2
+
 dev_dependencies:
     flutter_test:
         sdk: flutter

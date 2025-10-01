@@ -6,6 +6,7 @@ import 'package:cherrypic/data/album/dto/request/album_image_upload_request_dto.
 import 'package:cherrypic/data/album/dto/response/album_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_detail_dto.dart';
 import 'package:cherrypic/data/album/dto/request/album_create_request_dto.dart';
+import 'package:cherrypic/data/album/dto/response/invitation_link_dto.dart';
 import 'package:cherrypic/data/album/dto/response/participant_dto.dart';
 import 'package:cherrypic/data/album/dto/response/presigned_url_response_dto.dart';
 import 'package:dio/dio.dart';
@@ -155,6 +156,22 @@ class AlbumRemoteDataSource {
         response.data,
         (json) =>
             ParticipantListResponseDto.fromJson(json as Map<String, dynamic>),
+      );
+
+      return apiResponse.data!;
+    } on DioException catch (e) {
+      throw ErrorHandler.handle(e);
+    }
+  }
+
+  /// 앨범 초대 링크 생성
+  Future<InvitationLinkDto> createInvitationLink(int albumId) async {
+    try {
+      final response = await _dio.post(ApiPath.albumInvitationLink(albumId));
+
+      final apiResponse = ApiResponse.fromJson(
+        response.data,
+        (json) => InvitationLinkDto.fromJson(json as Map<String, dynamic>),
       );
 
       return apiResponse.data!;

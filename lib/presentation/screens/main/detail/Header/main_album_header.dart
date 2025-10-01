@@ -135,13 +135,13 @@ class MainAlbumHeader extends StatelessWidget {
                   child: Center(
                     child: Consumer<AlbumHeaderViewModel>(
                       builder: (context, vm, _) {
-                        // headerVm → vm으로 변경
                         return CustomAlbumBadge(
+                          albumId: data!.albumId, // 추가
                           userName: data!.hostName,
                           memberCountText: data!.numOfParticipants.toString(),
                           showBadgeType: true,
                           showAddMemberButton: true,
-                          members: vm.participants, // headerVm → vm으로 변경
+                          members: vm.participants,
                         );
                       },
                     ),
