@@ -2,14 +2,42 @@ import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:cherrypic/presentation/screens/main/home_tab/ad_banner_placeholder.dart';
 import 'package:cherrypic/presentation/screens/main/home_tab/album_section.dart';
+import 'package:cherrypic/presentation/screens/main/home_tab/components/album_option_menu.dart';
 import 'package:cherrypic/presentation/screens/main/home_tab/main_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:cherrypic/core/router/route_path.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
+
+  void _showAlbumOptions(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: 'Dismiss',
+      barrierColor: Colors.black.withValues(alpha: 0.5),
+      transitionDuration: const Duration(milliseconds: 200),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return FadeTransition(
+          opacity: animation,
+          child: SlideTransition(
+            position:
+                Tween<Offset>(
+                  begin: const Offset(0, 0.3),
+                  end: Offset.zero,
+                ).animate(
+                  CurvedAnimation(parent: animation, curve: Curves.easeOut),
+                ),
+            child: AlbumOptionMenu(
+              onDismiss: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,9 +104,7 @@ class MainScreen extends StatelessWidget {
             width: 85,
             height: 45,
             child: TextButton(
-              onPressed: () {
-                context.push(RoutePath.albumAdd);
-              },
+              onPressed: () => _showAlbumOptions(context),
               style: TextButton.styleFrom(
                 backgroundColor: AppColor.mainRed,
                 padding: EdgeInsets.zero,
