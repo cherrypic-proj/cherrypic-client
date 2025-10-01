@@ -5,26 +5,12 @@ import 'package:flutter/material.dart';
 import '../../../../../../core/constants/font.dart';
 import 'member_list_popup.dart';
 
-final List<MemberListData> _dummyMembers = [
-  MemberListData('김나은', const AssetImage('assets/images/sample_photo.png')),
-  MemberListData('김지현', const AssetImage('assets/images/sample_photo.png')),
-  MemberListData('나용준', const AssetImage('assets/images/sample_photo.png')),
-  MemberListData('최현태', const AssetImage('assets/images/sample_photo.png')),
-  MemberListData('한금준', const AssetImage('assets/images/sample_photo.png')),
-  MemberListData('황상환', const AssetImage('assets/images/sample_photo.png')),
-  MemberListData('김나은', const AssetImage('assets/images/sample_photo.png')),
-  MemberListData('김지현', const AssetImage('assets/images/sample_photo.png')),
-  MemberListData('나용준', const AssetImage('assets/images/sample_photo.png')),
-  MemberListData('최현태', const AssetImage('assets/images/sample_photo.png')),
-  MemberListData('한금준', const AssetImage('assets/images/sample_photo.png')),
-  MemberListData('황상환', const AssetImage('assets/images/sample_photo.png')),
-];
-
 class CustomAlbumBadge extends StatelessWidget {
   final String userName;
   final String memberCountText;
   final bool showBadgeType;
   final bool showAddMemberButton;
+  final List<MemberListData>? members;
 
   const CustomAlbumBadge({
     super.key,
@@ -32,6 +18,7 @@ class CustomAlbumBadge extends StatelessWidget {
     required this.memberCountText,
     required this.showBadgeType,
     required this.showAddMemberButton,
+    this.members, // 추가
   });
 
   @override
@@ -104,7 +91,8 @@ class CustomAlbumBadge extends StatelessWidget {
   }
 
   Widget _buildMemberCountButton() {
-    return MemberCountButton(members: _dummyMembers);
+    // members가 null이면 빈 리스트 사용
+    return MemberCountButton(members: members ?? []);
   }
 
   Widget _buildAddMemberButton() {

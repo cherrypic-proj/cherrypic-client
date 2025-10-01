@@ -21,7 +21,7 @@ class AlbumDetailViewModel extends ChangeNotifier {
   List<AlbumDayGroup> groups;
 
   AlbumDetailViewModel({List<AlbumDayGroup>? initialGroups})
-    : groups = initialGroups ?? _mockGroups();
+    : groups = initialGroups ?? [];
 
   /// 외부에서 데이터 세팅하고 싶을 때 사용
   void setGroups(List<AlbumDayGroup> newGroups) {

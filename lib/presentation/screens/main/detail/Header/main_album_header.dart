@@ -75,29 +75,19 @@ class MainAlbumHeader extends StatelessWidget {
             ),
             Stack(
               children: [
+                // 커버 이미지 - 회색으로 변경
                 Container(
                   height: 370,
                   width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    image: DecorationImage(
-                      image: data!.coverUrl.startsWith('http')
-                          ? NetworkImage(data!.coverUrl)
-                          : AssetImage(data!.coverUrl) as ImageProvider,
-                      fit: BoxFit.cover,
-                      onError: (exception, stackTrace) {
-                        debugPrint('이미지 로드 실패: $exception');
-                      },
-                    ),
-                  ),
+                  color: Colors.grey[300], // 단순 회색 배경
                 ),
                 Positioned(
                   top: 20,
                   left: 5,
                   right: 5,
                   child: CustomGaugeBar(
-                    usedGB: data!.capacityUsed.toDouble(),
-                    totalGB: data!.totalCapacity.toDouble(),
+                    usedGB: data!.capacityUsed,
+                    totalGB: data!.totalCapacity,
                   ),
                 ),
                 Positioned(
@@ -110,6 +100,7 @@ class MainAlbumHeader extends StatelessWidget {
                       memberCountText: data!.numOfParticipants.toString(),
                       showBadgeType: true,
                       showAddMemberButton: true,
+                      members: [], // 빈 리스트 전달 (멤버 API 연동 전까지)
                     ),
                   ),
                 ),

@@ -23,13 +23,10 @@ class AlbumHeaderViewModel extends ChangeNotifier {
 
     try {
       final dto = await _albumRepository.getAlbumDetail(albumId);
-
-      // DTO를 AlbumHeaderData로 변환
       header = AlbumHeaderData(
         albumId: albumId,
         title: dto.title,
-        coverUrl:
-            dto.coverUrl ?? 'assets/images/sample_photo.png', // null이면 기본 이미지
+        coverUrl: dto.coverUrl ?? '',
         photoCount: 0,
         progress: dto.capacityUsed / dto.totalCapacity,
         badgeText: _getBadgeText(dto.type),
