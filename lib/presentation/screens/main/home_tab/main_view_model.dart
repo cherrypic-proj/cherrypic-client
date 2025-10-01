@@ -14,6 +14,7 @@ class MainViewModel extends ChangeNotifier {
   bool _hasMore = true;
   String? _error;
   String _searchKeyword = '';
+  bool _showAlbumMenu = false; // 추가: 앨범 메뉴 표시 상태
 
   // Getters
   List<Map<String, dynamic>> get albums => _albums;
@@ -22,6 +23,19 @@ class MainViewModel extends ChangeNotifier {
   bool get hasMore => _hasMore;
   String? get error => _error;
   String get searchKeyword => _searchKeyword;
+  bool get showAlbumMenu => _showAlbumMenu; // 추가
+
+  // 추가: 앨범 메뉴 토글
+  void toggleAlbumMenu() {
+    _showAlbumMenu = !_showAlbumMenu;
+    notifyListeners();
+  }
+
+  // 추가: 앨범 메뉴 숨기기
+  void hideAlbumMenu() {
+    _showAlbumMenu = false;
+    notifyListeners();
+  }
 
   // 앨범 목록 로드 (초기 로드)
   Future<void> loadAlbums({
