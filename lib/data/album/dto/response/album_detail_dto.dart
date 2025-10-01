@@ -1,15 +1,15 @@
 class AlbumDetailDto {
   final String title;
-  final String coverUrl;
+  final String? coverUrl;
   final String type;
-  final int capacityUsed;
-  final int totalCapacity;
+  final double capacityUsed;
+  final double totalCapacity;
   final String hostName;
   final int numOfParticipants;
 
   AlbumDetailDto({
     required this.title,
-    required this.coverUrl,
+    this.coverUrl,
     required this.type,
     required this.capacityUsed,
     required this.totalCapacity,
@@ -20,10 +20,14 @@ class AlbumDetailDto {
   factory AlbumDetailDto.fromJson(Map<String, dynamic> json) {
     return AlbumDetailDto(
       title: json['title'] as String,
-      coverUrl: json['coverUrl'] as String,
+      coverUrl: json['coverUrl'] as String?,
       type: json['type'] as String,
-      capacityUsed: json['capacityUsed'] as int,
-      totalCapacity: json['totalCapacity'] as int,
+      capacityUsed: (json['capacityUsed'] is String)
+          ? double.parse(json['capacityUsed'] as String)
+          : (json['capacityUsed'] as num).toDouble(),
+      totalCapacity: (json['totalCapacity'] is String)
+          ? double.parse(json['totalCapacity'] as String)
+          : (json['totalCapacity'] as num).toDouble(),
       hostName: json['hostName'] as String,
       numOfParticipants: json['numOfParticipants'] as int,
     );
