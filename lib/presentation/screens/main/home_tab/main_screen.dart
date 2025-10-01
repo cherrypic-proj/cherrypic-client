@@ -73,7 +73,7 @@ class MainScreen extends StatelessWidget {
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(right: 24),
           child: SizedBox(
-            width: 120,
+            width: 85,
             height: 45,
             child: TextButton(
               onPressed: () {
@@ -90,7 +90,7 @@ class MainScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    '앨범추가',
+                    '앨범',
                     style: AppFont.size18.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
