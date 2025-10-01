@@ -84,7 +84,7 @@ class _AlbumAddScreenState extends State<AlbumAddScreen> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              context.pop();
+              context.pop(true);
             },
             child: const Text('확인'),
           ),
@@ -145,8 +145,8 @@ class _AlbumAddScreenState extends State<AlbumAddScreen> {
 
       _hideLoadingDialog();
 
-      if (success) {
-        _showSuccessDialog();
+      if (success && mounted) {
+        context.pop(true);
       } else if (_albumAddViewModel.error != null) {
         _showErrorDialog(_albumAddViewModel.error!);
       }

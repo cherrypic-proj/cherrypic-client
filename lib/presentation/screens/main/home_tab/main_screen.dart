@@ -7,11 +7,32 @@ import 'package:cherrypic/presentation/screens/main/home_tab/main_view_model.dar
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
-  void _showAlbumOptions(BuildContext context) {
-    showGeneralDialog(
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  late final MainViewModel _viewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _viewModel = MainViewModel();
+    // 초기 앨범 목록 로드
+    _viewModel.loadAlbums();
+  }
+
+  @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
+  }
+
+  void _showAlbumOptions(BuildContext context) async {
+    final result = await showGeneralDialog(
       context: context,
       barrierDismissible: true,
       barrierLabel: 'Dismiss',
@@ -37,12 +58,17 @@ class MainScreen extends StatelessWidget {
         );
       },
     );
+
+    // 앨범 추가 성공 시 (result == true) 새로고침
+    if (result == true) {
+      _viewModel.refresh();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => MainViewModel(),
+    return ChangeNotifierProvider.value(
+      value: _viewModel,
       child: Scaffold(
         extendBody: true,
         backgroundColor: Colors.white,

@@ -33,9 +33,15 @@ class AlbumOptionMenu extends StatelessWidget {
               AlbumOptionButton(
                 text: '앨범 추가',
                 iconPath: 'assets/images/add_img.png',
-                onTap: () {
-                  onDismiss();
-                  context.push(RoutePath.albumAdd);
+                onTap: () async {
+                  // 앨범 추가 화면으로 이동하고 결과 기다리기
+                  final result = await context.push(RoutePath.albumAdd);
+
+                  // context가 여전히 유효한지 확인
+                  if (context.mounted) {
+                    // 다이얼로그를 닫으면서 결과를 전달
+                    Navigator.pop(context, result);
+                  }
                 },
               ),
             ],
