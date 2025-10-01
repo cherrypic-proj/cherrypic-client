@@ -1,3 +1,4 @@
+import 'package:cherrypic/data/album/services/album_image_upload_service.dart';
 import 'package:cherrypic/presentation/screens/main/detail/Header/album_header_view_model.dart';
 import 'package:cherrypic/presentation/screens/main/detail/Header/main_album_header.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/%20create/create_event_sheet.dart';
@@ -21,7 +22,9 @@ class AlbumDetailScreen extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AlbumHeaderViewModel(albumId)),
-        ChangeNotifierProvider(create: (_) => AlbumDetailViewModel()),
+        ChangeNotifierProvider(
+          create: (_) => AlbumDetailViewModel(albumId: albumId),
+        ),
         ChangeNotifierProvider(create: (_) => EventTabViewModel()),
       ],
       child: const _Body(),
@@ -146,7 +149,7 @@ class _BodyState extends State<_Body> {
             },
           ),
 
-          // 하단 우측: 사진 추가 버튼(선택 중이면 숨김)
+          // 하단 우측: 사진 추가 버튼
           Selector<AlbumDetailViewModel, bool>(
             selector: (_, vm) => vm.isSelecting,
             builder: (context, isSelecting, _) {
@@ -155,15 +158,40 @@ class _BodyState extends State<_Body> {
                 right: 45,
                 bottom: 24 + bottomSafe,
                 child: _AddPhotoButton(
-                  onTap: () {
-                    // TODO: 사진 추가 기능 연결
+                  onTap: () async {
+                    final vm = context.read<AlbumDetailViewModel>();
+                    final uploadService = AlbumImageUploadService();
+
+                    final assets = await uploadService.pickImages(context);
+                    if (assets == null || assets.isEmpty) return;
+                    if (!context.mounted) return;
+
+                    final success = await vm.uploadImages(assets);
+
+                    if (!context.mounted) return;
+
+                    if (success) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('${assets.length}장의 사진이 추가되었습니다'),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                    } else if (vm.uploadError != null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('업로드 실패: ${vm.uploadError}'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
                   },
                 ),
               );
             },
           ),
 
-          // 선택 바: 선택 중일 때만 노출
+          // 선택 바
           Positioned(
             left: 0,
             right: 0,
@@ -183,6 +211,39 @@ class _BodyState extends State<_Body> {
                 },
               ),
             ),
+          ),
+
+          // 업로드 로딩 오버레이 (맨 마지막)
+          Consumer<AlbumDetailViewModel>(
+            builder: (context, vm, _) {
+              if (!vm.isUploading) return const SizedBox.shrink();
+
+              return Positioned.fill(
+                child: Container(
+                  color: Colors.black54,
+                  child: Center(
+                    child: Card(
+                      margin: const EdgeInsets.all(40),
+                      child: Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const CircularProgressIndicator(),
+                            const SizedBox(height: 16),
+                            Text(
+                              vm.uploadProgress,
+                              style: AppFont.size16,
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         ],
       ),

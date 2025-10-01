@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:photo_manager/photo_manager.dart';
+import 'package:cherrypic/data/album/services/album_image_upload_service.dart';
 
 /// 날짜별 앨범 묶음 상태
 class AlbumDayGroup {
@@ -17,11 +19,27 @@ class AlbumDayGroup {
 
 /// 앨범 디테일 화면 전역 상태
 class AlbumDetailViewModel extends ChangeNotifier {
-  /// 화면에서 사용 중인 날짜별 그룹 리스트 (API 연결 전: picsum mock)
+  final AlbumImageUploadService _uploadService;
+  final int albumId;
+
+  /// 화면에서 사용 중인 날짜별 그룹 리스트
   List<AlbumDayGroup> groups;
 
-  AlbumDetailViewModel({List<AlbumDayGroup>? initialGroups})
-    : groups = initialGroups ?? [];
+  /// 업로드 상태
+  bool _isUploading = false;
+  String _uploadProgress = '';
+  String? _uploadError;
+
+  bool get isUploading => _isUploading;
+  String get uploadProgress => _uploadProgress;
+  String? get uploadError => _uploadError;
+
+  AlbumDetailViewModel({
+    required this.albumId,
+    List<AlbumDayGroup>? initialGroups,
+    AlbumImageUploadService? uploadService,
+  }) : groups = initialGroups ?? [],
+       _uploadService = uploadService ?? AlbumImageUploadService();
 
   /// 외부에서 데이터 세팅하고 싶을 때 사용
   void setGroups(List<AlbumDayGroup> newGroups) {
@@ -79,6 +97,46 @@ class AlbumDetailViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// 이미지 업로드 프로세스
+  Future<bool> uploadImages(List<AssetEntity> assets) async {
+    if (assets.isEmpty) return false;
+
+    _isUploading = true;
+    _uploadError = null;
+    _uploadProgress = '준비 중... 0/${assets.length * 2}';
+    notifyListeners();
+
+    try {
+      await _uploadService.uploadImagesToAlbum(
+        albumId,
+        assets,
+        onProgress: (current, total) {
+          _uploadProgress = '업로드 중... $current/$total';
+          notifyListeners();
+        },
+      );
+
+      _isUploading = false;
+      notifyListeners();
+
+      // TODO: 업로드 완료 후 이미지 목록 새로고침
+      // await loadImages();
+
+      return true;
+    } catch (e) {
+      _isUploading = false;
+      _uploadError = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// 에러 메시지 초기화
+  void clearError() {
+    _uploadError = null;
+    notifyListeners();
+  }
+
   /// --- Mock 데이터 (API 연결 전 유지) ---
   static List<AlbumDayGroup> _mockGroups() {
     return [
@@ -98,7 +156,6 @@ class AlbumDetailViewModel extends ChangeNotifier {
         imageUrls: const [
           'https://picsum.photos/id/1062/600/600',
           'https://picsum.photos/id/1050/600/600',
-          // 필요하면 더 추가
         ],
       ),
     ];

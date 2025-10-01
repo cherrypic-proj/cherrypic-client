@@ -2,9 +2,11 @@ import 'package:cherrypic/core/network/api_path.dart';
 import 'package:cherrypic/core/network/api_response.dart';
 import 'package:cherrypic/core/network/dio_client.dart';
 import 'package:cherrypic/core/network/error_handler.dart';
+import 'package:cherrypic/data/album/dto/request/album_image_upload_request_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_detail_dto.dart';
 import 'package:cherrypic/data/album/dto/request/album_create_request_dto.dart';
+import 'package:cherrypic/data/album/dto/response/presigned_url_response_dto.dart';
 import 'package:dio/dio.dart';
 
 class AlbumRemoteDataSource {
@@ -88,6 +90,41 @@ class AlbumRemoteDataSource {
       }
 
       return apiResponse.data!;
+    } on DioException catch (e) {
+      throw ErrorHandler.handle(e);
+    }
+  }
+
+  /// Presigned URL 요청
+  Future<PresignedUrlResponseDto> getPresignedUrls(
+    int albumId,
+    AlbumImageUploadRequestDto requestDto,
+  ) async {
+    try {
+      final response = await _dio.post(
+        '${ApiPath.albums}/$albumId/images',
+        data: requestDto.toJson(),
+      );
+
+      final apiResponse = ApiResponse.fromJson(
+        response.data,
+        (json) =>
+            PresignedUrlResponseDto.fromJson(json as Map<String, dynamic>),
+      );
+
+      return apiResponse.data!;
+    } on DioException catch (e) {
+      throw ErrorHandler.handle(e);
+    }
+  }
+
+  /// 업로드 완료 알림
+  Future<void> notifyUploadComplete(int albumId, List<String> imageKeys) async {
+    try {
+      await _dio.post(
+        '${ApiPath.albums}/$albumId/images/complete',
+        data: {'imageKeys': imageKeys},
+      );
     } on DioException catch (e) {
       throw ErrorHandler.handle(e);
     }
