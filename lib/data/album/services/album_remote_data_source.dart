@@ -1,7 +1,9 @@
+import 'package:cherrypic/core/network/api_path.dart';
 import 'package:cherrypic/core/network/api_response.dart';
 import 'package:cherrypic/core/network/dio_client.dart';
 import 'package:cherrypic/core/network/error_handler.dart';
 import 'package:cherrypic/data/album/dto/response/album_dto.dart';
+import 'package:cherrypic/data/album/dto/response/album_detail_dto.dart';
 import 'package:cherrypic/data/album/dto/request/album_create_request_dto.dart';
 import 'package:dio/dio.dart';
 
@@ -64,6 +66,26 @@ class AlbumRemoteDataSource {
         response.data,
         (json) => AlbumDto.fromJson(json as Map<String, dynamic>),
       );
+
+      return apiResponse.data!;
+    } on DioException catch (e) {
+      throw ErrorHandler.handle(e);
+    }
+  }
+
+  /// 개별 앨범 조회
+  Future<AlbumDetailDto> getAlbumDetail(int albumId) async {
+    try {
+      final response = await _dio.get(ApiPath.albumDetail(albumId));
+
+      final apiResponse = ApiResponse.fromJson(
+        response.data,
+        (json) => AlbumDetailDto.fromJson(json as Map<String, dynamic>),
+      );
+
+      if (apiResponse.data == null) {
+        throw ApiException('앨범 정보를 불러올 수 없습니다.');
+      }
 
       return apiResponse.data!;
     } on DioException catch (e) {
