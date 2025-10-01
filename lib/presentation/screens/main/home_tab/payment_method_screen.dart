@@ -95,16 +95,14 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
               backgroundColor: Colors.white,
               foregroundColor: Colors.black,
             ),
-            initialChild: Container(
-              child: const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 16),
-                    Text('결제 준비중...'),
-                  ],
-                ),
+            initialChild: const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16),
+                  Text('결제 준비중...'),
+                ],
               ),
             ),
             userCode: IamportService.userCode,
