@@ -1,4 +1,5 @@
-// main_album_header.dart
+import 'package:cherrypic/presentation/screens/main/detail/Header/album_header_view_model.dart';
+import 'package:provider/provider.dart';
 import 'package:cherrypic/core/router/route_path.dart';
 import 'package:cherrypic/presentation/widgets/album/album_badge_type.dart';
 import 'package:cherrypic/presentation/widgets/custom_album_app_bar.dart';
@@ -75,11 +76,48 @@ class MainAlbumHeader extends StatelessWidget {
             ),
             Stack(
               children: [
-                // 커버 이미지 - 회색으로 변경
+                // 커버 이미지
                 Container(
                   height: 370,
                   width: MediaQuery.of(context).size.width,
-                  color: Colors.grey[300], // 단순 회색 배경
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300], // 로딩 중 배경색
+                  ),
+                  child: data!.coverUrl.isNotEmpty
+                      ? Image.network(
+                          data!.coverUrl,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: double.infinity,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Center(
+                              child: CircularProgressIndicator(
+                                value:
+                                    loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
+                                    : null,
+                              ),
+                            );
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return Center(
+                              child: Icon(
+                                Icons.broken_image,
+                                size: 48,
+                                color: Colors.grey,
+                              ),
+                            );
+                          },
+                        )
+                      : Center(
+                          child: Icon(
+                            Icons.image,
+                            size: 48,
+                            color: Colors.grey,
+                          ),
+                        ),
                 ),
                 Positioned(
                   top: 20,
@@ -95,12 +133,17 @@ class MainAlbumHeader extends StatelessWidget {
                   left: 16,
                   right: 16,
                   child: Center(
-                    child: CustomAlbumBadge(
-                      userName: data!.hostName,
-                      memberCountText: data!.numOfParticipants.toString(),
-                      showBadgeType: true,
-                      showAddMemberButton: true,
-                      members: [], // 빈 리스트 전달 (멤버 API 연동 전까지)
+                    child: Consumer<AlbumHeaderViewModel>(
+                      builder: (context, vm, _) {
+                        // headerVm → vm으로 변경
+                        return CustomAlbumBadge(
+                          userName: data!.hostName,
+                          memberCountText: data!.numOfParticipants.toString(),
+                          showBadgeType: true,
+                          showAddMemberButton: true,
+                          members: vm.participants, // headerVm → vm으로 변경
+                        );
+                      },
                     ),
                   ),
                 ),

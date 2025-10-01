@@ -2,6 +2,7 @@ import 'package:cherrypic/data/album/dto/request/album_create_request_dto.dart';
 import 'package:cherrypic/data/album/dto/request/album_image_upload_request_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_detail_dto.dart';
+import 'package:cherrypic/data/album/dto/response/participant_dto.dart';
 import 'package:cherrypic/data/album/dto/response/presigned_url_response_dto.dart';
 import 'package:cherrypic/data/album/services/album_remote_data_source.dart';
 
@@ -58,5 +59,20 @@ class AlbumRepository {
   /// 업로드 완료 알림
   Future<void> notifyUploadComplete(int albumId, List<String> imageKeys) async {
     return await _remoteDataSource.notifyUploadComplete(albumId, imageKeys);
+  }
+
+  /// 참가자 목록 조회
+  Future<ParticipantListResponseDto> getParticipants(
+    int albumId, {
+    String? lastNickname,
+    int? lastParticipantId,
+    int size = 20,
+  }) async {
+    return await _remoteDataSource.getParticipants(
+      albumId,
+      lastNickname: lastNickname,
+      lastParticipantId: lastParticipantId,
+      size: size,
+    );
   }
 }

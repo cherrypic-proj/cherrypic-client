@@ -1,6 +1,8 @@
 import 'package:cherrypic/data/album/repositories/album_repository.dart';
 import 'package:cherrypic/presentation/screens/main/detail/Header/album_header_model.dart';
+import 'package:cherrypic/presentation/screens/main/detail/Header/components/member_list_popup.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 class AlbumHeaderViewModel extends ChangeNotifier {
   final int albumId;
@@ -10,9 +12,14 @@ class AlbumHeaderViewModel extends ChangeNotifier {
   bool isLoading = false;
   String? error;
 
+  // 참가자 목록
+  List<MemberListData> participants = [];
+  bool isLoadingParticipants = false;
+
   AlbumHeaderViewModel(this.albumId, {AlbumRepository? albumRepository})
     : _albumRepository = albumRepository ?? AlbumRepository() {
     loadAlbumDetail();
+    loadParticipants();
   }
 
   /// 앨범 상세 정보 로드
@@ -44,6 +51,24 @@ class AlbumHeaderViewModel extends ChangeNotifier {
     }
   }
 
+  /// 참가자 목록 로드
+  Future<void> loadParticipants() async {
+    isLoadingParticipants = true;
+    notifyListeners();
+
+    try {
+      final response = await _albumRepository.getParticipants(albumId);
+      participants = response.content.map((dto) {
+        return MemberListData(dto.nickname, NetworkImage(dto.profileImageUrl));
+      }).toList();
+    } catch (e) {
+      debugPrint('참가자 목록 로드 실패: $e');
+    } finally {
+      isLoadingParticipants = false;
+      notifyListeners();
+    }
+  }
+
   /// 앨범 타입에 따른 배지 텍스트 반환
   String _getBadgeText(String type) {
     switch (type) {
@@ -58,6 +83,6 @@ class AlbumHeaderViewModel extends ChangeNotifier {
 
   /// 새로고침
   Future<void> refresh() async {
-    await loadAlbumDetail();
+    await Future.wait([loadAlbumDetail(), loadParticipants()]);
   }
 }

@@ -6,6 +6,7 @@ import 'package:cherrypic/data/album/dto/request/album_image_upload_request_dto.
 import 'package:cherrypic/data/album/dto/response/album_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_detail_dto.dart';
 import 'package:cherrypic/data/album/dto/request/album_create_request_dto.dart';
+import 'package:cherrypic/data/album/dto/response/participant_dto.dart';
 import 'package:cherrypic/data/album/dto/response/presigned_url_response_dto.dart';
 import 'package:dio/dio.dart';
 
@@ -125,6 +126,38 @@ class AlbumRemoteDataSource {
         '${ApiPath.albums}/$albumId/images/complete',
         data: {'imageKeys': imageKeys},
       );
+    } on DioException catch (e) {
+      throw ErrorHandler.handle(e);
+    }
+  }
+
+  /// 참가자 목록 조회
+  Future<ParticipantListResponseDto> getParticipants(
+    int albumId, {
+    String? lastNickname,
+    int? lastParticipantId,
+    int size = 20,
+  }) async {
+    try {
+      final queryParameters = <String, dynamic>{'size': size};
+
+      if (lastNickname != null) queryParameters['lastNickname'] = lastNickname;
+      if (lastParticipantId != null) {
+        queryParameters['lastParticipantId'] = lastParticipantId;
+      }
+
+      final response = await _dio.get(
+        '/albums/$albumId/participants',
+        queryParameters: queryParameters,
+      );
+
+      final apiResponse = ApiResponse.fromJson(
+        response.data,
+        (json) =>
+            ParticipantListResponseDto.fromJson(json as Map<String, dynamic>),
+      );
+
+      return apiResponse.data!;
     } on DioException catch (e) {
       throw ErrorHandler.handle(e);
     }
