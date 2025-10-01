@@ -22,12 +22,12 @@ class AlbumDetailDto {
       title: json['title'] as String,
       coverUrl: json['coverUrl'] as String?,
       type: json['type'] as String,
-      capacityUsed: (json['capacityUsed'] is String)
-          ? double.parse(json['capacityUsed'] as String)
-          : (json['capacityUsed'] as num).toDouble(),
-      totalCapacity: (json['totalCapacity'] is String)
-          ? double.parse(json['totalCapacity'] as String)
-          : (json['totalCapacity'] as num).toDouble(),
+      capacityUsed: (json['capacityUsedGb'] is String)
+          ? double.parse(json['capacityUsedGb'] as String)
+          : (json['capacityUsedGb'] as num).toDouble(),
+      totalCapacity: (json['totalCapacityGb'] is String)
+          ? double.parse(json['totalCapacityGb'] as String)
+          : (json['totalCapacityGb'] as num).toDouble(),
       hostName: json['hostName'] as String,
       numOfParticipants: json['numOfParticipants'] as int,
     );
@@ -38,8 +38,8 @@ class AlbumDetailDto {
       'title': title,
       'coverUrl': coverUrl,
       'type': type,
-      'capacityUsed': capacityUsed,
-      'totalCapacity': totalCapacity,
+      'capacityUsedGb': capacityUsed,
+      'totalCapacityGb': totalCapacity,
       'hostName': hostName,
       'numOfParticipants': numOfParticipants,
     };
