@@ -1,5 +1,6 @@
 import 'package:cherrypic/data/album/dto/request/album_create_request_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_dto.dart';
+import 'package:cherrypic/data/album/dto/response/album_detail_dto.dart';
 import 'package:cherrypic/data/album/services/album_remote_data_source.dart';
 
 class AlbumRepository {
@@ -33,5 +34,14 @@ class AlbumRepository {
   // 앨범 생성
   Future<AlbumDto> createAlbum(AlbumCreateRequestDto requestDto) async {
     return await _remoteDataSource.createAlbum(requestDto);
+  }
+
+  /// 개별 앨범 조회
+  Future<AlbumDetailDto> getAlbumDetail(int albumId) async {
+    try {
+      return await _remoteDataSource.getAlbumDetail(albumId);
+    } catch (e) {
+      rethrow;
+    }
   }
 }

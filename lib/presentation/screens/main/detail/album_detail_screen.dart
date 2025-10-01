@@ -42,7 +42,6 @@ class _BodyState extends State<_Body> {
 
   @override
   Widget build(BuildContext context) {
-    final headerVm = context.watch<AlbumHeaderViewModel>();
     final double bottomSafe = MediaQuery.of(context).padding.bottom;
 
     return Scaffold(
@@ -51,17 +50,25 @@ class _BodyState extends State<_Body> {
         children: [
           CustomScrollView(
             slivers: [
-              // 상단 헤더
+              // 상단 헤더 - Consumer로 감싸서 상태 변화 감지
               SliverSafeArea(
                 top: true,
                 bottom: false,
                 sliver: SliverToBoxAdapter(
-                  child: MainAlbumHeader(data: headerVm.header),
+                  child: Consumer<AlbumHeaderViewModel>(
+                    builder: (context, headerVm, _) {
+                      return MainAlbumHeader(
+                        data: headerVm.header,
+                        isLoading: headerVm.isLoading,
+                        error: headerVm.error,
+                      );
+                    },
+                  ),
                 ),
               ),
               const SliverToBoxAdapter(child: SizedBox(height: 16)),
 
-              // 탭 별 본문
+              // 탭별 본문
               if (_tabIndex == 0)
                 Consumer<AlbumDetailViewModel>(
                   builder: (context, vm, _) {
@@ -90,7 +97,7 @@ class _BodyState extends State<_Body> {
                   builder: (context, vm, _) {
                     return SliverList(
                       delegate: SliverChildListDelegate.fixed([
-                        _buildCreateEventButton(), // 이 버튼을 누르면 시트가 올라옵니다.
+                        _buildCreateEventButton(),
                         const SizedBox(height: 35),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -191,7 +198,6 @@ class _BodyState extends State<_Body> {
             isScrollControlled: true,
             backgroundColor: Colors.transparent,
             useRootNavigator: true,
-
             builder: (_) => const CreateEventSheet(),
           );
         },
