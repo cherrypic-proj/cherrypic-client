@@ -1,12 +1,13 @@
+import 'dart:convert';
 import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:cherrypic/data/album/dto/request/album_image_upload_request_dto.dart';
-import 'package:cherrypic/data/album/dto/response/presigned_url_response_dto.dart';
 import 'package:cherrypic/data/album/repositories/album_repository.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 class AlbumImageUploadService {
   final AlbumRepository _albumRepository;
@@ -52,8 +53,11 @@ class AlbumImageUploadService {
 
       imageDataList.add(imageData);
 
-      final md5Hash = md5.convert(imageData).toString();
-      final fileSizeBytes = imageData.length; // 바이트 단위
+      // MD5 해시 계산 (바이너리)
+      final md5Digest = md5.convert(imageData);
+      final md5Hash = md5Digest.toString();
+
+      final fileSizeBytes = imageData.length;
 
       // 파일 확장자 추출 (JPEG, PNG 등)
       String extension = 'JPEG';
@@ -70,11 +74,11 @@ class AlbumImageUploadService {
         ImagePayload(
           fileExtension: extension,
           md5Hashes: md5Hash,
-          capacity: fileSizeBytes.toDouble(), // Double 타입, 바이트 단위
+          capacity: fileSizeBytes.toDouble(),
         ),
       );
 
-      onProgress?.call(i + 1, assets.length * 2); // 메타데이터 생성 진행률
+      onProgress?.call(i + 1, assets.length * 2);
     }
 
     // 2. Presigned URL 요청
@@ -109,20 +113,50 @@ class AlbumImageUploadService {
     Uint8List imageData,
     String extension,
   ) async {
-    final dio = Dio();
+    // MD5 해시를 Base64로 인코딩
+    final md5Digest = md5.convert(imageData);
+    final md5Base64 = base64.encode(md5Digest.bytes);
+
+    final uploadDio = Dio();
 
     // 확장자에 따른 Content-Type 설정
-    String contentType = 'image/jpeg';
-    if (extension == 'PNG') {
-      contentType = 'image/png';
-    } else if (extension == 'HEIC') {
-      contentType = 'image/heic';
-    }
+    final contentType = _getContentType(extension);
 
-    await dio.put(
+    debugPrint('📤 S3 업로드 시작:');
+    debugPrint('  - Content-Type: $contentType');
+    debugPrint('  - Content-MD5: $md5Base64');
+
+    await uploadDio.put(
       presignedUrl,
       data: imageData,
-      options: Options(headers: {'Content-Type': contentType}),
+      options: Options(
+        headers: {'Content-Type': contentType, 'Content-MD5': md5Base64},
+        validateStatus: (status) {
+          debugPrint('📤 S3 업로드 상태: $status');
+          return status != null && status >= 200 && status < 300;
+        },
+      ),
     );
+
+    debugPrint('✅ S3 업로드 성공');
+  }
+
+  /// 확장자에 따른 Content-Type 반환
+  String _getContentType(String extension) {
+    switch (extension.toUpperCase()) {
+      case 'PNG':
+        return 'image/png';
+      case 'JPEG':
+      case 'JPG':
+        return 'image/jpeg';
+      case 'WEBP':
+        return 'image/webp';
+      case 'HEIC':
+        return 'image/heic';
+      case 'HEIF':
+        return 'image/heif';
+      default:
+        return 'image/jpeg';
+    }
   }
 }
