@@ -35,7 +35,7 @@ class ImageUploadService {
       // 3. Presigned URL 요청
       final presignedResponse = await _dio.post(
         '/albums/cover-upload-url',
-        data: {'fileExtension': extension, 'md5Hash': hash},
+        data: {'fileExtension': extension, 'md5Hash': md5Base64},
       );
 
       final apiResponse = ApiResponse.fromJson(
@@ -55,11 +55,10 @@ class ImageUploadService {
           headers: {
             'Content-Type': _getContentType(extension),
             'Content-MD5': md5Base64,
-            'x-amz-acl': 'public-read', // 이 헤더 추가!
           },
           validateStatus: (status) {
             debugPrint('📤 S3 업로드 상태: $status');
-            return status != null && status < 500;
+            return status != null && status >= 200 && status < 300;
           },
         ),
       );
