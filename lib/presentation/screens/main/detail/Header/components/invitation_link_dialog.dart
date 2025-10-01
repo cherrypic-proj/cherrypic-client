@@ -41,7 +41,7 @@ class InvitationLinkDialog extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () => Navigator.of(context).pop(),
-                  child: const Icon(Icons.close, size: 24, color: Colors.black),
+                  child: const Icon(Icons.close, size: 20, color: Colors.black),
                 ),
               ],
             ),

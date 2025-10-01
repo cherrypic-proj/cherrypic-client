@@ -133,14 +133,14 @@ class CustomAlbumBadge extends StatelessWidget {
 
       // 로딩 닫기
       if (context.mounted) {
-        Navigator.of(context, rootNavigator: true).pop(); // rootNavigator 추가
+        Navigator.of(context, rootNavigator: true).pop();
       }
 
       // 초대 링크 다이얼로그 표시
       if (context.mounted) {
         showDialog(
           context: context,
-          useRootNavigator: true, // 추가
+          useRootNavigator: true,
           barrierDismissible: true,
           builder: (dialogContext) =>
               InvitationLinkDialog(invitationLink: response.invitationLink),
@@ -149,7 +149,7 @@ class CustomAlbumBadge extends StatelessWidget {
     } catch (e) {
       // 로딩 닫기
       if (context.mounted) {
-        Navigator.of(context, rootNavigator: true).pop(); // rootNavigator 추가
+        Navigator.of(context, rootNavigator: true).pop();
       }
 
       // 에러 표시
