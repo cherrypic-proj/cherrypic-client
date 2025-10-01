@@ -79,11 +79,15 @@ class MainAlbumHeader extends StatelessWidget {
                   height: 370,
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
+                    color: Colors.grey[300],
                     image: DecorationImage(
                       image: data!.coverUrl.startsWith('http')
                           ? NetworkImage(data!.coverUrl)
                           : AssetImage(data!.coverUrl) as ImageProvider,
                       fit: BoxFit.cover,
+                      onError: (exception, stackTrace) {
+                        debugPrint('이미지 로드 실패: $exception');
+                      },
                     ),
                   ),
                 ),

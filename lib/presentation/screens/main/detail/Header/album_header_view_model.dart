@@ -28,9 +28,10 @@ class AlbumHeaderViewModel extends ChangeNotifier {
       header = AlbumHeaderData(
         albumId: albumId,
         title: dto.title,
-        coverUrl: dto.coverUrl,
-        photoCount: 0, // TODO: 사진 개수는 별도 API에서 가져와야 할 수도 있음
-        progress: dto.capacityUsed / dto.totalCapacity, // 사용량 / 전체 용량
+        coverUrl:
+            dto.coverUrl ?? 'assets/images/sample_photo.png', // null이면 기본 이미지
+        photoCount: 0,
+        progress: dto.capacityUsed / dto.totalCapacity,
         badgeText: _getBadgeText(dto.type),
         hostName: dto.hostName,
         numOfParticipants: dto.numOfParticipants,

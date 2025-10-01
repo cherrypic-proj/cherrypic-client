@@ -8,8 +8,8 @@ class AlbumHeaderData {
 
   final String hostName; // 호스트 이름
   final int numOfParticipants; // 참여자 수
-  final int capacityUsed; // 사용 용량 (GB)
-  final int totalCapacity; // 총 용량 (GB)
+  final double capacityUsed; // 사용 용량 (GB)
+  final double totalCapacity; // 총 용량 (GB)
 
   AlbumHeaderData({
     required this.albumId,
