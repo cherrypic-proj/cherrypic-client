@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
 import 'package:cherrypic/core/network/dio_client.dart';
@@ -18,19 +19,23 @@ class ImageUploadService {
       final digest = md5.convert(bytes);
       final hash = digest.toString();
 
-      // 2. 이미지 확장자 감지 (매직 넘버로 판단)
+      // MD5를 Base64로 인코딩 (S3 요구사항)
+      final md5Base64 = base64.encode(digest.bytes);
+
+      // 2. 이미지 확장자 감지
       final extension = _detectImageExtension(imageData);
 
-      // 디버깅 로그
       debugPrint('🖼️ 이미지 정보:');
       debugPrint('  - 크기: ${imageData.length} bytes');
       debugPrint('  - 첫 12바이트: ${imageData.take(12).toList()}');
       debugPrint('  - 감지된 확장자: $extension');
+      debugPrint('  - MD5 Hash: $hash');
+      debugPrint('  - MD5 Base64: $md5Base64');
 
       // 3. Presigned URL 요청
       final presignedResponse = await _dio.post(
         '/albums/cover-upload-url',
-        data: {'imageFileExtension': extension, 'md5Hash': hash},
+        data: {'fileExtension': extension, 'md5Hash': hash},
       );
 
       final apiResponse = ApiResponse.fromJson(
@@ -39,21 +44,36 @@ class ImageUploadService {
       );
 
       final presignedUrl = apiResponse.data!['presignedUrl'] as String;
+      debugPrint('✅ Presigned URL 받기 성공');
 
       // 4. S3에 이미지 업로드
       final uploadDio = Dio();
       await uploadDio.put(
         presignedUrl,
         data: bytes,
-        options: Options(headers: {'Content-Type': _getContentType(extension)}),
+        options: Options(
+          headers: {
+            'Content-Type': _getContentType(extension),
+            'Content-MD5': md5Base64,
+            'x-amz-acl': 'public-read', // 이 헤더 추가!
+          },
+          validateStatus: (status) {
+            debugPrint('📤 S3 업로드 상태: $status');
+            return status != null && status < 500;
+          },
+        ),
       );
+
+      debugPrint('✅ S3 업로드 성공');
 
       // 5. 업로드된 이미지의 공개 URL 반환
       final uri = Uri.parse(presignedUrl);
       final publicUrl = '${uri.scheme}://${uri.host}${uri.path}';
 
+      debugPrint('📍 Public URL: $publicUrl');
       return publicUrl;
     } catch (e) {
+      debugPrint('❌ 이미지 업로드 실패: $e');
       throw Exception('이미지 업로드 실패: $e');
     }
   }
@@ -62,7 +82,7 @@ class ImageUploadService {
   String _detectImageExtension(Uint8List data) {
     if (data.length < 12) {
       debugPrint('이미지 크기가 너무 작음: ${data.length} bytes');
-      return 'JPEG'; // JPG → JPEG
+      return 'JPEG';
     }
 
     // PNG: 89 50 4E 47
@@ -77,7 +97,7 @@ class ImageUploadService {
     // JPEG: FF D8 FF
     if (data[0] == 0xFF && data[1] == 0xD8 && data[2] == 0xFF) {
       debugPrint('JPEG 포맷 감지');
-      return 'JPEG'; // JPG → JPEG
+      return 'JPEG';
     }
 
     // WEBP
@@ -130,7 +150,7 @@ class ImageUploadService {
     }
 
     debugPrint('⚠️ 알 수 없는 포맷, JPEG로 기본 설정');
-    return 'JPEG'; // JPG → JPEG
+    return 'JPEG';
   }
 
   // 확장자에 따른 Content-Type 반환
