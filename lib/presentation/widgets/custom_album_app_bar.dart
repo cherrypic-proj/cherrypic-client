@@ -24,7 +24,6 @@ class CustomAlbumAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final bool showBadge = badgeType != AlbumBadgeType.none;
-    // 좌/우 너비를 동일하게 맞춰 타이틀을 정확히 중앙에 배치
     final double sideWidth = showBadge ? 120 : 56;
 
     return AppBar(
@@ -48,22 +47,7 @@ class CustomAlbumAppBar extends StatelessWidget implements PreferredSizeWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8),
               constraints: const BoxConstraints(minWidth: 40),
             ),
-            if (showBadge)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: badgeType.backgroundColor,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  // 필요 시 shortLabel로 교체
-                  badgeType.shortLabel,
-                  style: AppFont.size10.copyWith(
-                    color: badgeType.textColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+            if (showBadge) _buildBadge(),
           ],
         ),
       ),
@@ -78,7 +62,6 @@ class CustomAlbumAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
 
-      // 우측 영역도 left와 동일 너비로 고정 → 타이틀 정확한 중앙 보장
       actions: [
         SizedBox(
           width: sideWidth,
@@ -86,7 +69,7 @@ class CustomAlbumAppBar extends StatelessWidget implements PreferredSizeWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               if (profileImagePath != null) ...[
-                _ProfileThumb(path: profileImagePath!), // 24x24로 변경
+                _ProfileThumb(path: profileImagePath!),
                 const SizedBox(width: 8),
               ],
               IconButton(
@@ -99,6 +82,35 @@ class CustomAlbumAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildBadge() {
+    return Container(
+      height: 20,
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      decoration: BoxDecoration(
+        color: badgeType.backgroundColor,
+        border: Border.all(color: badgeType.borderColor, width: 1),
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: badgeType.shadowColor,
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Center(
+        child: Text(
+          badgeType.shortLabel,
+          style: AppFont.size10.copyWith(
+            fontWeight: FontWeight.w600,
+            color: badgeType.textColor,
+            height: 1.0,
+          ),
+        ),
+      ),
     );
   }
 }
