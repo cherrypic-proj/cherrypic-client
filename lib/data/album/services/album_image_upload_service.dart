@@ -19,7 +19,6 @@ class AlbumImageUploadService {
   Future<List<AssetEntity>?> pickImages(BuildContext context) async {
     final PermissionState ps = await PhotoManager.requestPermissionExtend();
     if (!ps.isAuth) {
-      // 권한이 없으면 null 반환
       return null;
     }
 
@@ -41,6 +40,8 @@ class AlbumImageUploadService {
     List<AssetEntity> assets, {
     Function(int current, int total)? onProgress,
   }) async {
+    debugPrint('🎬 업로드 시작: ${assets.length}장의 이미지');
+
     // 1. 각 이미지의 메타데이터 생성
     final List<ImagePayload> payloads = [];
     final List<Uint8List> imageDataList = [];
@@ -53,13 +54,10 @@ class AlbumImageUploadService {
 
       imageDataList.add(imageData);
 
-      // MD5 해시 계산 (바이너리)
       final md5Digest = md5.convert(imageData);
-      final md5Hash = md5Digest.toString();
-
+      final md5Hash = base64.encode(md5Digest.bytes); // hex 대신 base64로 변경
       final fileSizeBytes = imageData.length;
 
-      // 파일 확장자 추출 (JPEG, PNG 등)
       String extension = 'JPEG';
       final mimeType = await asset.mimeTypeAsync;
       if (mimeType != null) {
@@ -73,47 +71,54 @@ class AlbumImageUploadService {
       payloads.add(
         ImagePayload(
           fileExtension: extension,
-          md5Hashes: md5Hash,
-          capacity: fileSizeBytes.toDouble(),
+          md5Hashes: md5Hash, // 이제 base64 값
+          capacity: fileSizeBytes / (1024 * 1024),
         ),
       );
 
       onProgress?.call(i + 1, assets.length * 2);
     }
+    debugPrint('✅ 메타데이터 생성 완료: ${payloads.length}개');
 
     // 2. Presigned URL 요청
+    debugPrint('🔄 Presigned URL 요청 중...');
     final requestDto = AlbumImageUploadRequestDto(payloads: payloads);
     final presignedResponse = await _albumRepository.getPresignedUrls(
       albumId,
       requestDto,
     );
 
+    debugPrint(
+      '✅ Presigned URL 받음: ${presignedResponse.presignedUrls.length}개',
+    );
+
     // 3. S3에 직접 업로드
+    debugPrint('🚀 S3 업로드 시작...');
     for (int i = 0; i < presignedResponse.presignedUrls.length; i++) {
+      debugPrint(
+        '📤 이미지 ${i + 1}/${presignedResponse.presignedUrls.length} 업로드 중...',
+      );
+
       final presignedUrl = presignedResponse.presignedUrls[i].presignedUrl;
       final imageData = imageDataList[i];
       final extension = payloads[i].fileExtension;
 
       await _uploadToS3(presignedUrl, imageData, extension);
 
-      // S3 업로드 진행률
       onProgress?.call(assets.length + i + 1, assets.length * 2);
     }
 
-    // 4. 서버에 완료 알림
-    await _albumRepository.notifyUploadComplete(
-      albumId,
-      presignedResponse.presignedUrls.map((item) => item.imageKey).toList(),
-    );
+    debugPrint('✅ S3 업로드 완료');
+    debugPrint('🎉 전체 업로드 프로세스 완료!');
   }
 
-  /// S3에 직접 업로드
+  /// S3에 직접 업로드 (image_upload_service와 동일한 방식)
   Future<void> _uploadToS3(
     String presignedUrl,
     Uint8List imageData,
     String extension,
   ) async {
-    // MD5 해시를 Base64로 인코딩
+    // MD5 해시를 Base64로 인코딩 (S3 요구사항)
     final md5Digest = md5.convert(imageData);
     final md5Base64 = base64.encode(md5Digest.bytes);
 
@@ -123,8 +128,10 @@ class AlbumImageUploadService {
     final contentType = _getContentType(extension);
 
     debugPrint('📤 S3 업로드 시작:');
+    debugPrint('  - URL: $presignedUrl');
     debugPrint('  - Content-Type: $contentType');
     debugPrint('  - Content-MD5: $md5Base64');
+    debugPrint('  - 데이터 크기: ${imageData.length} bytes');
 
     await uploadDio.put(
       presignedUrl,

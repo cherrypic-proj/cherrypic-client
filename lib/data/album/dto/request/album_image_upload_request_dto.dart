@@ -11,7 +11,7 @@ class AlbumImageUploadRequestDto {
 class ImagePayload {
   final String fileExtension;
   final String md5Hashes;
-  final double capacity; // MB 단위
+  final double capacity;
 
   ImagePayload({
     required this.fileExtension,
@@ -23,7 +23,7 @@ class ImagePayload {
     return {
       'fileExtension': fileExtension,
       'md5Hashes': md5Hashes,
-      'capacity': capacity,
+      'capacityMb': capacity,
     };
   }
 }
