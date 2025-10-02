@@ -40,12 +40,20 @@ class AlbumDetailViewModel extends ChangeNotifier {
   int? _lastImageId;
   bool _isLast = false;
 
+  /// 정렬 기준 (UPLOAD: 업로드순, GENERATED: 촬영일순)
+  String _sortParameter = 'UPLOAD';
+
+  /// 정렬 방향 (ASC: 오름차순, DESC: 내림차순)
+  String _sortDirection = 'DESC';
+
   bool get isLoading => _isLoading;
   bool get isLoadingMore => _isLoadingMore;
   bool get isUploading => _isUploading;
   String get uploadProgress => _uploadProgress;
   String? get uploadError => _uploadError;
   bool get hasMore => !_isLast;
+  String get sortParameter => _sortParameter;
+  String get sortDirection => _sortDirection;
 
   AlbumDetailViewModel({
     required this.albumId,
@@ -54,6 +62,23 @@ class AlbumDetailViewModel extends ChangeNotifier {
   }) : _uploadService = uploadService ?? AlbumImageUploadService(),
        _repository = repository ?? AlbumRepository() {
     loadImages();
+  }
+
+  /// 정렬 순서 변경 후 새로고침 (같은 파라미터면 방향만 토글)
+  Future<void> toggleSort(String newParameter) async {
+    if (_sortParameter == newParameter) {
+      // 같은 정렬 기준이면 방향만 토글
+      _sortDirection = _sortDirection == 'DESC' ? 'ASC' : 'DESC';
+    } else {
+      // 다른 정렬 기준이면 파라미터 변경하고 내림차순으로 리셋
+      _sortParameter = newParameter;
+      _sortDirection = 'DESC';
+    }
+
+    notifyListeners();
+
+    // 정렬 변경 시 처음부터 다시 로드
+    await loadImages();
   }
 
   /// 이미지 목록 불러오기 (처음)
@@ -69,8 +94,8 @@ class AlbumDetailViewModel extends ChangeNotifier {
       final response = await _repository.getAlbumImages(
         albumId,
         size: 20,
-        parameter: 'UPLOAD',
-        direction: 'DESC',
+        parameter: _sortParameter,
+        direction: _sortDirection,
       );
 
       groups = _groupImagesByDate(response.content);
@@ -99,8 +124,8 @@ class AlbumDetailViewModel extends ChangeNotifier {
         albumId,
         lastImageId: _lastImageId,
         size: 20,
-        parameter: 'UPLOAD',
-        direction: 'DESC',
+        parameter: _sortParameter,
+        direction: _sortDirection,
       );
 
       final newGroups = _groupImagesByDate(response.content);
