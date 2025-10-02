@@ -1,8 +1,8 @@
 import 'package:cherrypic/core/router/route_path.dart';
-import 'package:cherrypic/data/repositories/auth_repository.dart';
-import 'package:cherrypic/data/services/apple_auth_data_source.dart';
-import 'package:cherrypic/data/services/auth_remote_data_source.dart';
-import 'package:cherrypic/data/services/kakao_auth_data_source.dart';
+import 'package:cherrypic/data/login/repositories/auth_repository.dart';
+import 'package:cherrypic/data/login/services/apple_auth_data_source.dart';
+import 'package:cherrypic/data/login/services/auth_remote_data_source.dart';
+import 'package:cherrypic/data/login/services/kakao_auth_data_source.dart';
 import 'package:cherrypic/presentation/screens/event/event_list_detail/event_list_screen.dart';
 import 'package:cherrypic/presentation/screens/event/event_main_screen.dart';
 import 'package:cherrypic/presentation/screens/main/album/add/album_add_screen.dart';
@@ -25,8 +25,8 @@ import 'package:cherrypic/presentation/screens/store/photo_printing/service_step
 import 'package:cherrypic/presentation/screens/store/photo_printing/service_step/select_image/select_image_screen.dart';
 import 'package:cherrypic/presentation/screens/store/photo_printing/service_step/select_option/select_option_screen.dart';
 import 'package:cherrypic/presentation/screens/store/photo_printing/service_step/select_payment/select_payment_screen.dart';
-import 'package:cherrypic/presentation/screens/store/subscription/payment_complete_screen.dart';
-import 'package:cherrypic/presentation/screens/store/subscription/payment_method_screen.dart';
+import 'package:cherrypic/presentation/screens/main/home_tab/payment_complete_screen.dart';
+import 'package:cherrypic/presentation/screens/main/home_tab/payment_method_screen.dart';
 import 'package:cherrypic/presentation/screens/store/store_main_screen.dart';
 import 'package:cherrypic/presentation/screens/store/subscription/store_subs_info.dart';
 import 'package:cherrypic/presentation/widgets/custom_app_bar.dart';
@@ -94,7 +94,7 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
   RoutePath.myPage_payment_info: (context, state) {
     final item = state.extra as AlbumPaymentInfoModel;
     // final viewModel = state.extra as PaymentInfoViewModel;
-    return PaymentInfoScreen(item: item,  viewModel: PaymentInfoViewModel(),);
+    return PaymentInfoScreen(item: item, viewModel: PaymentInfoViewModel());
   },
   RoutePath.myPage_address_management: (context, state) =>
       const AddressManagementScreen(),
@@ -125,9 +125,22 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
     );
     return StoreSubsInfo(storeType: storeType);
   },
-  RoutePath.payment_method: (context, state) => const PaymentMethodScreen(),
-  RoutePath.payment_complete: (context, state) => const PaymentCompleteScreen(),
-
+  RoutePath.payment_method: (context, state) {
+    final extra = state.extra as Map<String, dynamic>?;
+    return PaymentMethodScreen(
+      subscriptionType: extra?['subscriptionType'],
+      albumData: extra?['albumData'],
+    );
+  },
+  RoutePath.payment_complete: (context, state) {
+    final extra = state.extra as Map<String, dynamic>?;
+    return PaymentCompleteScreen(
+      subscriptionType: extra?['subscriptionType'],
+      albumData: extra?['albumData'],
+      impUid: extra?['impUid'],
+      isSuccess: extra?['isSuccess'] ?? false,
+    );
+  },
   RoutePath.photo_printing: (context, state) => const PhotoPrintingScreen(),
   RoutePath.select_album: (context, state) => const SelectAlbumScreen(),
   RoutePath.select_image: (context, state) {

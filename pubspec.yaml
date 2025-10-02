@@ -23,6 +23,7 @@ dependencies:
     wechat_assets_picker: ^9.8.0 # 갤러리 뷰어
     flutter_image_compress: ^2.1.0 # 이미지 압축 처리
     cached_network_image: ^3.3.1 # 네트워크 이미지 캐싱 및 최적화
+    crypto: ^3.0.3
     percent_indicator: ^4.2.2 #게이지 바
 
     # 로그인
@@ -36,6 +37,9 @@ dependencies:
     dio_cookie_manager: ^3.3.0
     cookie_jar: ^4.0.8
     path_provider: ^2.1.5
+
+    # 결제
+    iamport_flutter: ^0.10.21
 
 dev_dependencies:
     flutter_test:

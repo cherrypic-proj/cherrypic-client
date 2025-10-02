@@ -1,7 +1,10 @@
+// lib/widgets/custom_button.dart (최종 수정)
+
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:flutter/material.dart';
 
+// (enum 선언부는 동일)
 enum AppButtonVariant { filled, outlined, disabled, outlinedStatic, address }
 
 enum AppButtonShape { rounded, squared, capsule }
@@ -70,31 +73,38 @@ class CustomButton extends StatelessWidget {
     Color fgColor;
     BorderSide? border;
 
-    switch (variant) {
-      case AppButtonVariant.filled:
-        bgColor = AppColor.mainRed;
-        fgColor = Colors.white;
-        break;
-      case AppButtonVariant.outlined:
-        bgColor = Colors.transparent;
-        fgColor = AppColor.mainRed;
-        border = BorderSide(color: AppColor.mainRed);
-        break;
-      case AppButtonVariant.disabled:
-        bgColor = Colors.white;
-        fgColor = Colors.grey;
-        border = BorderSide(color: Colors.grey);
-        break;
-      case AppButtonVariant.outlinedStatic:
-        bgColor = Colors.white;
-        fgColor = AppColor.mainRed;
-        border = BorderSide(color: AppColor.mainRed);
-        break;
-      case AppButtonVariant.address:
-        bgColor = AppColor.mainLightRed;
-        fgColor = Colors.black;
-        border = BorderSide(color: AppColor.mainLightRed);
-        break;
+    if (isDisabled) {
+      bgColor = Colors.white;
+      fgColor = Colors.grey;
+      border = const BorderSide(color: Colors.grey);
+    } else {
+      switch (variant) {
+        case AppButtonVariant.filled:
+          bgColor = AppColor.mainRed;
+          fgColor = Colors.white;
+          break;
+        case AppButtonVariant.outlined:
+          bgColor = Colors.transparent;
+          fgColor = AppColor.mainRed;
+          border = const BorderSide(color: AppColor.mainRed);
+          break;
+        case AppButtonVariant.outlinedStatic:
+          bgColor = Colors.white;
+          fgColor = AppColor.mainRed;
+          border = const BorderSide(color: AppColor.mainRed);
+          break;
+        case AppButtonVariant.address:
+          bgColor = AppColor.mainLightRed;
+          fgColor = Colors.black;
+          border = const BorderSide(color: AppColor.mainLightRed);
+          break;
+        case AppButtonVariant.disabled:
+        default:
+          bgColor = Colors.white; // 기본값
+          fgColor = Colors.grey; // 기본값
+          border = const BorderSide(color: Colors.grey);
+          break;
+      }
     }
 
     BorderRadius borderRadius;
@@ -112,7 +122,6 @@ class CustomButton extends StatelessWidget {
 
     final styleByType = _getStyleByType(type);
 
-    // [수정] 아이콘 유무에 따라 child를 다르게 구성
     final textWidget = Text(
       text?.isNotEmpty == true ? text! : styleByType.text,
       style: styleByType.fontStyle.copyWith(
@@ -172,6 +181,7 @@ class CustomButton extends StatelessWidget {
     );
   }
 
+  // --- (_getStyleByType 메서드는 동일) ---
   CustomButtonStyle _getStyleByType(CustomButtonType? type) {
     switch (type) {
       case CustomButtonType.createAlbum:

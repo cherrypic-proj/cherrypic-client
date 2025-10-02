@@ -1,5 +1,5 @@
 import 'package:cherrypic/core/network/error_handler.dart';
-import 'package:cherrypic/data/repositories/auth_repository.dart';
+import 'package:cherrypic/data/login/repositories/auth_repository.dart';
 import 'package:flutter/material.dart';
 
 // 소셜 로그인 제공자 타입 정의
