@@ -11,11 +11,13 @@ class AlbumImageUploadRequestDto {
 class ImagePayload {
   final String fileExtension;
   final String md5Hashes;
+  final String generatedAt;
   final double capacity;
 
   ImagePayload({
     required this.fileExtension,
     required this.md5Hashes,
+    required this.generatedAt,
     required this.capacity,
   });
 
@@ -23,6 +25,7 @@ class ImagePayload {
     return {
       'fileExtension': fileExtension,
       'md5Hashes': md5Hashes,
+      'generatedAt': generatedAt,
       'capacityMb': capacity,
     };
   }

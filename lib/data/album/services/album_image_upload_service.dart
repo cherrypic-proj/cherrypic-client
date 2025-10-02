@@ -55,7 +55,7 @@ class AlbumImageUploadService {
       imageDataList.add(imageData);
 
       final md5Digest = md5.convert(imageData);
-      final md5Hash = base64.encode(md5Digest.bytes); // hex 대신 base64로 변경
+      final md5Hash = base64.encode(md5Digest.bytes);
       final fileSizeBytes = imageData.length;
 
       String extension = 'JPEG';
@@ -68,10 +68,17 @@ class AlbumImageUploadService {
         }
       }
 
+      // 이미지 생성 시간을 ISO 8601 포맷으로
+      final createdAt = asset.createDateTime;
+      final generatedAt =
+          createdAt?.toUtc().toIso8601String() ??
+          DateTime.now().toUtc().toIso8601String();
+
       payloads.add(
         ImagePayload(
           fileExtension: extension,
-          md5Hashes: md5Hash, // 이제 base64 값
+          md5Hashes: md5Hash,
+          generatedAt: generatedAt,
           capacity: fileSizeBytes / (1024 * 1024),
         ),
       );
@@ -112,19 +119,16 @@ class AlbumImageUploadService {
     debugPrint('🎉 전체 업로드 프로세스 완료!');
   }
 
-  /// S3에 직접 업로드 (image_upload_service와 동일한 방식)
+  /// S3에 직접 업로드
   Future<void> _uploadToS3(
     String presignedUrl,
     Uint8List imageData,
     String extension,
   ) async {
-    // MD5 해시를 Base64로 인코딩 (S3 요구사항)
     final md5Digest = md5.convert(imageData);
     final md5Base64 = base64.encode(md5Digest.bytes);
 
     final uploadDio = Dio();
-
-    // 확장자에 따른 Content-Type 설정
     final contentType = _getContentType(extension);
 
     debugPrint('📤 S3 업로드 시작:');
