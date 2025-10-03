@@ -139,26 +139,18 @@ class _AlbumGroupSectionState extends State<AlbumGroupSection> {
             }
           },
           child: Stack(
+            fit: StackFit.expand,
             children: [
+              // 이미지 (크기 변화 없음)
               CachedNetworkImage(
                 imageUrl: imageUrl,
-                // 메모리 캐시 최적화: 그리드 셀 크기에 맞게 리사이즈
                 memCacheWidth: 400,
                 memCacheHeight: 400,
-                // 디스크 캐시 최적화
                 maxWidthDiskCache: 400,
                 maxHeightDiskCache: 400,
-                imageBuilder: (context, imageProvider) => Container(
-                  decoration: BoxDecoration(
-                    border: isSelected
-                        ? Border.all(color: AppColor.mainRed, width: 2)
-                        : null,
-                    image: DecorationImage(
-                      image: imageProvider,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
                 placeholder: (context, url) => Container(
                   color: Colors.grey[200],
                   child: const Center(
@@ -176,10 +168,21 @@ class _AlbumGroupSectionState extends State<AlbumGroupSection> {
                   color: Colors.grey[300],
                   child: const Icon(Icons.error, size: 20),
                 ),
-                // 페이드 애니메이션 시간 단축
                 fadeInDuration: const Duration(milliseconds: 200),
                 fadeOutDuration: const Duration(milliseconds: 100),
               ),
+
+              // 테두리 오버레이 (선택 시에만)
+              if (isSelected)
+                Positioned.fill(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: AppColor.mainRed, width: 2),
+                    ),
+                  ),
+                ),
+
+              // 체크 아이콘
               if (isSelected)
                 Positioned(
                   top: 6,
