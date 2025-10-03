@@ -40,6 +40,23 @@ class AlbumDetailViewModel extends ChangeNotifier {
   int? _lastImageId;
   bool _isLast = false;
 
+  /// 선택 모드 활성화 여부
+  bool _isSelectionMode = false;
+  bool get isSelectionMode => _isSelectionMode;
+
+  /// 선택 모드 진입
+  void enterSelectionMode() {
+    _isSelectionMode = true;
+    notifyListeners();
+  }
+
+  /// 선택 모드 종료 및 선택 초기화
+  void exitSelectionMode() {
+    _isSelectionMode = false;
+    clearAllSelection();
+    notifyListeners();
+  }
+
   /// 정렬 기준 (UPLOAD: 업로드순, GENERATED: 촬영일순)
   String _sortParameter = 'UPLOAD';
 

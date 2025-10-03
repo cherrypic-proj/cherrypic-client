@@ -10,6 +10,8 @@ class AlbumGroupSection extends StatelessWidget {
   final List<String> imageUrls;
   final Set<int> selectedIndexes;
   final void Function(int index) onImageTap;
+  final void Function(int index) onImageLongPress;
+  final bool isSelectionMode;
 
   const AlbumGroupSection({
     super.key,
@@ -19,6 +21,8 @@ class AlbumGroupSection extends StatelessWidget {
     required this.imageUrls,
     required this.selectedIndexes,
     required this.onImageTap,
+    required this.onImageLongPress,
+    required this.isSelectionMode,
   });
 
   @override
@@ -92,6 +96,7 @@ class AlbumGroupSection extends StatelessWidget {
             final isSelected = selectedIndexes.contains(index);
             return GestureDetector(
               onTap: () => onImageTap(index),
+              onLongPress: () => onImageLongPress(index),
               child: Stack(
                 children: [
                   CachedNetworkImage(
