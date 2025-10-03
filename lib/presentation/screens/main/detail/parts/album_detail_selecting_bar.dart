@@ -1,59 +1,78 @@
-part of '../album_detail_screen.dart';
+import 'package:cherrypic/core/constants/color.dart';
+import 'package:cherrypic/core/constants/font.dart';
+import 'package:flutter/material.dart';
 
-/// 하단 토글: 사진 선택
-class _SelectingBar extends StatelessWidget {
+class SelectingBar extends StatelessWidget {
   final int count;
   final VoidCallback onMore;
-  const _SelectingBar({super.key, required this.count, required this.onMore});
+  final VoidCallback onCancel;
+
+  const SelectingBar({
+    super.key,
+    required this.count,
+    required this.onMore,
+    required this.onCancel,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 40,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColor.mainRed.withAlpha(150),
-        borderRadius: BorderRadius.circular(20),
+        color: AppColor.mainRed,
+        borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(38),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
+            color: Colors.black.withAlpha(40),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // "#장 선택됨" 캡슐(흰색 1px 테두리)
-          Container(
-            height: 28,
-            alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.white, width: 1),
+          Text(
+            '$count개 선택됨',
+            style: AppFont.size16.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
             ),
-            child: Text(
-              '$count 장 선택됨',
-              style: AppFont.size18.copyWith(
+          ),
+          const SizedBox(width: 16),
+          GestureDetector(
+            onTap: onMore,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              decoration: BoxDecoration(
                 color: Colors.white,
-                fontWeight: FontWeight.w700,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                '더보기',
+                style: AppFont.size14.copyWith(
+                  color: AppColor.mainRed,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
           const SizedBox(width: 8),
-          // 더보기 버튼
           GestureDetector(
-            onTap: onMore,
+            onTap: onCancel,
             child: Container(
-              width: 28,
-              height: 28,
-              decoration: const BoxDecoration(
-                color: AppColor.mainLightRed,
-                shape: BoxShape.circle,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
               ),
-              child: Icon(Icons.more_horiz, size: 18, color: AppColor.mainRed),
+              child: Text(
+                '취소',
+                style: AppFont.size14.copyWith(
+                  color: AppColor.mainRed,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ),
         ],

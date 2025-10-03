@@ -1,4 +1,7 @@
 import 'package:flutter/foundation.dart';
+import 'package:photo_manager/photo_manager.dart';
+import 'package:cherrypic/data/album/repositories/album_repository.dart';
+import 'package:cherrypic/data/album/services/album_images_upload_service.dart';
 
 /// 날짜별 앨범 묶음 상태
 class AlbumDayGroup {
@@ -17,16 +20,182 @@ class AlbumDayGroup {
 
 /// 앨범 디테일 화면 전역 상태
 class AlbumDetailViewModel extends ChangeNotifier {
-  /// 화면에서 사용 중인 날짜별 그룹 리스트 (API 연결 전: picsum mock)
-  List<AlbumDayGroup> groups;
+  final AlbumImageUploadService _uploadService;
+  final AlbumRepository _repository;
+  final int albumId;
 
-  AlbumDetailViewModel({List<AlbumDayGroup>? initialGroups})
-    : groups = initialGroups ?? _mockGroups();
+  /// 화면에서 사용 중인 날짜별 그룹 리스트
+  List<AlbumDayGroup> groups = [];
 
-  /// 외부에서 데이터 세팅하고 싶을 때 사용
-  void setGroups(List<AlbumDayGroup> newGroups) {
-    groups = newGroups;
+  /// 로딩 상태
+  bool _isLoading = false;
+  bool _isLoadingMore = false;
+
+  /// 업로드 상태
+  bool _isUploading = false;
+  String _uploadProgress = '';
+  String? _uploadError;
+
+  /// 페이지네이션
+  int? _lastImageId;
+  bool _isLast = false;
+
+  /// 선택 모드 활성화 여부
+  bool _isSelectionMode = false;
+  bool get isSelectionMode => _isSelectionMode;
+
+  /// 선택 모드 진입
+  void enterSelectionMode() {
+    _isSelectionMode = true;
     notifyListeners();
+  }
+
+  /// 선택 모드 종료 및 선택 초기화
+  void exitSelectionMode() {
+    _isSelectionMode = false;
+    clearAllSelection();
+    notifyListeners();
+  }
+
+  /// 정렬 기준 (UPLOAD: 업로드순, GENERATED: 촬영일순)
+  String _sortParameter = 'UPLOAD';
+
+  /// 정렬 방향 (ASC: 오름차순, DESC: 내림차순)
+  String _sortDirection = 'DESC';
+
+  bool get isLoading => _isLoading;
+  bool get isLoadingMore => _isLoadingMore;
+  bool get isUploading => _isUploading;
+  String get uploadProgress => _uploadProgress;
+  String? get uploadError => _uploadError;
+  bool get hasMore => !_isLast;
+  String get sortParameter => _sortParameter;
+  String get sortDirection => _sortDirection;
+
+  AlbumDetailViewModel({
+    required this.albumId,
+    AlbumImageUploadService? uploadService,
+    AlbumRepository? repository,
+  }) : _uploadService = uploadService ?? AlbumImageUploadService(),
+       _repository = repository ?? AlbumRepository() {
+    loadImages();
+  }
+
+  /// 정렬 순서 변경 후 새로고침 (같은 파라미터면 방향만 토글)
+  Future<void> toggleSort(String newParameter) async {
+    if (_sortParameter == newParameter) {
+      // 같은 정렬 기준이면 방향만 토글
+      _sortDirection = _sortDirection == 'DESC' ? 'ASC' : 'DESC';
+    } else {
+      // 다른 정렬 기준이면 파라미터 변경하고 내림차순으로 리셋
+      _sortParameter = newParameter;
+      _sortDirection = 'DESC';
+    }
+
+    notifyListeners();
+
+    // 정렬 변경 시 처음부터 다시 로드
+    await loadImages();
+  }
+
+  /// 이미지 목록 불러오기 (처음)
+  Future<void> loadImages() async {
+    if (_isLoading) return;
+
+    _isLoading = true;
+    _lastImageId = null;
+    _isLast = false;
+    notifyListeners();
+
+    try {
+      final response = await _repository.getAlbumImages(
+        albumId,
+        size: 20,
+        parameter: _sortParameter,
+        direction: _sortDirection,
+      );
+
+      groups = _groupImagesByDate(response.content);
+      _isLast = response.isLast;
+
+      if (response.content.isNotEmpty) {
+        _lastImageId = response.content.last.imageId;
+      }
+    } catch (e) {
+      debugPrint('이미지 로드 실패: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// 이미지 더 불러오기 (페이지네이션)
+  Future<void> loadMoreImages() async {
+    if (_isLoadingMore || _isLast || _lastImageId == null) return;
+
+    _isLoadingMore = true;
+    notifyListeners();
+
+    try {
+      final response = await _repository.getAlbumImages(
+        albumId,
+        lastImageId: _lastImageId,
+        size: 20,
+        parameter: _sortParameter,
+        direction: _sortDirection,
+      );
+
+      final newGroups = _groupImagesByDate(response.content);
+      _mergeGroups(newGroups);
+
+      _isLast = response.isLast;
+
+      if (response.content.isNotEmpty) {
+        _lastImageId = response.content.last.imageId;
+      }
+    } catch (e) {
+      debugPrint('이미지 더 로드 실패: $e');
+    } finally {
+      _isLoadingMore = false;
+      notifyListeners();
+    }
+  }
+
+  /// API 응답을 날짜별로 그룹화
+  List<AlbumDayGroup> _groupImagesByDate(List<dynamic> images) {
+    final Map<String, List<String>> dateMap = {};
+
+    for (final image in images) {
+      final date = _formatDate(image.date); // 2025-10-01 -> 2025.10.01
+      if (!dateMap.containsKey(date)) {
+        dateMap[date] = [];
+      }
+      dateMap[date]!.add(image.imageUrl);
+    }
+
+    return dateMap.entries
+        .map((entry) => AlbumDayGroup(date: entry.key, imageUrls: entry.value))
+        .toList();
+  }
+
+  /// 날짜 포맷 변환 (2025-10-01 -> 2025.10.01)
+  String _formatDate(String apiDate) {
+    return apiDate.replaceAll('-', '.');
+  }
+
+  /// 기존 그룹에 새 그룹 병합
+  void _mergeGroups(List<AlbumDayGroup> newGroups) {
+    for (final newGroup in newGroups) {
+      final existingIndex = groups.indexWhere((g) => g.date == newGroup.date);
+
+      if (existingIndex != -1) {
+        // 같은 날짜 그룹이 있으면 이미지 추가
+        groups[existingIndex].imageUrls.addAll(newGroup.imageUrls);
+      } else {
+        // 없으면 새 그룹 추가
+        groups.add(newGroup);
+      }
+    }
   }
 
   /// 총 선택 개수
@@ -50,6 +219,8 @@ class AlbumDetailViewModel extends ChangeNotifier {
 
     // 전체선택 상태 동기화
     g.isAllSelected = g.selectedIndexes.length == g.imageUrls.length;
+
+    // 자동 종료 로직 제거 - 선택 모드는 명시적으로만 종료
     notifyListeners();
   }
 
@@ -62,11 +233,17 @@ class AlbumDetailViewModel extends ChangeNotifier {
       g.selectedIndexes.clear();
       g.isAllSelected = false;
     } else {
+      // 선택 모드 진입
+      if (!_isSelectionMode) {
+        _isSelectionMode = true;
+      }
+
       g.selectedIndexes
         ..clear()
         ..addAll(List<int>.generate(g.imageUrls.length, (i) => i));
       g.isAllSelected = true;
     }
+
     notifyListeners();
   }
 
@@ -79,28 +256,43 @@ class AlbumDetailViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// --- Mock 데이터 (API 연결 전 유지) ---
-  static List<AlbumDayGroup> _mockGroups() {
-    return [
-      AlbumDayGroup(
-        date: '2025.06.20',
-        imageUrls: const [
-          'https://picsum.photos/id/1011/600/600',
-          'https://picsum.photos/id/1015/600/600',
-          'https://picsum.photos/id/1025/600/600',
-          'https://picsum.photos/id/1035/600/600',
-          'https://picsum.photos/id/1024/600/600',
-          'https://picsum.photos/id/1043/600/600',
-        ],
-      ),
-      AlbumDayGroup(
-        date: '2025.06.18',
-        imageUrls: const [
-          'https://picsum.photos/id/1062/600/600',
-          'https://picsum.photos/id/1050/600/600',
-          // 필요하면 더 추가
-        ],
-      ),
-    ];
+  /// 이미지 업로드 프로세스
+  Future<bool> uploadImages(List<AssetEntity> assets) async {
+    if (assets.isEmpty) return false;
+
+    _isUploading = true;
+    _uploadError = null;
+    _uploadProgress = '준비 중... 0/${assets.length * 2}';
+    notifyListeners();
+
+    try {
+      await _uploadService.uploadImagesToAlbum(
+        albumId,
+        assets,
+        onProgress: (current, total) {
+          _uploadProgress = '업로드 중... $current/$total';
+          notifyListeners();
+        },
+      );
+
+      _isUploading = false;
+      notifyListeners();
+
+      // 업로드 완료 후 이미지 목록 새로고침
+      await loadImages();
+
+      return true;
+    } catch (e) {
+      _isUploading = false;
+      _uploadError = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// 에러 메시지 초기화
+  void clearError() {
+    _uploadError = null;
+    notifyListeners();
   }
 }

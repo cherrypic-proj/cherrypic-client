@@ -21,8 +21,6 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     _viewModel = MainViewModel();
-    // 초기 앨범 목록 로드
-    _viewModel.loadAlbums();
   }
 
   @override

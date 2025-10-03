@@ -13,12 +13,19 @@ class AlbumSection extends StatefulWidget {
 }
 
 class _AlbumSectionState extends State<AlbumSection> {
+  bool _hasLoadedInitialData = false;
+
   @override
   void initState() {
     super.initState();
-    // 페이지 로드 시 앨범 데이터 가져오기
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<MainViewModel>().loadAlbums();
+      if (!_hasLoadedInitialData && mounted) {
+        _hasLoadedInitialData = true;
+        final viewModel = context.read<MainViewModel>();
+        if (viewModel.albums.isEmpty) {
+          viewModel.loadAlbums();
+        }
+      }
     });
   }
 
@@ -26,7 +33,7 @@ class _AlbumSectionState extends State<AlbumSection> {
   Widget build(BuildContext context) {
     return Consumer<MainViewModel>(
       builder: (context, viewModel, child) {
-        if (viewModel.isLoading) {
+        if (viewModel.isLoading && viewModel.albums.isEmpty) {
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -43,7 +50,7 @@ class _AlbumSectionState extends State<AlbumSection> {
   Widget _buildEmptyState() {
     return Column(
       children: [
-        const SizedBox(height: 80), // 위쪽 여백 추가
+        const SizedBox(height: 80),
         Center(
           child: Image.asset(
             'assets/images/main_empty.png',
