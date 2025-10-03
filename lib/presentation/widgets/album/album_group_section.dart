@@ -118,6 +118,11 @@ class _AlbumGroupSectionState extends State<AlbumGroupSection> {
         mainAxisSpacing: 0,
         childAspectRatio: 1,
       ),
+      // 성능 최적화 설정
+      cacheExtent: 500, // 화면 밖 500px까지 미리 렌더링
+      addAutomaticKeepAlives: true, // 스크롤 시 위젯 상태 유지
+      addRepaintBoundaries: true, // 리페인트 최적화
+
       itemBuilder: (context, index) {
         final imageUrl = widget.imageUrls[index];
         final isSelected = widget.selectedIndexes.contains(index);
@@ -137,6 +142,12 @@ class _AlbumGroupSectionState extends State<AlbumGroupSection> {
             children: [
               CachedNetworkImage(
                 imageUrl: imageUrl,
+                // 메모리 캐시 최적화: 그리드 셀 크기에 맞게 리사이즈
+                memCacheWidth: 400,
+                memCacheHeight: 400,
+                // 디스크 캐시 최적화
+                maxWidthDiskCache: 400,
+                maxHeightDiskCache: 400,
                 imageBuilder: (context, imageProvider) => Container(
                   decoration: BoxDecoration(
                     border: isSelected
@@ -148,12 +159,26 @@ class _AlbumGroupSectionState extends State<AlbumGroupSection> {
                     ),
                   ),
                 ),
-                placeholder: (context, url) =>
-                    Container(color: Colors.grey[200]),
+                placeholder: (context, url) => Container(
+                  color: Colors.grey[200],
+                  child: const Center(
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
+                      ),
+                    ),
+                  ),
+                ),
                 errorWidget: (context, url, error) => Container(
                   color: Colors.grey[300],
-                  child: const Icon(Icons.error),
+                  child: const Icon(Icons.error, size: 20),
                 ),
+                // 페이드 애니메이션 시간 단축
+                fadeInDuration: const Duration(milliseconds: 200),
+                fadeOutDuration: const Duration(milliseconds: 100),
               ),
               if (isSelected)
                 Positioned(
