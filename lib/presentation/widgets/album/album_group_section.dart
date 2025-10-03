@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class AlbumGroupSection extends StatelessWidget {
   final String date;
@@ -93,15 +94,24 @@ class AlbumGroupSection extends StatelessWidget {
               onTap: () => onImageTap(index),
               child: Stack(
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      border: isSelected
-                          ? Border.all(color: AppColor.mainRed, width: 2)
-                          : null,
-                      image: DecorationImage(
-                        image: NetworkImage(imageUrl),
-                        fit: BoxFit.cover,
+                  CachedNetworkImage(
+                    imageUrl: imageUrl,
+                    imageBuilder: (context, imageProvider) => Container(
+                      decoration: BoxDecoration(
+                        border: isSelected
+                            ? Border.all(color: AppColor.mainRed, width: 2)
+                            : null,
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
+                        ),
                       ),
+                    ),
+                    placeholder: (context, url) =>
+                        Container(color: Colors.grey[200]),
+                    errorWidget: (context, url, error) => Container(
+                      color: Colors.grey[300],
+                      child: const Icon(Icons.error),
                     ),
                   ),
                   if (isSelected)
