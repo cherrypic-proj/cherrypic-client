@@ -22,15 +22,18 @@ class AlbumDetailDto {
       title: json['title'] as String,
       coverUrl: json['coverUrl'] as String?,
       type: json['type'] as String,
-      capacityUsed: (json['capacityUsedGb'] is String)
-          ? double.parse(json['capacityUsedGb'] as String)
-          : (json['capacityUsedGb'] as num).toDouble(),
-      totalCapacity: (json['totalCapacityGb'] is String)
-          ? double.parse(json['totalCapacityGb'] as String)
-          : (json['totalCapacityGb'] as num).toDouble(),
+      capacityUsed: _parseCapacity(json['capacityUsedGb']),
+      totalCapacity: _parseCapacity(json['totalCapacityGb']),
       hostName: json['hostName'] as String,
       numOfParticipants: json['numOfParticipants'] as int,
     );
+  }
+
+  static double _parseCapacity(dynamic value) {
+    if (value is String) {
+      return double.parse(value);
+    }
+    return (value as num).toDouble();
   }
 
   Map<String, dynamic> toJson() {
