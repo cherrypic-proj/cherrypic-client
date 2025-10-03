@@ -45,6 +45,7 @@ class AlbumImageUploadService {
     // 1. 각 이미지의 메타데이터 생성
     final List<ImagePayload> payloads = [];
     final List<Uint8List> imageDataList = [];
+    final currentTime = DateTime.now().toUtc().toIso8601String(); // 루프 밖으로 이동
 
     for (int i = 0; i < assets.length; i++) {
       final asset = assets[i];
@@ -70,9 +71,7 @@ class AlbumImageUploadService {
 
       // 이미지 생성 시간을 ISO 8601 포맷으로
       final createdAt = asset.createDateTime;
-      final generatedAt =
-          createdAt?.toUtc().toIso8601String() ??
-          DateTime.now().toUtc().toIso8601String();
+      final generatedAt = createdAt?.toUtc().toIso8601String() ?? currentTime;
 
       payloads.add(
         ImagePayload(
@@ -88,7 +87,7 @@ class AlbumImageUploadService {
     debugPrint('✅ 메타데이터 생성 완료: ${payloads.length}개');
 
     // 2. Presigned URL 요청
-    debugPrint('🔄 Presigned URL 요청 중...');
+    debugPrint('📄 Presigned URL 요청 중...');
     final requestDto = AlbumImageUploadRequestDto(payloads: payloads);
     final presignedResponse = await _albumRepository.getPresignedUrls(
       albumId,
