@@ -3,7 +3,7 @@ import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-class AlbumGroupSection extends StatelessWidget {
+class AlbumGroupSection extends StatefulWidget {
   final String date;
   final bool isAllSelected;
   final VoidCallback onToggleAll;
@@ -26,6 +26,15 @@ class AlbumGroupSection extends StatelessWidget {
   });
 
   @override
+  State<AlbumGroupSection> createState() => _AlbumGroupSectionState();
+}
+
+class _AlbumGroupSectionState extends State<AlbumGroupSection> {
+  final GlobalKey _gridKey = GlobalKey();
+  bool _isDragging = false;
+  final Set<int> _draggedIndexes = {};
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,16 +45,16 @@ class AlbumGroupSection extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                date,
+                widget.date,
                 style: AppFont.size18.copyWith(fontWeight: FontWeight.w600),
               ),
               TextButton(
-                onPressed: onToggleAll,
+                onPressed: widget.onToggleAll,
                 style: TextButton.styleFrom(
                   minimumSize: const Size(74, 22),
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  backgroundColor: isAllSelected
+                  backgroundColor: widget.isAllSelected
                       ? AppColor.mainRed
                       : Colors.transparent,
                   side: const BorderSide(color: AppColor.mainRed),
@@ -60,14 +69,16 @@ class AlbumGroupSection extends StatelessWidget {
                     Text(
                       '전체선택',
                       style: AppFont.size12.copyWith(
-                        color: isAllSelected ? Colors.white : Colors.black,
+                        color: widget.isAllSelected
+                            ? Colors.white
+                            : Colors.black,
                         fontWeight: FontWeight.w500,
                         height: 1.2,
                       ),
                     ),
                     const SizedBox(width: 4),
                     Image.asset(
-                      isAllSelected
+                      widget.isAllSelected
                           ? 'assets/images/check_circle.png'
                           : 'assets/images/uncheck_circle.png',
                       width: 12,
@@ -80,68 +91,153 @@ class AlbumGroupSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 10),
-        GridView.builder(
-          padding: EdgeInsets.zero,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: imageUrls.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            crossAxisSpacing: 0,
-            mainAxisSpacing: 0,
-            childAspectRatio: 1,
-          ),
-          itemBuilder: (context, index) {
-            final imageUrl = imageUrls[index];
-            final isSelected = selectedIndexes.contains(index);
-            return GestureDetector(
-              onTap: () => onImageTap(index), // 항상 전체화면으로
-              onLongPress: () => onImageLongPress(index), // 선택 모드 진입
-              child: Stack(
-                children: [
-                  CachedNetworkImage(
-                    imageUrl: imageUrl,
-                    imageBuilder: (context, imageProvider) => Container(
-                      decoration: BoxDecoration(
-                        border: isSelected
-                            ? Border.all(color: AppColor.mainRed, width: 2)
-                            : null,
-                        image: DecorationImage(
-                          image: imageProvider,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    placeholder: (context, url) =>
-                        Container(color: Colors.grey[200]),
-                    errorWidget: (context, url, error) => Container(
-                      color: Colors.grey[300],
-                      child: const Icon(Icons.error),
-                    ),
-                  ),
-                  if (isSelected)
-                    Positioned(
-                      top: 6,
-                      right: 6,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColor.mainRed,
-                        ),
-                        padding: const EdgeInsets.all(4),
-                        child: const Icon(
-                          Icons.check,
-                          color: Colors.white,
-                          size: 14,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            );
-          },
-        ),
+
+        // 선택 모드일 때만 드래그 제스처 활성화
+        widget.isSelectionMode
+            ? GestureDetector(
+                onPanStart: _onDragStart,
+                onPanUpdate: _onDragUpdate,
+                onPanEnd: _onDragEnd,
+                child: _buildGrid(),
+              )
+            : _buildGrid(),
       ],
     );
+  }
+
+  Widget _buildGrid() {
+    return GridView.builder(
+      key: _gridKey,
+      padding: EdgeInsets.zero,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: widget.imageUrls.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: 0,
+        mainAxisSpacing: 0,
+        childAspectRatio: 1,
+      ),
+      itemBuilder: (context, index) {
+        final imageUrl = widget.imageUrls[index];
+        final isSelected = widget.selectedIndexes.contains(index);
+
+        return GestureDetector(
+          onTap: () {
+            if (!_isDragging) {
+              widget.onImageTap(index);
+            }
+          },
+          onLongPress: () {
+            if (!_isDragging) {
+              widget.onImageLongPress(index);
+            }
+          },
+          child: Stack(
+            children: [
+              CachedNetworkImage(
+                imageUrl: imageUrl,
+                imageBuilder: (context, imageProvider) => Container(
+                  decoration: BoxDecoration(
+                    border: isSelected
+                        ? Border.all(color: AppColor.mainRed, width: 2)
+                        : null,
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                placeholder: (context, url) =>
+                    Container(color: Colors.grey[200]),
+                errorWidget: (context, url, error) => Container(
+                  color: Colors.grey[300],
+                  child: const Icon(Icons.error),
+                ),
+              ),
+              if (isSelected)
+                Positioned(
+                  top: 6,
+                  right: 6,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColor.mainRed,
+                    ),
+                    padding: const EdgeInsets.all(4),
+                    child: const Icon(
+                      Icons.check,
+                      color: Colors.white,
+                      size: 14,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _onDragStart(DragStartDetails details) {
+    if (!widget.isSelectionMode) return;
+
+    setState(() {
+      _isDragging = true;
+      _draggedIndexes.clear();
+    });
+
+    _updateDragSelection(details.localPosition);
+  }
+
+  void _onDragUpdate(DragUpdateDetails details) {
+    if (!widget.isSelectionMode || !_isDragging) return;
+
+    _updateDragSelection(details.localPosition);
+  }
+
+  void _onDragEnd(DragEndDetails details) {
+    if (!widget.isSelectionMode) return;
+
+    setState(() {
+      _isDragging = false;
+      _draggedIndexes.clear();
+    });
+  }
+
+  void _updateDragSelection(Offset position) {
+    final RenderBox? renderBox =
+        _gridKey.currentContext?.findRenderObject() as RenderBox?;
+    if (renderBox == null) return;
+
+    // 그리드 내 로컬 좌표
+    final localPosition = position;
+
+    // 그리드 크기
+    final gridWidth = renderBox.size.width;
+    final itemWidth = gridWidth / 3; // crossAxisCount = 3
+    final itemHeight = itemWidth; // childAspectRatio = 1
+
+    // 터치한 위치의 행, 열 계산
+    final col = (localPosition.dx / itemWidth).floor();
+    final row = (localPosition.dy / itemHeight).floor();
+
+    // 범위 체크
+    if (col < 0 || col >= 3) return;
+    if (row < 0) return;
+
+    final index = row * 3 + col;
+
+    // 이미지 개수 범위 체크
+    if (index >= widget.imageUrls.length) return;
+
+    // 이미 드래그로 처리한 항목이면 무시
+    if (_draggedIndexes.contains(index)) return;
+
+    // 드래그로 처리한 항목 추가
+    _draggedIndexes.add(index);
+
+    // 선택 토글
+    widget.onImageTap(index);
   }
 }
