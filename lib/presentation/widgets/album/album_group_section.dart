@@ -95,8 +95,8 @@ class AlbumGroupSection extends StatelessWidget {
             final imageUrl = imageUrls[index];
             final isSelected = selectedIndexes.contains(index);
             return GestureDetector(
-              onTap: () => onImageTap(index),
-              onLongPress: () => onImageLongPress(index),
+              onTap: () => onImageTap(index), // 항상 전체화면으로
+              onLongPress: () => onImageLongPress(index), // 선택 모드 진입
               child: Stack(
                 children: [
                   CachedNetworkImage(

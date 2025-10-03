@@ -219,6 +219,8 @@ class AlbumDetailViewModel extends ChangeNotifier {
 
     // 전체선택 상태 동기화
     g.isAllSelected = g.selectedIndexes.length == g.imageUrls.length;
+
+    // 자동 종료 로직 제거 - 선택 모드는 명시적으로만 종료
     notifyListeners();
   }
 
@@ -231,11 +233,17 @@ class AlbumDetailViewModel extends ChangeNotifier {
       g.selectedIndexes.clear();
       g.isAllSelected = false;
     } else {
+      // 선택 모드 진입
+      if (!_isSelectionMode) {
+        _isSelectionMode = true;
+      }
+
       g.selectedIndexes
         ..clear()
         ..addAll(List<int>.generate(g.imageUrls.length, (i) => i));
       g.isAllSelected = true;
     }
+
     notifyListeners();
   }
 

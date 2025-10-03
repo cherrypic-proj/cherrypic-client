@@ -4,6 +4,7 @@ import 'package:cherrypic/presentation/screens/main/detail/events_tab/%20create/
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/components/event_album_cover.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/event_tab_view_model.dart';
 import 'package:cherrypic/presentation/widgets/album/album_group_section.dart';
+import 'package:cherrypic/presentation/widgets/album/image_full_screen_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../album_detail_view_model.dart';
@@ -49,12 +50,62 @@ class AlbumContentList extends StatelessWidget {
                 onToggleAll: () => vm.toggleAll(index),
                 imageUrls: g.imageUrls,
                 selectedIndexes: g.selectedIndexes,
-                onImageTap: (imgIdx) => vm.toggleImage(index, imgIdx),
+                isSelectionMode: vm.isSelectionMode,
+
+                // 짧게 클릭
+                onImageTap: (imgIdx) {
+                  if (vm.isSelectionMode) {
+                    // 선택 모드: 선택/해제
+                    vm.toggleImage(index, imgIdx);
+                  } else {
+                    // 일반 모드: 전체화면
+                    _openFullScreen(context, vm, index, imgIdx);
+                  }
+                },
+
+                // 롱프레스: 선택 모드 진입 + 해당 이미지 선택
+                onImageLongPress: (imgIdx) {
+                  if (!vm.isSelectionMode) {
+                    vm.enterSelectionMode();
+                  }
+                  vm.toggleImage(index, imgIdx);
+                },
               ),
             );
           },
         );
       },
+    );
+  }
+
+  /// 전체화면 이미지 뷰어 열기
+  void _openFullScreen(
+    BuildContext context,
+    AlbumDetailViewModel vm,
+    int groupIndex,
+    int imageIndex,
+  ) {
+    // 전체 이미지 URL 리스트 생성
+    final allImageUrls = <String>[];
+    int initialIndex = 0;
+    int currentCount = 0;
+
+    for (int i = 0; i < vm.groups.length; i++) {
+      if (i < groupIndex) {
+        currentCount += vm.groups[i].imageUrls.length;
+      } else if (i == groupIndex) {
+        initialIndex = currentCount + imageIndex;
+      }
+      allImageUrls.addAll(vm.groups[i].imageUrls);
+    }
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ImageFullScreenViewer(
+          imageUrls: allImageUrls,
+          initialIndex: initialIndex,
+        ),
+      ),
     );
   }
 

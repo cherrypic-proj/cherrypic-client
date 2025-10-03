@@ -25,6 +25,7 @@ dependencies:
     cached_network_image: ^3.3.1 # 네트워크 이미지 캐싱 및 최적화
     crypto: ^3.0.3
     percent_indicator: ^4.2.2 #게이지 바
+    photo_view: ^0.15.0 # 이미지 상세보기
 
     # 로그인
     kakao_flutter_sdk_user: ^1.9.7+3

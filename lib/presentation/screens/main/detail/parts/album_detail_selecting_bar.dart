@@ -5,8 +5,14 @@ import 'package:flutter/material.dart';
 class SelectingBar extends StatelessWidget {
   final int count;
   final VoidCallback onMore;
+  final VoidCallback onCancel;
 
-  const SelectingBar({super.key, required this.count, required this.onMore});
+  const SelectingBar({
+    super.key,
+    required this.count,
+    required this.onMore,
+    required this.onCancel,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +50,24 @@ class SelectingBar extends StatelessWidget {
               ),
               child: Text(
                 '더보기',
+                style: AppFont.size14.copyWith(
+                  color: AppColor.mainRed,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          GestureDetector(
+            onTap: onCancel,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                '취소',
                 style: AppFont.size14.copyWith(
                   color: AppColor.mainRed,
                   fontWeight: FontWeight.bold,

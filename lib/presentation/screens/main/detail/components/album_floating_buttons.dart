@@ -20,14 +20,14 @@ class AlbumFloatingButtons extends StatelessWidget {
     final double bottomSafe = MediaQuery.of(context).padding.bottom;
 
     return Selector<AlbumDetailViewModel, (bool, int)>(
-      selector: (_, vm) => (vm.isSelecting, vm.selectedCount),
+      selector: (_, vm) => (vm.isSelectionMode, vm.selectedCount),
       builder: (context, data, _) {
-        final (isSelecting, selectedCount) = data;
+        final (isSelectionMode, selectedCount) = data;
 
         return Stack(
           children: [
             // 하단 좌측: 전체/이벤트 토글
-            if (!isSelecting)
+            if (!isSelectionMode)
               Positioned(
                 bottom: 24 + bottomSafe,
                 left: 0,
@@ -41,15 +41,15 @@ class AlbumFloatingButtons extends StatelessWidget {
               ),
 
             // 하단 우측: 사진 추가 버튼
-            if (!isSelecting)
+            if (!isSelectionMode)
               Positioned(
                 right: 45,
                 bottom: 24 + bottomSafe,
                 child: _AddPhotoButton(onTap: () => _handleAddPhoto(context)),
               ),
 
-            // 선택 바
-            if (selectedCount > 0)
+            // 선택 바 - 선택 모드일 때 항상 표시
+            if (isSelectionMode)
               Positioned(
                 left: 0,
                 right: 0,
@@ -60,6 +60,10 @@ class AlbumFloatingButtons extends StatelessWidget {
                     child: SelectingBar(
                       count: selectedCount,
                       onMore: () => _openMoreSheet(context),
+                      onCancel: () {
+                        final vm = context.read<AlbumDetailViewModel>();
+                        vm.exitSelectionMode();
+                      },
                     ),
                   ),
                 ),
@@ -100,6 +104,8 @@ class AlbumFloatingButtons extends StatelessWidget {
   }
 
   void _openMoreSheet(BuildContext context) {
+    final vm = context.read<AlbumDetailViewModel>();
+
     showModalBottomSheet(
       context: context,
       builder: (_) {
@@ -112,6 +118,8 @@ class AlbumFloatingButtons extends StatelessWidget {
                 onTap: () {
                   Navigator.pop(context);
                   // TODO: 구현
+                  // 다운로드 완료 후 선택 모드 종료하려면:
+                  // vm.exitSelectionMode();
                 },
               ),
               ListTile(
@@ -120,6 +128,8 @@ class AlbumFloatingButtons extends StatelessWidget {
                 onTap: () {
                   Navigator.pop(context);
                   // TODO: 구현
+                  // 삭제 완료 후 선택 모드 종료하려면:
+                  // vm.exitSelectionMode();
                 },
               ),
             ],
