@@ -162,6 +162,8 @@ class MainAlbumHeader extends StatelessWidget {
         return AlbumBadgeType.pro;
       case 'BASIC':
         return AlbumBadgeType.basic;
+      case 'PREMIUM':
+        return AlbumBadgeType.premium;
       default:
         return AlbumBadgeType.basic;
     }

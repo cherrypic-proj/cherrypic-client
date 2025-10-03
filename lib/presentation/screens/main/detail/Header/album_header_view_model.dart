@@ -76,6 +76,8 @@ class AlbumHeaderViewModel extends ChangeNotifier {
         return 'PRO';
       case 'BASIC':
         return 'BASIC';
+      case 'PREMIUM':
+        return 'PREMIUM';
       default:
         return type;
     }
