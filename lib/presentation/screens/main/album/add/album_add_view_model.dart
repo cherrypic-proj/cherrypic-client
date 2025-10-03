@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 import 'package:cherrypic/data/album/dto/request/album_create_request_dto.dart';
 import 'package:cherrypic/data/album/repositories/album_repository.dart';
-import 'package:cherrypic/data/album/services/image_upload_service.dart';
+import 'package:cherrypic/data/album/services/album_cover_image_service.dart';
 import 'package:cherrypic/presentation/screens/main/album/components/album_type_selector.dart';
 import 'package:flutter/material.dart';
 

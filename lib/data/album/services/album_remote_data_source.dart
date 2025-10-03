@@ -130,7 +130,7 @@ class AlbumRemoteDataSource {
   ) async {
     try {
       final response = await _dio.post(
-        '${ApiPath.albumDetail(albumId)}/images/presigned-urls',
+        '${ApiPath.albumDetail(albumId)}/images',
         data: requestDto.toJson(),
       );
 

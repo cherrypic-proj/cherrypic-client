@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:cherrypic/data/album/repositories/album_repository.dart';
-import 'package:cherrypic/data/album/services/album_image_upload_service.dart';
+import 'package:cherrypic/data/album/services/album_images_upload_service.dart';
 
 /// 날짜별 앨범 묶음 상태
 class AlbumDayGroup {

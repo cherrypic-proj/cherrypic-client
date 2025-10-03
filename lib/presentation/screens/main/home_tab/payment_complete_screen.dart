@@ -2,7 +2,7 @@ import 'package:cherrypic/core/router/route_path.dart';
 import 'package:cherrypic/data/album/dto/request/album_create_request_dto.dart';
 import 'package:cherrypic/data/album/repositories/album_repository.dart';
 import 'package:cherrypic/data/album/repositories/payment_repository.dart';
-import 'package:cherrypic/data/album/services/image_upload_service.dart';
+import 'package:cherrypic/data/album/services/album_cover_image_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../widgets/custom_button.dart';

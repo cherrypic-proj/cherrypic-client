@@ -83,7 +83,7 @@ class AlbumImageUploadService {
         ),
       );
 
-      onProgress?.call(i + 1, assets.length * 2);
+      onProgress?.call(assets.length + i + 1, assets.length * 2);
     }
     debugPrint('✅ 메타데이터 생성 완료: ${payloads.length}개');
 

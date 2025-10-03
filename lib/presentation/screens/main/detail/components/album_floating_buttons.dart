@@ -1,4 +1,4 @@
-import 'package:cherrypic/data/album/services/album_image_upload_service.dart';
+import 'package:cherrypic/data/album/services/album_images_upload_service.dart';
 import 'package:cherrypic/presentation/screens/main/detail/parts/album_detail_segmented.dart';
 import 'package:cherrypic/presentation/screens/main/detail/parts/album_detail_selecting_bar.dart';
 import 'package:flutter/material.dart';
