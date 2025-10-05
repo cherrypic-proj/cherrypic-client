@@ -1,4 +1,5 @@
 import 'package:cherrypic/core/router/route_path.dart';
+import 'package:cherrypic/core/network/navigation_service.dart';
 import 'package:cherrypic/data/login/repositories/auth_repository.dart';
 import 'package:cherrypic/data/login/services/apple_auth_data_source.dart';
 import 'package:cherrypic/data/login/services/auth_remote_data_source.dart';
@@ -173,7 +174,7 @@ final List<String> shellRoutes = [
 
 // GoRouter
 GoRouter createAppRouter(String initialRoute) {
-  return GoRouter(
+  final router = GoRouter(
     initialLocation: initialRoute,
     routes: [
       // 앱바 없는 개별 라우트들
@@ -190,4 +191,9 @@ GoRouter createAppRouter(String initialRoute) {
       ),
     ],
   );
+
+  // NavigationService에 라우터 등록
+  NavigationService.initialize(router);
+
+  return router;
 }
