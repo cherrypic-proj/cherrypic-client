@@ -1,6 +1,3 @@
-import 'package:cherrypic/core/network/api_path.dart';
-import 'package:cherrypic/core/network/api_response.dart';
-import 'package:cherrypic/core/network/error_handler.dart';
 import 'package:cherrypic/data/album/dto/request/album_create_request_dto.dart';
 import 'package:cherrypic/data/album/dto/request/album_image_upload_request_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_dto.dart';
@@ -10,7 +7,6 @@ import 'package:cherrypic/data/album/dto/response/invitation_link_dto.dart';
 import 'package:cherrypic/data/album/dto/response/participant_dto.dart';
 import 'package:cherrypic/data/album/dto/response/presigned_url_response_dto.dart';
 import 'package:cherrypic/data/album/services/album_remote_data_source.dart';
-import 'package:dio/dio.dart';
 
 class AlbumRepository {
   final AlbumRemoteDataSource _remoteDataSource;

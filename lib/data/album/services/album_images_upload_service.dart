@@ -71,7 +71,7 @@ class AlbumImageUploadService {
 
       // 이미지 생성 시간을 ISO 8601 포맷으로
       final createdAt = asset.createDateTime;
-      final generatedAt = createdAt?.toUtc().toIso8601String() ?? currentTime;
+      final generatedAt = createdAt.toUtc().toIso8601String() ?? currentTime;
 
       payloads.add(
         ImagePayload(

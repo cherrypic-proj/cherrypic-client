@@ -60,7 +60,7 @@ class _AlbumCoverSectionState extends State<AlbumCoverSection> {
               child: Column(
                 children: [
                   // ... (이미지 표시 부분은 동일)
-                  Container(
+                  SizedBox(
                     width: 210,
                     height: 224,
                     // ...

@@ -1,7 +1,6 @@
 import 'package:cherrypic/data/album/repositories/album_repository.dart';
 import 'package:cherrypic/presentation/screens/main/detail/Header/album_header_model.dart';
 import 'package:cherrypic/presentation/screens/main/detail/Header/components/member_list_popup.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class AlbumHeaderViewModel extends ChangeNotifier {
