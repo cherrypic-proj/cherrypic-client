@@ -1,4 +1,3 @@
-import 'package:cherrypic/presentation/screens/main/detail/components/album_sort_buttons.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/components/event_header.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/detail/event_detail_view_model.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/event_album.dart';
@@ -35,11 +34,12 @@ class _BodyState extends State<_Body> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -48,17 +48,9 @@ class _BodyState extends State<_Body> {
           return CustomScrollView(
             slivers: [
               // 이벤트 헤더
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: EventHeader(event: widget.event),
-                ),
-              ),
+              SliverToBoxAdapter(child: EventHeader(event: widget.event)),
 
-              // 정렬 버튼
-              const AlbumSortButtons(),
-
-              const SliverToBoxAdapter(child: SizedBox(height: 8)),
+              const SliverToBoxAdapter(child: SizedBox(height: 16)),
 
               // 로딩 상태
               if (vm.isLoading && vm.groups.isEmpty)
