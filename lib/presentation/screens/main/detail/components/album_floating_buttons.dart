@@ -147,11 +147,13 @@ class _AddPhotoButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: onTap,
-      backgroundColor: Colors.white,
-      elevation: 4,
-      child: Image.asset('assets/images/add_img.png', width: 24, height: 24),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 56,
+        height: 56,
+        child: Image.asset('assets/images/add_img.png', fit: BoxFit.contain),
+      ),
     );
   }
 }
