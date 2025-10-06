@@ -127,6 +127,7 @@ class _CircleMenuButton extends StatelessWidget {
   final VoidCallback? onTap;
 
   const _CircleMenuButton({
+    super.key,
     required this.assetPath,
     required this.label,
     this.onTap,
