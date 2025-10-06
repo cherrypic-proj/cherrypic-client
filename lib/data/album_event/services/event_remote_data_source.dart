@@ -4,6 +4,7 @@ import 'package:cherrypic/core/network/dio_client.dart';
 import 'package:cherrypic/data/album_event/dto/request/event_create_request_dto.dart';
 import 'package:cherrypic/data/album_event/dto/request/event_add_images_request_dto.dart';
 import 'package:cherrypic/data/album_event/dto/response/event_create_response_dto.dart';
+import 'package:cherrypic/data/album_event/dto/response/event_detail_response_dto.dart';
 import 'package:cherrypic/data/album_event/dto/response/event_response.dart';
 import 'package:dio/dio.dart';
 
@@ -96,5 +97,34 @@ class EventRemoteDataSource {
     } on DioException catch (e) {
       throw Exception('Presigned URL 생성 실패: $e');
     }
+  }
+
+  /// 이벤트 이미지 목록 조회
+  Future<EventImageListResponseDto> getEventImages({
+    required int eventId,
+    int? lastEventImageId,
+    required int size,
+    String? parameter,
+    String? direction,
+  }) async {
+    final queryParameters = <String, dynamic>{
+      'size': size,
+      if (lastEventImageId != null) 'lastEventImageId': lastEventImageId,
+      if (parameter != null) 'parameter': parameter,
+      if (direction != null) 'direction': direction,
+    };
+
+    final response = await _dioClient.dio.get(
+      ApiPath.eventImages(eventId),
+      queryParameters: queryParameters,
+    );
+
+    final apiResponse = ApiResponse.fromJson(
+      response.data,
+      (json) =>
+          EventImageListResponseDto.fromJson(json as Map<String, dynamic>),
+    );
+
+    return apiResponse.data!;
   }
 }
