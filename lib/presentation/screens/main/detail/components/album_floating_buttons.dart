@@ -40,8 +40,8 @@ class AlbumFloatingButtons extends StatelessWidget {
                 ),
               ),
 
-            // 하단 우측: 사진 추가 버튼
-            if (!isSelectionMode)
+            // 하단 우측: 사진 추가 버튼 (이벤트 탭일 때는 숨김)
+            if (!isSelectionMode && tabIndex != 1)
               Positioned(
                 right: 45,
                 bottom: 24 + bottomSafe,
