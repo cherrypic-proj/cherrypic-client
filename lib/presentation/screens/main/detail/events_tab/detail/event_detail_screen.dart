@@ -113,6 +113,14 @@ class _BodyState extends State<_Body> {
                 ],
               ),
 
+              // 하단 우측: 사진 추가 버튼 (선택 모드가 아닐 때만)
+              if (!vm.isSelectionMode)
+                Positioned(
+                  right: 45,
+                  bottom: 24 + bottomSafe,
+                  child: _AddPhotoButton(onTap: () => _handleAddPhoto(context)),
+                ),
+
               // 선택 바 - 선택 모드일 때만 표시
               if (vm.isSelectionMode)
                 Positioned(
@@ -131,6 +139,17 @@ class _BodyState extends State<_Body> {
           ),
         );
       },
+    );
+  }
+
+  /// 사진 추가 처리
+  Future<void> _handleAddPhoto(BuildContext context) async {
+    // TODO: 이벤트에 사진 추가 로직 구현
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('사진 추가 기능을 구현해주세요'),
+        backgroundColor: Colors.blue,
+      ),
     );
   }
 
@@ -192,6 +211,25 @@ class _BodyState extends State<_Body> {
           ),
         );
       },
+    );
+  }
+}
+
+/// 사진 추가 버튼 위젯
+class _AddPhotoButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _AddPhotoButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 56,
+        height: 56,
+        child: Image.asset('assets/images/add_img.png', fit: BoxFit.contain),
+      ),
     );
   }
 }
