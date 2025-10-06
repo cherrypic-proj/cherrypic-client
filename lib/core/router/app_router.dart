@@ -9,6 +9,8 @@ import 'package:cherrypic/presentation/screens/event/event_main_screen.dart';
 import 'package:cherrypic/presentation/screens/main/album/add/album_add_screen.dart';
 import 'package:cherrypic/presentation/screens/main/album/edit/album_edit_screen.dart';
 import 'package:cherrypic/presentation/screens/main/detail/album_detail_screen.dart';
+import 'package:cherrypic/presentation/screens/main/detail/events_tab/detail/event_detail_screen.dart';
+import 'package:cherrypic/presentation/screens/main/detail/events_tab/event_album.dart';
 import 'package:cherrypic/presentation/screens/main/home_tab/main_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/address_management/add_address_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/address_management/address_management_screen.dart';
@@ -152,6 +154,13 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
   RoutePath.select_address: (context, state) => const SelectAddressScreen(),
   RoutePath.change_address: (context, state) => const ChangeAddressScreen(),
   RoutePath.select_payment: (context, state) => const SelectPaymentScreen(),
+
+  RoutePath.eventDetail: (context, state) {
+    final idStr = state.pathParameters['eventId'] ?? '-1';
+    final eventId = int.tryParse(idStr) ?? -1;
+    final event = state.extra as EventAlbum;
+    return EventDetailScreen(event: event);
+  },
 };
 
 // 앱바 고정 경로 목록 -> 여기 적으면 앱바 고정됨.
