@@ -11,8 +11,13 @@ import '../album_detail_view_model.dart';
 
 class AlbumContentList extends StatelessWidget {
   final int tabIndex;
+  final int albumId;
 
-  const AlbumContentList({super.key, required this.tabIndex});
+  const AlbumContentList({
+    super.key,
+    required this.tabIndex,
+    required this.albumId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -112,29 +117,41 @@ class AlbumContentList extends StatelessWidget {
   Widget _buildEventsTab(BuildContext context) {
     return Consumer<EventTabViewModel>(
       builder: (context, vm, _) {
+        if (vm.isLoading && vm.albums.isEmpty) {
+          return const SliverFillRemaining(
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+
         return SliverList(
           delegate: SliverChildListDelegate.fixed([
             _buildCreateEventButton(context),
             const SizedBox(height: 35),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.zero,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  childAspectRatio: 1,
+            if (vm.albums.isEmpty)
+              const Padding(
+                padding: EdgeInsets.all(40.0),
+                child: Center(child: Text('이벤트가 없습니다.\n새 이벤트를 생성해보세요!')),
+              )
+            else
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.zero,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    childAspectRatio: 1,
+                  ),
+                  itemCount: vm.albums.length,
+                  itemBuilder: (context, index) {
+                    final album = vm.albums[index];
+                    return EventAlbumCover(album: album);
+                  },
                 ),
-                itemCount: vm.albums.length,
-                itemBuilder: (context, index) {
-                  final album = vm.albums[index];
-                  return EventAlbumCover(album: album);
-                },
               ),
-            ),
             const SizedBox(height: 120),
           ]),
         );
@@ -145,14 +162,19 @@ class AlbumContentList extends StatelessWidget {
   Widget _buildCreateEventButton(BuildContext context) {
     return Center(
       child: GestureDetector(
-        onTap: () {
-          showModalBottomSheet(
+        onTap: () async {
+          final result = await showModalBottomSheet<bool>(
             context: context,
             isScrollControlled: true,
             backgroundColor: Colors.transparent,
             useRootNavigator: true,
-            builder: (_) => const CreateEventSheet(),
+            builder: (_) => CreateEventSheet(albumId: albumId),
           );
+
+          // 이벤트 생성 성공 시 목록 새로고침
+          if (result == true && context.mounted) {
+            context.read<EventTabViewModel>().refresh();
+          }
         },
         child: Container(
           width: 125,

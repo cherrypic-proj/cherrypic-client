@@ -5,12 +5,14 @@ import 'package:cherrypic/core/constants/font.dart';
 import 'create_event_view_model.dart';
 
 class CreateEventSheet extends StatelessWidget {
-  const CreateEventSheet({super.key});
+  final int albumId;
+
+  const CreateEventSheet({super.key, required this.albumId});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => CreateEventViewModel(),
+      create: (_) => CreateEventViewModel(albumId: albumId),
       child: DraggableScrollableSheet(
         initialChildSize: 0.7,
         minChildSize: 0.5,
@@ -37,6 +39,26 @@ class _SheetContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final vm = context.watch<CreateEventViewModel>();
     final bottomPadding = MediaQuery.of(context).padding.bottom;
+
+    if (vm.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (vm.error != null && vm.allPhotos.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('이미지를 불러올 수 없습니다', style: AppFont.size16),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('닫기'),
+            ),
+          ],
+        ),
+      );
+    }
 
     return ClipRRect(
       borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
@@ -65,6 +87,16 @@ class _SheetContent extends StatelessWidget {
                 left: 0,
                 right: 0,
                 child: _buildBottomActionBar(context, vm),
+              ),
+
+            if (vm.isUploading)
+              Positioned.fill(
+                child: Container(
+                  color: Colors.black54,
+                  child: const Center(
+                    child: CircularProgressIndicator(color: Colors.white),
+                  ),
+                ),
               ),
           ],
         ),
@@ -174,17 +206,19 @@ class _SheetContent extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 GestureDetector(
-                  onTap: () => vm.pickCoverImage(context),
+                  onTap: vm.isUploading
+                      ? null
+                      : () => vm.pickCoverImage(context),
                   child: Container(
                     width: 115,
                     height: 30,
                     decoration: BoxDecoration(
-                      color: AppColor.mainRed,
+                      color: vm.isUploading ? Colors.grey : AppColor.mainRed,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Center(
                       child: Text(
-                        '커버사진 업로드',
+                        vm.isUploading ? '업로드 중...' : '커버사진 업로드',
                         style: AppFont.size14.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w500,
@@ -226,14 +260,15 @@ class _SheetContent extends StatelessWidget {
             childAspectRatio: 1,
           ),
           itemBuilder: (context, index) {
-            final imageUrl = vm.allPhotos[index];
-            final isSelected = vm.selectedPhotoIndexes.contains(index);
+            final photo = vm.allPhotos[index];
+            final isSelected = vm.selectedImageIds.contains(photo.imageId);
+
             return GestureDetector(
-              onTap: () => vm.togglePhotoSelection(index),
+              onTap: () => vm.togglePhotoSelection(photo.imageId),
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Image.network(imageUrl, fit: BoxFit.cover),
+                  Image.network(photo.imageUrl, fit: BoxFit.cover),
                   if (isSelected)
                     Container(
                       decoration: BoxDecoration(
@@ -302,7 +337,19 @@ class _SheetContent extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           GestureDetector(
-            onTap: vm.createEvent,
+            onTap: () async {
+              final success = await vm.createEvent();
+              if (success && context.mounted) {
+                Navigator.pop(context, true); // true 반환하여 새로고침 트리거
+              } else if (vm.error != null && context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(vm.error!),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            },
             child: Container(
               width: 260,
               height: 40,
