@@ -25,13 +25,15 @@ class AlbumDetailScreen extends StatelessWidget {
           create: (_) => EventTabViewModel(albumId: albumId),
         ),
       ],
-      child: const _Body(),
+      child: _Body(albumId: albumId), // albumId 전달
     );
   }
 }
 
 class _Body extends StatefulWidget {
-  const _Body();
+  final int albumId; // albumId 추가
+
+  const _Body({required this.albumId}); // 생성자 수정
 
   @override
   State<_Body> createState() => _BodyState();
@@ -71,7 +73,10 @@ class _BodyState extends State<_Body> {
               const SliverToBoxAdapter(child: SizedBox(height: 8)),
 
               // 탭별 본문
-              AlbumContentList(tabIndex: _tabIndex),
+              AlbumContentList(
+                tabIndex: _tabIndex,
+                albumId: widget.albumId,
+              ), // 수정
             ],
           ),
 
