@@ -63,13 +63,11 @@ class EventHeader extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Expanded(
-                    child: Text(
-                      event.title,
-                      style: AppFont.size24.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+                  Text(
+                    event.title,
+                    style: AppFont.size24.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -77,7 +75,11 @@ class EventHeader extends StatelessWidget {
                     onTap: () {
                       // TODO: 이벤트 편집 기능
                     },
-                    child: const Text('✏️', style: TextStyle(fontSize: 20)),
+                    child: Image.asset(
+                      'assets/images/event_name_setting.png',
+                      width: 24,
+                      height: 24,
+                    ),
                   ),
                 ],
               ),
@@ -85,7 +87,7 @@ class EventHeader extends StatelessWidget {
               Text(
                 '${event.photoCount}장',
                 style: AppFont.size16.copyWith(
-                  color: Colors.white.withOpacity(0.9),
+                  color: Colors.white.withAlpha(230),
                 ),
               ),
             ],
