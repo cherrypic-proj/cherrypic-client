@@ -43,4 +43,10 @@ class AppFont {
     fontSize: 22,
     height: 1.5,
   );
+
+  static const TextStyle size24 = TextStyle(
+    fontFamily: family,
+    fontSize: 24,
+    height: 1.5,
+  );
 }
