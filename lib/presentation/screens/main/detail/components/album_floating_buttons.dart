@@ -151,7 +151,7 @@ class _AddPhotoButton extends StatelessWidget {
       onPressed: onTap,
       backgroundColor: Colors.white,
       elevation: 4,
-      child: const Icon(Icons.add_a_photo, color: Colors.black),
+      child: Image.asset('assets/images/add_img.png', width: 24, height: 24),
     );
   }
 }
