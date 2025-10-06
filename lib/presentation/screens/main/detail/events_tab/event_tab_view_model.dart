@@ -1,41 +1,102 @@
+import 'package:cherrypic/data/album_event/repositories/event_repository.dart';
 import 'package:flutter/material.dart';
 import 'event_album.dart';
 
 class EventTabViewModel extends ChangeNotifier {
-  List<EventAlbum> _albums = [];
-  List<EventAlbum> get albums => _albums;
+  final EventRepository _eventRepository;
+  final int albumId;
 
-  EventTabViewModel() {
-    _loadMockData();
+  EventTabViewModel({required this.albumId, EventRepository? eventRepository})
+    : _eventRepository = eventRepository ?? EventRepository() {
+    loadEvents();
   }
 
-  void _loadMockData() {
-    // API 연결 없이 UI 확인을 위한 Mock 데이터
-    _albums = [
-      EventAlbum(
-        // '면 요리' 이미지 URL 교체
-        imageUrl: 'https://picsum.photos/seed/noodle/200/200',
-        title: '면 요리',
-        photoCount: 4,
-      ),
-      EventAlbum(
-        // '한식' 이미지 URL 교체
-        imageUrl: 'https://picsum.photos/seed/koreanfood/200/200',
-        title: '한식',
-        photoCount: 13,
-      ),
-      EventAlbum(
-        // '디저트' 이미지 URL 교체
-        imageUrl: 'https://picsum.photos/seed/dessert/200/200',
-        title: '디저트',
-        photoCount: 28,
-      ),
-      EventAlbum(
-        // '여름 휴가' 이미지 URL 교체
-        imageUrl: 'https://picsum.photos/seed/vacation/200/200',
-        title: '여름 휴가',
-        photoCount: 52,
-      ),
-    ];
+  // 상태 변수들
+  List<EventAlbum> _albums = [];
+  bool _isLoading = false;
+  bool _isLoadingMore = false;
+  bool _hasMore = true;
+  String? _error;
+
+  // Getters
+  List<EventAlbum> get albums => _albums;
+  bool get isLoading => _isLoading;
+  bool get isLoadingMore => _isLoadingMore;
+  bool get hasMore => _hasMore;
+  String? get error => _error;
+
+  /// 이벤트 목록 초기 로드
+  Future<void> loadEvents({bool refresh = false}) async {
+    if (refresh) {
+      _albums.clear();
+      _hasMore = true;
+    }
+
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final response = await _eventRepository.getEvents(
+        albumId: albumId,
+        size: 20,
+        direction: 'DESC',
+      );
+
+      final eventAlbums = response.content
+          .map((dto) => EventAlbum.fromMap(dto.toEventAlbum()))
+          .toList();
+
+      if (refresh) {
+        _albums = eventAlbums;
+      } else {
+        _albums.addAll(eventAlbums);
+      }
+
+      _hasMore = !response.isLast;
+    } catch (e) {
+      _error = e.toString();
+      debugPrint('이벤트 로드 실패: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// 추가 이벤트 로드 (무한 스크롤)
+  Future<void> loadMoreEvents() async {
+    if (_isLoadingMore || !_hasMore || _albums.isEmpty) return;
+
+    _isLoadingMore = true;
+    notifyListeners();
+
+    try {
+      final lastEventId = _albums.last.eventId;
+
+      final response = await _eventRepository.getEvents(
+        albumId: albumId,
+        lastEventId: lastEventId,
+        size: 20,
+        direction: 'DESC',
+      );
+
+      final eventAlbums = response.content
+          .map((dto) => EventAlbum.fromMap(dto.toEventAlbum()))
+          .toList();
+
+      _albums.addAll(eventAlbums);
+      _hasMore = !response.isLast;
+    } catch (e) {
+      _error = e.toString();
+      debugPrint('추가 이벤트 로드 실패: $e');
+    } finally {
+      _isLoadingMore = false;
+      notifyListeners();
+    }
+  }
+
+  /// 새로고침
+  Future<void> refresh() async {
+    await loadEvents(refresh: true);
   }
 }
