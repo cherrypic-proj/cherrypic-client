@@ -21,7 +21,9 @@ class AlbumDetailScreen extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => AlbumDetailViewModel(albumId: albumId),
         ),
-        ChangeNotifierProvider(create: (_) => EventTabViewModel()),
+        ChangeNotifierProvider(
+          create: (_) => EventTabViewModel(albumId: albumId),
+        ),
       ],
       child: const _Body(),
     );
@@ -79,8 +81,8 @@ class _BodyState extends State<_Body> {
             onTabChanged: (index) => setState(() => _tabIndex = index),
           ),
 
-          // 업로드 로딩 오버레이
-          const AlbumUploadOverlay(),
+          // 업로드 로딩 오버레이 (이벤트 탭일 때는 숨김)
+          if (_tabIndex != 1) const AlbumUploadOverlay(),
         ],
       ),
     );
