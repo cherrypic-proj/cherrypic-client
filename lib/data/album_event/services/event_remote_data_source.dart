@@ -1,7 +1,11 @@
 import 'package:cherrypic/core/network/api_path.dart';
 import 'package:cherrypic/core/network/api_response.dart';
 import 'package:cherrypic/core/network/dio_client.dart';
-import 'package:cherrypic/data/album_event/dto/event_response.dart';
+import 'package:cherrypic/data/album_event/dto/request/event_create_request_dto.dart';
+import 'package:cherrypic/data/album_event/dto/request/event_add_images_request_dto.dart';
+import 'package:cherrypic/data/album_event/dto/response/event_create_response_dto.dart';
+import 'package:cherrypic/data/album_event/dto/response/event_response.dart';
+import 'package:dio/dio.dart';
 
 class EventRemoteDataSource {
   final DioClient _dioClient;
@@ -10,11 +14,6 @@ class EventRemoteDataSource {
     : _dioClient = dioClient ?? DioClient();
 
   /// 이벤트 목록 조회
-  ///
-  /// [albumId] - 조회할 앨범 ID (필수)
-  /// [lastEventId] - 페이징을 위한 마지막 이벤트 ID (선택)
-  /// [size] - 페이지 사이즈 (필수)
-  /// [direction] - 정렬 방향 ASC/DESC (선택, 기본값: DESC)
   Future<EventListResponse> getEvents({
     required int albumId,
     int? lastEventId,
@@ -39,5 +38,63 @@ class EventRemoteDataSource {
     );
 
     return apiResponse.data!;
+  }
+
+  /// 이벤트 생성
+  Future<EventCreateResponseDto> createEvent(
+    EventCreateRequestDto requestDto,
+  ) async {
+    try {
+      final response = await _dioClient.dio.post(
+        ApiPath.events,
+        data: requestDto.toJson(),
+      );
+
+      final apiResponse = ApiResponse.fromJson(
+        response.data,
+        (json) => EventCreateResponseDto.fromJson(json as Map<String, dynamic>),
+      );
+
+      return apiResponse.data!;
+    } on DioException catch (e) {
+      throw Exception('이벤트 생성 실패: $e');
+    }
+  }
+
+  /// 이벤트에 이미지 추가
+  Future<void> addImagesToEvent(
+    int eventId,
+    EventAddImagesRequestDto requestDto,
+  ) async {
+    try {
+      await _dioClient.dio.post(
+        ApiPath.eventImages(eventId),
+        data: requestDto.toJson(),
+      );
+    } on DioException catch (e) {
+      throw Exception('이벤트 이미지 추가 실패: $e');
+    }
+  }
+
+  /// 이벤트 커버 이미지 Presigned URL 생성
+  Future<String> getEventCoverPresignedUrl({
+    required String fileExtension,
+    required String md5Hash,
+  }) async {
+    try {
+      final response = await _dioClient.dio.post(
+        ApiPath.eventsCoverUploadUrl,
+        data: {'fileExtension': fileExtension, 'md5Hash': md5Hash},
+      );
+
+      final apiResponse = ApiResponse.fromJson(
+        response.data,
+        (json) => json as Map<String, dynamic>,
+      );
+
+      return apiResponse.data!['presignedUrl'] as String;
+    } on DioException catch (e) {
+      throw Exception('Presigned URL 생성 실패: $e');
+    }
   }
 }

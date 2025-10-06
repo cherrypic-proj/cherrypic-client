@@ -1,4 +1,4 @@
-import 'package:cherrypic/data/album_event/dto/event_response.dart';
+import 'package:cherrypic/data/album_event/dto/response/event_response.dart';
 import 'package:cherrypic/data/album_event/services/event_remote_data_source.dart';
 
 class EventRepository {
