@@ -1,6 +1,6 @@
 import 'dart:ui';
+import 'package:cached_network_image/cached_network_image.dart'; // 추가
 import 'package:cherrypic/core/router/route_path.dart';
-import 'package:cherrypic/presentation/screens/main/detail/events_tab/detail/event_detail_screen.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/event_album.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -31,16 +31,33 @@ class EventAlbumCover extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              // 배경 이미지
-              Image.network(
-                album.imageUrl,
+              // 배경 이미지 - CachedNetworkImage로 교체
+              CachedNetworkImage(
+                imageUrl: album.imageUrl,
                 fit: BoxFit.cover,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return const Center(child: CircularProgressIndicator());
-                },
-                errorBuilder: (context, error, stackTrace) {
-                  return const Center(
+                // 메모리 캐시 최적화 (이벤트 커버는 작은 사이즈)
+                memCacheWidth: 240,
+                memCacheHeight: 240,
+                // 디스크 캐시
+                maxWidthDiskCache: 480,
+                maxHeightDiskCache: 480,
+                // 로딩 중
+                placeholder: (context, url) => Container(
+                  color: Colors.grey[200],
+                  child: const Center(
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                ),
+                // 에러 시
+                errorWidget: (context, url, error) {
+                  return Center(
                     child: Icon(
                       Icons.error_outline,
                       color: Colors.grey,
