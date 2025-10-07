@@ -21,15 +21,19 @@ class AlbumDetailScreen extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => AlbumDetailViewModel(albumId: albumId),
         ),
-        ChangeNotifierProvider(create: (_) => EventTabViewModel()),
+        ChangeNotifierProvider(
+          create: (_) => EventTabViewModel(albumId: albumId),
+        ),
       ],
-      child: const _Body(),
+      child: _Body(albumId: albumId), // albumId 전달
     );
   }
 }
 
 class _Body extends StatefulWidget {
-  const _Body();
+  final int albumId; // albumId 추가
+
+  const _Body({required this.albumId}); // 생성자 수정
 
   @override
   State<_Body> createState() => _BodyState();
@@ -69,7 +73,10 @@ class _BodyState extends State<_Body> {
               const SliverToBoxAdapter(child: SizedBox(height: 8)),
 
               // 탭별 본문
-              AlbumContentList(tabIndex: _tabIndex),
+              AlbumContentList(
+                tabIndex: _tabIndex,
+                albumId: widget.albumId,
+              ), // 수정
             ],
           ),
 
@@ -79,8 +86,8 @@ class _BodyState extends State<_Body> {
             onTabChanged: (index) => setState(() => _tabIndex = index),
           ),
 
-          // 업로드 로딩 오버레이
-          const AlbumUploadOverlay(),
+          // 업로드 로딩 오버레이 (이벤트 탭일 때는 숨김)
+          if (_tabIndex != 1) const AlbumUploadOverlay(),
         ],
       ),
     );

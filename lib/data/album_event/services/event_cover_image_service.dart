@@ -5,13 +5,13 @@ import 'package:cherrypic/core/network/api_response.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
-class ImageUploadService {
+class EventCoverImageService {
   final Dio _dio;
 
-  ImageUploadService({Dio? dio}) : _dio = dio ?? DioClient().dio;
+  EventCoverImageService({Dio? dio}) : _dio = dio ?? DioClient().dio;
 
-  // 이미지를 업로드하고 URL을 반환
-  Future<String> uploadCoverImage(Uint8List imageData) async {
+  /// 이벤트 커버 이미지를 업로드하고 URL을 반환
+  Future<String> uploadEventCoverImage(Uint8List imageData) async {
     try {
       // 1. 이미지의 MD5 해시 계산
       final bytes = imageData;
@@ -24,16 +24,15 @@ class ImageUploadService {
       // 2. 이미지 확장자 감지
       final extension = _detectImageExtension(imageData);
 
-      debugPrint('🖼️ 이미지 정보:');
+      debugPrint('🖼️ 이벤트 커버 이미지 정보:');
       debugPrint('  - 크기: ${imageData.length} bytes');
-      debugPrint('  - 첫 12바이트: ${imageData.take(12).toList()}');
       debugPrint('  - 감지된 확장자: $extension');
       debugPrint('  - MD5 Hash: $hash');
       debugPrint('  - MD5 Base64: $md5Base64');
 
       // 3. Presigned URL 요청
       final presignedResponse = await _dio.post(
-        '/albums/cover-upload-url',
+        '/events/cover-upload-url',
         data: {'fileExtension': extension, 'md5Hash': md5Base64},
       );
 
@@ -71,12 +70,12 @@ class ImageUploadService {
       debugPrint('📍 Public URL: $publicUrl');
       return publicUrl;
     } catch (e) {
-      debugPrint('❌ 이미지 업로드 실패: $e');
-      throw Exception('이미지 업로드 실패: $e');
+      debugPrint('❌ 이벤트 커버 이미지 업로드 실패: $e');
+      throw Exception('이벤트 커버 이미지 업로드 실패: $e');
     }
   }
 
-  // 이미지 데이터의 매직 넘버를 보고 확장자 판단
+  /// 이미지 데이터의 매직 넘버를 보고 확장자 판단
   String _detectImageExtension(Uint8List data) {
     if (data.length < 12) {
       debugPrint('이미지 크기가 너무 작음: ${data.length} bytes');
@@ -88,13 +87,11 @@ class ImageUploadService {
         data[1] == 0x50 &&
         data[2] == 0x4E &&
         data[3] == 0x47) {
-      debugPrint('PNG 포맷 감지');
       return 'PNG';
     }
 
     // JPEG: FF D8 FF
     if (data[0] == 0xFF && data[1] == 0xD8 && data[2] == 0xFF) {
-      debugPrint('JPEG 포맷 감지');
       return 'JPEG';
     }
 
@@ -108,7 +105,6 @@ class ImageUploadService {
         data[9] == 0x45 &&
         data[10] == 0x42 &&
         data[11] == 0x50) {
-      debugPrint('WEBP 포맷 감지');
       return 'WEBP';
     }
 
@@ -118,8 +114,6 @@ class ImageUploadService {
         data[5] == 0x74 &&
         data[6] == 0x79 &&
         data[7] == 0x70) {
-      debugPrint('📦 ftyp 박스 발견');
-
       if (data.length >= 12 &&
           ((data[8] == 0x68 &&
                   data[9] == 0x65 &&
@@ -129,7 +123,6 @@ class ImageUploadService {
                   data[9] == 0x69 &&
                   data[10] == 0x66 &&
                   data[11] == 0x31))) {
-        debugPrint('HEIC 포맷 감지');
         return 'HEIC';
       }
 
@@ -142,7 +135,6 @@ class ImageUploadService {
                   data[9] == 0x73 &&
                   data[10] == 0x66 &&
                   data[11] == 0x31))) {
-        debugPrint('HEIF 포맷 감지');
         return 'HEIF';
       }
     }
@@ -151,7 +143,7 @@ class ImageUploadService {
     return 'JPEG';
   }
 
-  // 확장자에 따른 Content-Type 반환
+  /// 확장자에 따른 Content-Type 반환
   String _getContentType(String extension) {
     switch (extension.toUpperCase()) {
       case 'PNG':

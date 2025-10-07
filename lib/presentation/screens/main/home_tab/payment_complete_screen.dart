@@ -1,4 +1,3 @@
-import 'package:cherrypic/core/router/route_path.dart';
 import 'package:cherrypic/data/album/dto/request/album_create_request_dto.dart';
 import 'package:cherrypic/data/album/repositories/album_repository.dart';
 import 'package:cherrypic/data/album/repositories/payment_repository.dart';

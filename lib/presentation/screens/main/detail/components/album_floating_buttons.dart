@@ -40,8 +40,8 @@ class AlbumFloatingButtons extends StatelessWidget {
                 ),
               ),
 
-            // 하단 우측: 사진 추가 버튼
-            if (!isSelectionMode)
+            // 하단 우측: 사진 추가 버튼 (이벤트 탭일 때는 숨김)
+            if (!isSelectionMode && tabIndex != 1)
               Positioned(
                 right: 45,
                 bottom: 24 + bottomSafe,
@@ -147,11 +147,13 @@ class _AddPhotoButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: onTap,
-      backgroundColor: Colors.white,
-      elevation: 4,
-      child: const Icon(Icons.add_a_photo, color: Colors.black),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 56,
+        height: 56,
+        child: Image.asset('assets/images/add_img.png', fit: BoxFit.contain),
+      ),
     );
   }
 }
