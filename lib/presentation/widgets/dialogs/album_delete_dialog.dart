@@ -91,7 +91,7 @@ class AlbumDeleteDialog extends StatelessWidget {
                     text: albumData.hostName,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  const TextSpan(text: '님이 '),
+                  const TextSpan(text: '님이\n'),
                   TextSpan(
                     text: albumData.title,
                     style: const TextStyle(fontWeight: FontWeight.bold),
