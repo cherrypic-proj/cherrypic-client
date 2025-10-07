@@ -15,18 +15,22 @@ enum AlbumType {
 
 class AlbumTypeSelector extends StatefulWidget {
   final ValueChanged<AlbumType?>? onTypeSelected;
+  final AlbumType? initialSelectedType;
+  final bool enabled;
 
-  const AlbumTypeSelector({super.key, this.onTypeSelected});
+  const AlbumTypeSelector({
+    super.key,
+    this.onTypeSelected,
+    this.initialSelectedType,
+    this.enabled = true,
+  });
 
   @override
   State<AlbumTypeSelector> createState() => _AlbumTypeSelectorState();
 }
 
 class _AlbumTypeSelectorState extends State<AlbumTypeSelector> {
-  final PageController _pageController = PageController(
-    viewportFraction: 1.0,
-    initialPage: 0,
-  );
+  late final PageController _pageController;
 
   final List<String> _unselectedImages = const [
     'assets/images/basic_album_unselected.png',
@@ -43,12 +47,30 @@ class _AlbumTypeSelectorState extends State<AlbumTypeSelector> {
   int? _selectedIndex;
 
   @override
+  void initState() {
+    super.initState();
+
+    // 초기 선택 상태 설정
+    if (widget.initialSelectedType != null) {
+      _selectedIndex = AlbumType.values.indexOf(widget.initialSelectedType!);
+      _currentPage = _selectedIndex!;
+    }
+
+    _pageController = PageController(
+      viewportFraction: 1.0,
+      initialPage: _currentPage,
+    );
+  }
+
+  @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
   }
 
   void _onTapCard(int index) {
+    if (!widget.enabled) return; // 비활성화 상태면 클릭 무시
+
     setState(() {
       if (_selectedIndex == index) {
         _selectedIndex = null;
@@ -89,6 +111,9 @@ class _AlbumTypeSelectorState extends State<AlbumTypeSelector> {
           child: PageView.builder(
             controller: _pageController,
             itemCount: 3,
+            physics: widget.enabled
+                ? null
+                : const NeverScrollableScrollPhysics(), // 비활성화시 스와이프 차단
             onPageChanged: (i) => setState(() => _currentPage = i),
             itemBuilder: (context, index) {
               final bool isSelected = _selectedIndex == index;
@@ -100,7 +125,7 @@ class _AlbumTypeSelectorState extends State<AlbumTypeSelector> {
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
-                  onTap: () => _onTapCard(index),
+                  onTap: widget.enabled ? () => _onTapCard(index) : null,
                   child: SizedBox(
                     width: cardW,
                     height: cardH,
@@ -187,17 +212,18 @@ class _AlbumTypeSelectorState extends State<AlbumTypeSelector> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                GestureDetector(
-                  onTap: () => _onTapCard(_selectedIndex!), // 토글로 선택 해제
-                  child: Text(
-                    '취소',
-                    style: AppFont.size14.copyWith(
-                      fontWeight: FontWeight.w800,
-                      color: AppColor.mainRed,
-                      decoration: TextDecoration.underline,
+                if (widget.enabled) // 비활성화 상태면 취소 버튼 숨김
+                  GestureDetector(
+                    onTap: () => _onTapCard(_selectedIndex!),
+                    child: Text(
+                      '취소',
+                      style: AppFont.size14.copyWith(
+                        fontWeight: FontWeight.w800,
+                        color: AppColor.mainRed,
+                        decoration: TextDecoration.underline,
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
           ),

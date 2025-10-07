@@ -9,6 +9,7 @@ class AlbumPermissionToggle extends StatelessWidget {
   final bool showMemberList;
   final List<ParticipantDto>? participants;
   final bool isLoadingParticipants;
+  final bool isEditable;
 
   const AlbumPermissionToggle({
     super.key,
@@ -17,6 +18,7 @@ class AlbumPermissionToggle extends StatelessWidget {
     this.showMemberList = false,
     this.participants,
     this.isLoadingParticipants = false,
+    this.isEditable = true,
   });
 
   @override
@@ -49,8 +51,10 @@ class AlbumPermissionToggle extends StatelessWidget {
         ),
         Switch(
           value: isPermissionEnabled,
-          activeTrackColor: AppColor.mainRed,
-          onChanged: onPermissionToggled,
+          activeTrackColor: isEditable
+              ? AppColor.mainRed
+              : Colors.grey, // 비활성화시 회색
+          onChanged: isEditable ? onPermissionToggled : null, // 비활성화시 클릭 불가
         ),
       ],
     );

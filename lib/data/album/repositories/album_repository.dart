@@ -1,5 +1,6 @@
 import 'package:cherrypic/data/album/dto/request/album_create_request_dto.dart';
 import 'package:cherrypic/data/album/dto/request/album_image_upload_request_dto.dart';
+import 'package:cherrypic/data/album/dto/request/album_update_request_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_detail_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_image_list_response_dto.dart';

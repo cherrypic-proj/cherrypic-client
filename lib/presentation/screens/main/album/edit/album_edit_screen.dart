@@ -1,3 +1,4 @@
+import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:cherrypic/data/album/dto/response/album_detail_dto.dart';
 import 'package:cherrypic/presentation/screens/main/album/components/album_cover_section.dart';
@@ -137,6 +138,7 @@ class _AlbumEditScreenState extends State<AlbumEditScreen> {
       animation: Listenable.merge([_albumCoverViewModel, _albumEditViewModel]),
       builder: (context, child) {
         final bool isButtonEnabled = _albumEditViewModel.isUpdateButtonEnabled;
+        final isBasic = _albumEditViewModel.albumType?.apiValue == 'BASIC';
 
         return Scaffold(
           appBar: AppBar(
@@ -165,24 +167,22 @@ class _AlbumEditScreenState extends State<AlbumEditScreen> {
                   AlbumCoverSection(viewModel: _albumCoverViewModel),
                   const SizedBox(height: 80),
 
-                  // 앨범 유형 (읽기 전용)
-                  _buildAlbumTypeDisplay(),
+                  // 앨범 유형 (읽기 전용, 카드 형식)
+                  _buildAlbumTypeCard(),
                   const SizedBox(height: 50),
 
-                  // 멤버별 권한 부여 (Basic은 비활성화)
+                  // 멤버별 권한 부여
                   AlbumPermissionToggle(
-                    isPermissionEnabled:
-                        _albumEditViewModel.isPermissionEnabled,
-                    onPermissionToggled: (_) {}, // 수정 불가
-                    showMemberList:
-                        _albumEditViewModel.albumType != AlbumType.basic,
+                    isPermissionEnabled: true, // 항상 켜진 상태로 표시
+                    onPermissionToggled: (_) {}, // 클릭해도 아무 동작 안 함
+                    showMemberList: true, // 항상 멤버 리스트 표시
                     participants: _albumEditViewModel.participants,
                     isLoadingParticipants:
                         _albumEditViewModel.isLoadingParticipants,
                   ),
                   const SizedBox(height: 40),
 
-                  // 수정 버튼
+                  // 변경 사항 저장 버튼
                   CustomButton(
                     text: _albumEditViewModel.isLoading
                         ? '수정 중...'
@@ -190,40 +190,10 @@ class _AlbumEditScreenState extends State<AlbumEditScreen> {
                     onPressed: isButtonEnabled ? _updateAlbum : null,
                   ),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 50),
 
-                  // 앨범 삭제 & 나가기 버튼
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () {
-                            // TODO: 앨범 삭제 기능
-                          },
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.red,
-                            side: const BorderSide(color: Colors.red),
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                          ),
-                          child: const Text('앨범 삭제'),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () {
-                            // TODO: 앨범 구독 해지 기능
-                          },
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.red,
-                            side: const BorderSide(color: Colors.red),
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                          ),
-                          child: const Text('앨범 구독 해지'),
-                        ),
-                      ),
-                    ],
-                  ),
+                  // 앨범 삭제 & 구독 해지 버튼
+                  _buildBottomButtons(),
 
                   if (_albumEditViewModel.error != null) ...[
                     const SizedBox(height: 16),
@@ -261,46 +231,87 @@ class _AlbumEditScreenState extends State<AlbumEditScreen> {
     );
   }
 
-  // 앨범 유형 표시 (수정 불가)
-  Widget _buildAlbumTypeDisplay() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  // 앨범 유형 표시 (AlbumTypeSelector 사용, 읽기 전용)
+  Widget _buildAlbumTypeCard() {
+    return AlbumTypeSelector(
+      initialSelectedType: _albumEditViewModel.albumType,
+      enabled: true,
+      onTypeSelected: null,
+    );
+  }
+
+  // 하단 버튼들 (앨범 삭제, 구독 해지)
+  Widget _buildBottomButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          '앨범 유형',
-          style: AppFont.size18.copyWith(
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
+        SizedBox(
+          width: 115,
+          height: 40,
+          child: ElevatedButton(
+            onPressed: () {
+              // TODO: 앨범 삭제 기능
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColor.mainRed,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: EdgeInsets.zero,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '앨범 삭제',
+                  style: AppFont.size16.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Image.asset(
+                  'assets/images/trash_icon.png',
+                  width: 24,
+                  height: 24,
+                ),
+              ],
+            ),
           ),
         ),
-        const SizedBox(height: 16),
-        Container(
-          width: 333,
-          height: 60,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-            color: Colors.grey.shade100,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Colors.grey.shade300),
-          ),
-          alignment: Alignment.center,
-          child: Row(
-            children: [
-              Text(
-                '선택) ',
-                style: AppFont.size14.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade600,
-                ),
+        const SizedBox(width: 20),
+        SizedBox(
+          width: 150,
+          height: 40,
+          child: ElevatedButton(
+            onPressed: () {
+              // TODO: 구독 해지 기능
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColor.mainRed,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
               ),
-              Text(
-                _albumEditViewModel.albumType?.displayName ?? 'Basic 앨범',
-                style: AppFont.size16.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
+              padding: EdgeInsets.zero,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '앨범 구독 해지',
+                  style: AppFont.size16.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(width: 6),
+                const Icon(
+                  Icons.remove_circle_outline,
+                  size: 16,
+                  color: Colors.white,
+                ),
+              ],
+            ),
           ),
         ),
       ],
