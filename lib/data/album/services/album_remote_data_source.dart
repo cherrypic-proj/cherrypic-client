@@ -4,6 +4,7 @@ import 'package:cherrypic/core/network/dio_client.dart';
 import 'package:cherrypic/core/network/error_handler.dart';
 import 'package:cherrypic/data/album/dto/request/album_create_request_dto.dart';
 import 'package:cherrypic/data/album/dto/request/album_image_upload_request_dto.dart';
+import 'package:cherrypic/data/album/dto/request/album_update_request_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_detail_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_image_list_response_dto.dart';
@@ -195,6 +196,28 @@ class AlbumRemoteDataSource {
       final apiResponse = ApiResponse.fromJson(
         response.data,
         (json) => InvitationLinkDto.fromJson(json as Map<String, dynamic>),
+      );
+
+      return apiResponse.data!;
+    } on DioException catch (e) {
+      throw ErrorHandler.handle(e);
+    }
+  }
+
+  /// 앨범 수정
+  Future<AlbumDetailDto> updateAlbum(
+    int albumId,
+    AlbumUpdateRequestDto requestDto,
+  ) async {
+    try {
+      final response = await _dio.patch(
+        ApiPath.albumDetail(albumId),
+        data: requestDto.toJson(),
+      );
+
+      final apiResponse = ApiResponse.fromJson(
+        response.data,
+        (json) => AlbumDetailDto.fromJson(json as Map<String, dynamic>),
       );
 
       return apiResponse.data!;

@@ -99,4 +99,12 @@ class AlbumRepository {
       direction: direction,
     );
   }
+
+  /// 앨범 수정
+  Future<AlbumDetailDto> updateAlbum(
+    int albumId,
+    AlbumUpdateRequestDto requestDto,
+  ) async {
+    return await _remoteDataSource.updateAlbum(albumId, requestDto);
+  }
 }
