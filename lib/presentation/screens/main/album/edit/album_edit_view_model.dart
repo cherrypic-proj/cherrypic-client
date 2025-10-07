@@ -157,4 +157,10 @@ class AlbumEditViewModel extends ChangeNotifier {
     _error = null;
     notifyListeners();
   }
+
+  // 앨범 유형 변경
+  void setAlbumType(AlbumType? type) {
+    _albumType = type;
+    notifyListeners();
+  }
 }

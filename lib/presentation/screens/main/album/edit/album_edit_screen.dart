@@ -236,7 +236,9 @@ class _AlbumEditScreenState extends State<AlbumEditScreen> {
     return AlbumTypeSelector(
       initialSelectedType: _albumEditViewModel.albumType,
       enabled: true,
-      onTypeSelected: null,
+      onTypeSelected: (type) {
+        _albumEditViewModel.setAlbumType(type);
+      },
     );
   }
 
