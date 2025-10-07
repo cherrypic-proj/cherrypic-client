@@ -1,140 +1,151 @@
+import 'dart:typed_data';
+import 'package:cherrypic/data/album/dto/request/album_update_request_dto.dart';
+import 'package:cherrypic/data/album/dto/response/album_detail_dto.dart';
+import 'package:cherrypic/data/album/dto/response/participant_dto.dart';
+import 'package:cherrypic/data/album/repositories/album_repository.dart';
+import 'package:cherrypic/data/album/services/album_cover_image_service.dart';
+import 'package:cherrypic/presentation/screens/main/album/components/album_type_selector.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
-import 'package:cherrypic/presentation/screens/main/album/components/album_cover_view_model.dart';
-
-// --- Mock Data ---
-class MockAlbum {
-  final int id;
-  final String name;
-  final String coverImageUrl;
-
-  MockAlbum({
-    required this.id,
-    required this.name,
-    required this.coverImageUrl,
-  });
-}
-
-final Map<int, MockAlbum> mockAlbumDatabase = {
-  1: MockAlbum(
-    id: 1,
-    name: '음식',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1504674900247-0877df9cc836',
-  ),
-  2: MockAlbum(
-    id: 2,
-    name: '여행',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1',
-  ),
-  3: MockAlbum(
-    id: 3,
-    name: '반려동물',
-    coverImageUrl:
-        'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba',
-  ),
-};
-// --- End of Mock Data ---
-
-// Member 데이터 모델
-class Member {
-  final int id;
-  final String name;
-  final String profileImageUrl;
-  String role;
-
-  Member({
-    required this.id,
-    required this.name,
-    required this.profileImageUrl,
-    required this.role,
-  });
-}
 
 class AlbumEditViewModel extends ChangeNotifier {
+  final AlbumRepository _albumRepository;
+  final ImageUploadService _imageUploadService;
   final int albumId;
-  late final AlbumCoverViewModel albumCoverViewModel;
+  final AlbumDetailDto initialData;
 
-  List<Member> _allMembers = [];
-  List<Member> _filteredMembers = [];
-  List<Member> get filteredMembers => _filteredMembers;
+  AlbumEditViewModel({
+    required this.albumId,
+    required this.initialData,
+    AlbumRepository? albumRepository,
+    ImageUploadService? imageUploadService,
+  }) : _albumRepository = albumRepository ?? AlbumRepository(),
+       _imageUploadService = imageUploadService ?? ImageUploadService() {
+    _initializeData();
+  }
 
-  final TextEditingController searchController = TextEditingController();
-  bool _isPermissionEnabled = true;
+  // 상태 변수들
+  String _albumName = '';
+  String? _coverImageUrl;
+  Uint8List? _newCoverImage;
+  AlbumType? _albumType;
+  bool _isPermissionEnabled = false;
+  List<ParticipantDto> _participants = [];
+
+  bool _isLoading = false;
+  bool _isLoadingParticipants = false;
+  String? _error;
+
+  // Getters
+  String get albumName => _albumName;
+  String? get coverImageUrl => _coverImageUrl;
+  Uint8List? get newCoverImage => _newCoverImage;
+  AlbumType? get albumType => _albumType;
   bool get isPermissionEnabled => _isPermissionEnabled;
+  List<ParticipantDto> get participants => _participants;
+  bool get isLoading => _isLoading;
+  bool get isLoadingParticipants => _isLoadingParticipants;
+  String? get error => _error;
 
-  AlbumEditViewModel({required this.albumId}) {
-    _loadInitialData(albumId);
-    searchController.addListener(_onSearchChanged);
-  }
+  // 초기 데이터 설정
+  void _initializeData() {
+    _albumName = initialData.title;
+    _coverImageUrl = initialData.coverUrl;
 
-  @override
-  void dispose() {
-    searchController.removeListener(_onSearchChanged);
-    searchController.dispose();
-    albumCoverViewModel.dispose();
-    super.dispose();
-  }
+    // API 값(BASIC, PRO, PREMIUM)을 AlbumType enum으로 변환
+    _albumType = AlbumType.values.firstWhere(
+      (type) => type.apiValue == initialData.type,
+      orElse: () => AlbumType.basic,
+    );
 
-  void _loadInitialData(int currentAlbumId) {
-    final albumData =
-        mockAlbumDatabase[currentAlbumId] ??
-        MockAlbum(id: currentAlbumId, name: '새 앨범', coverImageUrl: '');
-
-    albumCoverViewModel = AlbumCoverViewModel();
-    albumCoverViewModel.updateAlbumName(albumData.name);
-    albumCoverViewModel.setCoverImageUrl(albumData.coverImageUrl);
-
-    _allMembers = List.generate(5 + (currentAlbumId % 5), (index) {
-      final roles = ['방장', '일반회원', '읽기 전용'];
-      return Member(
-        id: index,
-        name: '멤버 ${index + 1}',
-        profileImageUrl: 'https://placehold.co/40x40/EFEFEF/AAAAAA?text=P',
-        role: roles[Random().nextInt(roles.length)],
-      );
-    });
-    if (_allMembers.isNotEmpty) _allMembers[0].role = '방장';
-    _filteredMembers = _allMembers;
-
-    _isPermissionEnabled = true;
-
-    notifyListeners();
-  }
-
-  void _onSearchChanged() {
-    final query = searchController.text.toLowerCase().trim();
-    if (query.isEmpty) {
-      _filteredMembers = _allMembers;
-    } else {
-      _filteredMembers = _allMembers
-          .where((member) => member.name.toLowerCase().contains(query))
-          .toList();
+    // Basic 타입이 아닌 경우에만 참가자 목록 로드
+    if (_albumType != AlbumType.basic) {
+      loadParticipants();
     }
+  }
+
+  // 앨범 이름 변경
+  void setAlbumName(String name) {
+    _albumName = name;
     notifyListeners();
   }
 
-  void updateMemberRole(Member member, String newRole) {
-    final index = _allMembers.indexWhere((m) => m.id == member.id);
-    if (index != -1) {
-      _allMembers[index].role = newRole;
-      final filteredIndex = _filteredMembers.indexWhere(
-        (m) => m.id == member.id,
+  // 커버 이미지 변경
+  void setCoverImage(Uint8List? image) {
+    _newCoverImage = image;
+    notifyListeners();
+  }
+
+  // 수정 버튼 활성화 여부
+  bool get isUpdateButtonEnabled {
+    final isNameValid = _albumName.trim().isNotEmpty;
+    final hasChanges =
+        _albumName != initialData.title || _newCoverImage != null;
+    return isNameValid && hasChanges && !_isLoading;
+  }
+
+  // 참가자 목록 로드
+  Future<void> loadParticipants() async {
+    if (_albumType == AlbumType.basic) return;
+
+    _isLoadingParticipants = true;
+    notifyListeners();
+
+    try {
+      final response = await _albumRepository.getParticipants(
+        albumId,
+        size: 100,
       );
-      if (filteredIndex != -1) _filteredMembers[filteredIndex].role = newRole;
+      _participants = response.content;
+    } catch (e) {
+      debugPrint('참가자 로드 실패: $e');
+    } finally {
+      _isLoadingParticipants = false;
       notifyListeners();
     }
   }
 
-  void kickMember(Member member) {
-    _allMembers.removeWhere((m) => m.id == member.id);
-    _filteredMembers.removeWhere((m) => m.id == member.id);
+  // 앨범 수정 실행
+  Future<bool> updateAlbum() async {
+    if (_albumName.trim().isEmpty) {
+      _error = '앨범 이름을 입력해주세요.';
+      notifyListeners();
+      return false;
+    }
+
+    _isLoading = true;
+    _error = null;
     notifyListeners();
+
+    try {
+      String? coverUrl = _coverImageUrl;
+
+      // 새로운 커버 이미지가 있으면 업로드
+      if (_newCoverImage != null) {
+        coverUrl = await _imageUploadService.uploadCoverImage(_newCoverImage!);
+      }
+
+      final requestDto = AlbumUpdateRequestDto(
+        title: _albumName.trim() != initialData.title
+            ? _albumName.trim()
+            : null,
+        coverUrl: coverUrl != initialData.coverUrl ? coverUrl : null,
+      );
+
+      await _albumRepository.updateAlbum(albumId, requestDto);
+
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
   }
 
-  void togglePermission(bool value) {
-    _isPermissionEnabled = value;
+  void clearError() {
+    _error = null;
     notifyListeners();
   }
 }
