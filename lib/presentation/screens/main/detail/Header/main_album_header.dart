@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cherrypic/presentation/screens/main/detail/Header/album_header_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:cherrypic/core/router/route_path.dart';
@@ -84,24 +85,22 @@ class MainAlbumHeader extends StatelessWidget {
                     color: Colors.grey[300], // 로딩 중 배경색
                   ),
                   child: data!.coverUrl.isNotEmpty
-                      ? Image.network(
-                          data!.coverUrl,
+                      ? CachedNetworkImage(
+                          imageUrl: data!.coverUrl,
                           fit: BoxFit.cover,
                           width: double.infinity,
                           height: double.infinity,
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return Center(
-                              child: CircularProgressIndicator(
-                                value:
-                                    loadingProgress.expectedTotalBytes != null
-                                    ? loadingProgress.cumulativeBytesLoaded /
-                                          loadingProgress.expectedTotalBytes!
-                                    : null,
-                              ),
-                            );
-                          },
-                          errorBuilder: (context, error, stackTrace) {
+                          // 메모리 캐시 최적화
+                          memCacheWidth: 800,
+                          memCacheHeight: 800,
+                          // 디스크 캐시
+                          maxWidthDiskCache: 1200,
+                          maxHeightDiskCache: 1200,
+                          // 로딩 중 표시
+                          placeholder: (context, url) =>
+                              Center(child: CircularProgressIndicator()),
+                          // 에러 시 표시
+                          errorWidget: (context, error, stackTrace) {
                             return Center(
                               child: Icon(
                                 Icons.broken_image,
