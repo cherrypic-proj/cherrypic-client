@@ -1,5 +1,6 @@
 import 'package:cherrypic/core/router/route_path.dart';
 import 'package:cherrypic/core/network/navigation_service.dart';
+import 'package:cherrypic/data/album/dto/response/album_detail_dto.dart';
 import 'package:cherrypic/data/login/repositories/auth_repository.dart';
 import 'package:cherrypic/data/login/services/apple_auth_data_source.dart';
 import 'package:cherrypic/data/login/services/auth_remote_data_source.dart';
@@ -86,7 +87,9 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
         state.uri.queryParameters['albumId'] ??
         '-1';
     final albumId = int.tryParse(idStr) ?? -1;
-    return AlbumEditScreen(albumId: albumId);
+    final albumData = state.extra as AlbumDetailDto;
+
+    return AlbumEditScreen(albumId: albumId, albumData: albumData);
   },
 
   /// myPage

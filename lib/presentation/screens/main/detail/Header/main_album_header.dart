@@ -67,12 +67,23 @@ class MainAlbumHeader extends StatelessWidget {
               title: data!.title,
               profileImagePath: 'assets/images/albumCover.png',
               badgeType: _getBadgeType(data!.badgeText),
-              onSettings: () {
-                final path = RoutePath.albumSetting.replaceFirst(
-                  ':albumId',
-                  data!.albumId.toString(),
-                );
-                context.push(path);
+              onSettings: () async {
+                final headerVm = context.read<AlbumHeaderViewModel>();
+                if (headerVm.header != null) {
+                  final path = RoutePath.albumSetting.replaceFirst(
+                    ':albumId',
+                    data!.albumId.toString(),
+                  );
+                  final result = await context.push(
+                    path,
+                    extra: headerVm.header,
+                  );
+
+                  // 수정 성공 시 새로고침
+                  if (result == true && context.mounted) {
+                    headerVm.loadAlbumDetail();
+                  }
+                }
               },
             ),
             Stack(
