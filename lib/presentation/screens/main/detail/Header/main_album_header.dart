@@ -69,19 +69,22 @@ class MainAlbumHeader extends StatelessWidget {
               badgeType: _getBadgeType(data!.badgeText),
               onSettings: () async {
                 final headerVm = context.read<AlbumHeaderViewModel>();
-                if (headerVm.header != null) {
+
+                // 원본 DTO가 있을 때만 설정 화면으로 이동
+                if (headerVm.originalDto != null) {
                   final path = RoutePath.albumSetting.replaceFirst(
                     ':albumId',
                     data!.albumId.toString(),
                   );
+
                   final result = await context.push(
                     path,
-                    extra: headerVm.header,
+                    extra: headerVm.originalDto,
                   );
 
                   // 수정 성공 시 새로고침
                   if (result == true && context.mounted) {
-                    headerVm.loadAlbumDetail();
+                    await headerVm.loadAlbumDetail();
                   }
                 }
               },
