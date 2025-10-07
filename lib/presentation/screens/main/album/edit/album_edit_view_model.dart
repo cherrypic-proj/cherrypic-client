@@ -74,10 +74,17 @@ class AlbumEditViewModel extends ChangeNotifier {
 
   // 수정 버튼 활성화 여부
   bool get isUpdateButtonEnabled {
+    // 1. 앨범 이름이 비어있으면 비활성화
     final isNameValid = _albumName.trim().isNotEmpty;
-    final hasChanges =
-        _albumName != initialData.title || _newCoverImage != null;
-    return isNameValid && hasChanges && !_isLoading;
+
+    // 2. 앨범 유형이 선택되어 있어야 함 (항상 선택되어 있긴 함)
+    final isTypeSelected = _albumType != null;
+
+    // 3. 로딩 중이 아니어야 함
+    final notLoading = !_isLoading;
+
+    // 필수 조건만 체크, 변경사항 여부는 체크 안 함
+    return isNameValid && isTypeSelected && notLoading;
   }
 
   // 참가자 목록 로드

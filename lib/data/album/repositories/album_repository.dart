@@ -102,7 +102,7 @@ class AlbumRepository {
   }
 
   /// 앨범 수정
-  Future<AlbumDetailDto> updateAlbum(
+  Future<AlbumDto> updateAlbum(
     int albumId,
     AlbumUpdateRequestDto requestDto,
   ) async {

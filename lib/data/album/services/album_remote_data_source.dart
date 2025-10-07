@@ -205,7 +205,7 @@ class AlbumRemoteDataSource {
   }
 
   /// 앨범 수정
-  Future<AlbumDetailDto> updateAlbum(
+  Future<AlbumDto> updateAlbum(
     int albumId,
     AlbumUpdateRequestDto requestDto,
   ) async {
@@ -217,7 +217,7 @@ class AlbumRemoteDataSource {
 
       final apiResponse = ApiResponse.fromJson(
         response.data,
-        (json) => AlbumDetailDto.fromJson(json as Map<String, dynamic>),
+        (json) => AlbumDto.fromJson(json as Map<String, dynamic>),
       );
 
       return apiResponse.data!;
