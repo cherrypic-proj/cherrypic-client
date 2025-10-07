@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/event_album.dart';
 import 'package:flutter/material.dart';
@@ -11,20 +12,28 @@ class EventHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // 전체 화면 이벤트 커버 이미지
+        // 전체 화면 이벤트 커버 이미지 - CachedNetworkImage로 교체
         SizedBox(
           width: double.infinity,
           height: MediaQuery.of(context).size.height * 0.5,
-          child: Image.network(
-            event.imageUrl,
+          child: CachedNetworkImage(
+            imageUrl: event.imageUrl,
             fit: BoxFit.cover,
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) return child;
-              return const Center(
+            // 메모리 캐시 최적화 (화면의 절반 크기)
+            memCacheWidth: (MediaQuery.of(context).size.width * 2).toInt(),
+            memCacheHeight: (MediaQuery.of(context).size.height).toInt(),
+            // 디스크 캐시
+            maxWidthDiskCache: 1200,
+            maxHeightDiskCache: 1600,
+            // 로딩 중
+            placeholder: (context, url) => Container(
+              color: Colors.grey[800],
+              child: const Center(
                 child: CircularProgressIndicator(color: Colors.white),
-              );
-            },
-            errorBuilder: (context, error, stackTrace) {
+              ),
+            ),
+            // 에러 시
+            errorWidget: (context, error, stackTrace) {
               return Container(
                 color: Colors.grey[800],
                 child: const Center(
