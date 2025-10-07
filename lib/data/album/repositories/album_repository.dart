@@ -108,4 +108,9 @@ class AlbumRepository {
   ) async {
     return await _remoteDataSource.updateAlbum(albumId, requestDto);
   }
+
+  /// 참가자 강퇴
+  Future<void> kickParticipant(int albumId, int participantId) async {
+    return await _remoteDataSource.kickParticipant(albumId, participantId);
+  }
 }

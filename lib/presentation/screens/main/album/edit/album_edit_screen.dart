@@ -173,12 +173,35 @@ class _AlbumEditScreenState extends State<AlbumEditScreen> {
 
                   // 멤버별 권한 부여
                   AlbumPermissionToggle(
-                    isPermissionEnabled: true, // 항상 켜진 상태로 표시
-                    onPermissionToggled: (_) {}, // 클릭해도 아무 동작 안 함
-                    showMemberList: true, // 항상 멤버 리스트 표시
+                    isPermissionEnabled: true,
+                    onPermissionToggled: (_) {},
+                    showMemberList: true,
                     participants: _albumEditViewModel.participants,
                     isLoadingParticipants:
                         _albumEditViewModel.isLoadingParticipants,
+                    onKickMember: (participant) async {
+                      // 강퇴 실행
+                      final success = await _albumEditViewModel.kickParticipant(
+                        participant.participantId,
+                      );
+
+                      if (success && mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('${participant.nickname} 님을 내보냈습니다.'),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      } else if (_albumEditViewModel.error != null && mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(_albumEditViewModel.error!),
+                            backgroundColor: Colors.red,
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      }
+                    },
                   ),
                   const SizedBox(height: 40),
 

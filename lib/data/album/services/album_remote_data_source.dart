@@ -225,4 +225,15 @@ class AlbumRemoteDataSource {
       throw ErrorHandler.handle(e);
     }
   }
+
+  /// 참가자 강퇴
+  Future<void> kickParticipant(int albumId, int participantId) async {
+    try {
+      await _dio.delete(
+        '${ApiPath.albumDetail(albumId)}/participants/$participantId',
+      );
+    } on DioException catch (e) {
+      throw ErrorHandler.handle(e);
+    }
+  }
 }

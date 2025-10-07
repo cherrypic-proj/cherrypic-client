@@ -163,4 +163,23 @@ class AlbumEditViewModel extends ChangeNotifier {
     _albumType = type;
     notifyListeners();
   }
+
+  // 참가자 강퇴
+  Future<bool> kickParticipant(int participantId) async {
+    try {
+      await _albumRepository.kickParticipant(albumId, participantId);
+
+      // 로컬 리스트에서도 제거
+      _participants.removeWhere((p) => p.participantId == participantId);
+      notifyListeners();
+
+      debugPrint('참가자 강퇴 성공: $participantId');
+      return true;
+    } catch (e) {
+      debugPrint('참가자 강퇴 실패: $e');
+      _error = '권한이 없습니다.';
+      notifyListeners();
+      return false;
+    }
+  }
 }

@@ -1,3 +1,4 @@
+import 'package:cherrypic/presentation/widgets/dialogs/participant_kick_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:cherrypic/core/constants/color.dart';
@@ -10,6 +11,7 @@ class AlbumPermissionToggle extends StatelessWidget {
   final List<ParticipantDto>? participants;
   final bool isLoadingParticipants;
   final bool isEditable;
+  final Function(ParticipantDto)? onKickMember;
 
   const AlbumPermissionToggle({
     super.key,
@@ -19,6 +21,7 @@ class AlbumPermissionToggle extends StatelessWidget {
     this.participants,
     this.isLoadingParticipants = false,
     this.isEditable = true,
+    this.onKickMember,
   });
 
   @override
@@ -136,7 +139,9 @@ class AlbumPermissionToggle extends StatelessWidget {
           const Spacer(),
           TextButton(
             onPressed: () {
-              // TODO: 내보내기 기능
+              if (onKickMember != null) {
+                _showKickConfirmDialog(context, participant);
+              }
             },
             child: Text(
               '내보내기',
@@ -160,6 +165,23 @@ class AlbumPermissionToggle extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _showKickConfirmDialog(
+    BuildContext context,
+    ParticipantDto participant,
+  ) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return ParticipantKickDialog(
+          participant: participant,
+          onConfirm: () {
+            onKickMember?.call(participant);
+          },
+        );
+      },
     );
   }
 }
