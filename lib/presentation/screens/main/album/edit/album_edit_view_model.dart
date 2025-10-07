@@ -43,10 +43,9 @@ class AlbumEditViewModel extends ChangeNotifier {
   bool get isPermissionEnabled => _isPermissionEnabled;
   List<ParticipantDto> get participants => _participants;
   bool get isLoading => _isLoading;
-  bool get isLoadingParticipants => _isLoadingParticipants;
+  bool get isLoadingParticipants => _isLoadingParticipants; // 초기 데이터 설정
   String? get error => _error;
 
-  // 초기 데이터 설정
   void _initializeData() {
     _albumName = initialData.title;
     _coverImageUrl = initialData.coverUrl;
@@ -57,10 +56,8 @@ class AlbumEditViewModel extends ChangeNotifier {
       orElse: () => AlbumType.basic,
     );
 
-    // Basic 타입이 아닌 경우에만 참가자 목록 로드
-    if (_albumType != AlbumType.basic) {
-      loadParticipants();
-    }
+    // Basic 체크 제거 - 항상 참가자 목록 로드
+    loadParticipants();
   }
 
   // 앨범 이름 변경
@@ -85,8 +82,7 @@ class AlbumEditViewModel extends ChangeNotifier {
 
   // 참가자 목록 로드
   Future<void> loadParticipants() async {
-    if (_albumType == AlbumType.basic) return;
-
+    // Basic 체크 제거
     _isLoadingParticipants = true;
     notifyListeners();
 
@@ -96,8 +92,14 @@ class AlbumEditViewModel extends ChangeNotifier {
         size: 100,
       );
       _participants = response.content;
+
+      // 디버그 로그 추가
+      debugPrint('✅ 참가자 로드 성공: ${_participants.length}명');
+      for (var p in _participants) {
+        debugPrint('  - ${p.nickname} (${p.role})');
+      }
     } catch (e) {
-      debugPrint('참가자 로드 실패: $e');
+      debugPrint('❌ 참가자 로드 실패: $e');
     } finally {
       _isLoadingParticipants = false;
       notifyListeners();
