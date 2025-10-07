@@ -182,4 +182,18 @@ class AlbumEditViewModel extends ChangeNotifier {
       return false;
     }
   }
+
+  // 앨범 삭제
+  Future<bool> deleteAlbum() async {
+    try {
+      await _albumRepository.deleteAlbum(albumId);
+      debugPrint('앨범 삭제 성공: $albumId');
+      return true;
+    } catch (e) {
+      debugPrint('앨범 삭제 실패: $e');
+      _error = '앨범을 삭제하는데 실패했습니다.';
+      notifyListeners();
+      return false;
+    }
+  }
 }

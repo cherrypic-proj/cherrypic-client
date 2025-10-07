@@ -236,4 +236,13 @@ class AlbumRemoteDataSource {
       throw ErrorHandler.handle(e);
     }
   }
+
+  /// 앨범 삭제
+  Future<void> deleteAlbum(int albumId) async {
+    try {
+      await _dio.delete(ApiPath.albumDetail(albumId));
+    } on DioException catch (e) {
+      throw ErrorHandler.handle(e);
+    }
+  }
 }

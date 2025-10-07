@@ -7,6 +7,7 @@ import 'package:cherrypic/presentation/screens/main/album/components/album_permi
 import 'package:cherrypic/presentation/screens/main/album/components/album_type_selector.dart';
 import 'package:cherrypic/presentation/screens/main/album/edit/album_edit_view_model.dart';
 import 'package:cherrypic/presentation/widgets/custom_button.dart';
+import 'package:cherrypic/presentation/widgets/dialogs/album_delete_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -275,7 +276,31 @@ class _AlbumEditScreenState extends State<AlbumEditScreen> {
           height: 40,
           child: ElevatedButton(
             onPressed: () {
-              // TODO: 앨범 삭제 기능
+              showDialog(
+                context: context,
+                builder: (BuildContext dialogContext) {
+                  return AlbumDeleteDialog(
+                    albumData: widget.albumData,
+                    onConfirm: () async {
+                      _showLoadingDialog();
+                      final success = await _albumEditViewModel.deleteAlbum();
+                      _hideLoadingDialog();
+
+                      if (success && mounted) {
+                        context.go('/');
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('앨범이 삭제되었습니다.'),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                      } else if (_albumEditViewModel.error != null && mounted) {
+                        _showErrorDialog(_albumEditViewModel.error!);
+                      }
+                    },
+                  );
+                },
+              );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColor.mainRed,

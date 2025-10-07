@@ -113,4 +113,9 @@ class AlbumRepository {
   Future<void> kickParticipant(int albumId, int participantId) async {
     return await _remoteDataSource.kickParticipant(albumId, participantId);
   }
+
+  /// 앨범 삭제
+  Future<void> deleteAlbum(int albumId) async {
+    return await _remoteDataSource.deleteAlbum(albumId);
+  }
 }
