@@ -50,7 +50,7 @@ class MyPageViewModel extends ChangeNotifier {
       case LoginType.kakao:
         return 'assets/images/kakao_icon_2.png';
       case LoginType.apple:
-        return 'assets/images/apple_icon.png';
+        return 'assets/images/apple_icon_2.png';
     }
   }
 
