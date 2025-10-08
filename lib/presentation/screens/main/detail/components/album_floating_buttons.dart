@@ -1,4 +1,5 @@
 import 'package:cherrypic/data/album/services/album_images_upload_service.dart';
+import 'package:cherrypic/presentation/screens/main/detail/components/album_action_sheet.dart';
 import 'package:cherrypic/presentation/screens/main/detail/parts/album_detail_segmented.dart';
 import 'package:cherrypic/presentation/screens/main/detail/parts/album_detail_selecting_bar.dart';
 import 'package:flutter/material.dart';
@@ -104,36 +105,18 @@ class AlbumFloatingButtons extends StatelessWidget {
   }
 
   void _openMoreSheet(BuildContext context) {
-    final vm = context.read<AlbumDetailViewModel>();
+    // 1. showModalBottomSheet를 호출하는 context를 이용해 기존 ViewModel을 찾아옵니다.
+    final viewModel = context.read<AlbumDetailViewModel>();
 
     showModalBottomSheet(
       context: context,
-      builder: (_) {
-        return SafeArea(
-          child: Wrap(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.download),
-                title: const Text('다운로드'),
-                onTap: () {
-                  Navigator.pop(context);
-                  // TODO: 구현
-                  // 다운로드 완료 후 선택 모드 종료하려면:
-                  // vm.exitSelectionMode();
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.delete_outline),
-                title: const Text('삭제'),
-                onTap: () {
-                  Navigator.pop(context);
-                  // TODO: 구현
-                  // 삭제 완료 후 선택 모드 종료하려면:
-                  // vm.exitSelectionMode();
-                },
-              ),
-            ],
-          ),
+      backgroundColor: Colors.transparent,
+      // 2. 바텀 시트의 builder가 만드는 위젯을 ChangeNotifierProvider.value로 감싸줍니다.
+      builder: (sheetContext) {
+        // 3. value 속성에 찾아온 viewModel을 전달합니다.
+        return ChangeNotifierProvider.value(
+          value: viewModel,
+          child: const AlbumActionSheet(),
         );
       },
     );
