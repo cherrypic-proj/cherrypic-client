@@ -2,6 +2,7 @@ import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:go_router/go_router.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
@@ -95,11 +96,11 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
                   children: [
                     IconButton(
                       icon: const Icon(
-                        Icons.close,
+                        Icons.arrow_back_ios_new,
                         color: Colors.black,
-                        size: 28,
+                        size: 20,
                       ),
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () => context.pop(),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(
