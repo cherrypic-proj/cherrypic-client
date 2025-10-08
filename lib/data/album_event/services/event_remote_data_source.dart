@@ -158,4 +158,13 @@ class EventRemoteDataSource {
       throw Exception('이벤트 이미지 삭제 실패: $e');
     }
   }
+
+  //이벤트 삭제
+  Future<void> deleteEvent(int eventId) async {
+    try {
+      await _dioClient.dio.delete(ApiPath.eventDetail(eventId));
+    } on DioException catch (e) {
+      throw Exception('이벤트 삭제 실패: $e');
+    }
+  }
 }

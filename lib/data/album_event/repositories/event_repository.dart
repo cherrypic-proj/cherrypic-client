@@ -86,4 +86,9 @@ class EventRepository {
   ) async {
     return await _remoteDataSource.deleteImagesFromEvent(eventId, requestDto);
   }
+
+  //  이벤트 삭제
+  Future<void> deleteEvent(int eventId) async {
+    return await _remoteDataSource.deleteEvent(eventId);
+  }
 }

@@ -32,10 +32,12 @@ class EventEditViewModel extends ChangeNotifier {
   String? _coverImageUrl;
   String? get coverImageUrl => _coverImageUrl;
   bool _isUploading = false;
+  bool _isDeleting = false;
   bool _isSaving = false;
   String? _error;
 
   bool get isUploading => _isUploading;
+  bool get isDeleting => _isDeleting;
   bool get isSaving => _isSaving;
   String? get error => _error;
 
@@ -122,6 +124,24 @@ class EventEditViewModel extends ChangeNotifier {
       return false;
     } finally {
       _isSaving = false;
+      notifyListeners();
+    }
+  }
+
+  // [신규] 이벤트 삭제 함수
+  Future<bool> deleteEvent() async {
+    _isDeleting = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _eventRepository.deleteEvent(event.eventId);
+      return true;
+    } catch (e) {
+      _error = '이벤트 삭제에 실패했습니다: $e';
+      return false;
+    } finally {
+      _isDeleting = false;
       notifyListeners();
     }
   }
