@@ -2,6 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/event_album.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:cherrypic/presentation/screens/main/detail/events_tab/detail/event_detail_view_model.dart';
+import 'package:cherrypic/presentation/screens/main/detail/events_tab/edit/event_edit_dialog.dart';
 
 class EventHeader extends StatelessWidget {
   final EventAlbum event;
@@ -12,43 +15,21 @@ class EventHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // 전체 화면 이벤트 커버 이미지 - CachedNetworkImage로 교체
         SizedBox(
           width: double.infinity,
           height: MediaQuery.of(context).size.height * 0.5,
           child: CachedNetworkImage(
             imageUrl: event.imageUrl,
             fit: BoxFit.cover,
-            // 메모리 캐시 최적화 (화면의 절반 크기)
             memCacheWidth: (MediaQuery.of(context).size.width * 2).toInt(),
             memCacheHeight: (MediaQuery.of(context).size.height).toInt(),
-            // 디스크 캐시
             maxWidthDiskCache: 1200,
             maxHeightDiskCache: 1600,
-            // 로딩 중
-            placeholder: (context, url) => Container(
-              color: Colors.grey[800],
-              child: const Center(
-                child: CircularProgressIndicator(color: Colors.white),
-              ),
-            ),
-            // 에러 시
-            errorWidget: (context, error, stackTrace) {
-              return Container(
-                color: Colors.grey[800],
-                child: const Center(
-                  child: Icon(
-                    Icons.error_outline,
-                    size: 40,
-                    color: Colors.white,
-                  ),
-                ),
-              );
-            },
+            placeholder: (context, url) => Container(color: Colors.grey[800]),
+            errorWidget: (context, error, stackTrace) =>
+                Container(color: Colors.grey[800]),
           ),
         ),
-
-        // 그라데이션 오버레이 (하단 텍스트 가독성 향상)
         Positioned.fill(
           child: Container(
             decoration: BoxDecoration(
@@ -62,7 +43,6 @@ class EventHeader extends StatelessWidget {
           ),
         ),
 
-        // 하단 텍스트 정보
         Positioned(
           bottom: 20,
           left: 20,
@@ -81,8 +61,22 @@ class EventHeader extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   GestureDetector(
-                    onTap: () {
-                      // TODO: 이벤트 편집 기능
+                    onTap: () async {
+                      // [수정] showModalBottomSheet -> showDialog
+                      final result = await showDialog<bool>(
+                        context: context,
+                        builder: (_) => EventEditDialog(event: event),
+                      );
+
+                      // 만약 수정이 성공적으로 완료되었다면 (true 반환)
+                      if (result == true && context.mounted) {
+                        // TODO: 헤더 정보(제목, 커버)를 갱신하려면 EventDetailScreen의 구조 변경 필요
+                        // 현재는 이미지 목록만 새로고침합니다.
+                        context.read<EventDetailViewModel>().loadImages();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('이벤트 정보가 수정되었습니다.')),
+                        );
+                      }
                     },
                     child: Image.asset(
                       'assets/images/event_name_setting.png',
