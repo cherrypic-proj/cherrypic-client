@@ -1,28 +1,20 @@
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cherrypic/core/router/route_path.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/event_album.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import '../../../../../../core/constants/font.dart';
 
 class EventAlbumCover extends StatelessWidget {
   final EventAlbum album;
+  final VoidCallback? onTap;
 
-  const EventAlbumCover({super.key, required this.album});
+  // 생성자에 onTap 추가
+  const EventAlbumCover({super.key, required this.album, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        context.push(
-          RoutePath.eventDetail.replaceAll(
-            ':eventId',
-            album.eventId.toString(),
-          ),
-          extra: album,
-        );
-      },
+      onTap: onTap,
       child: SizedBox(
         width: 120,
         height: 120,
@@ -31,17 +23,14 @@ class EventAlbumCover extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              // 배경 이미지 - CachedNetworkImage로 교체
+              // 배경 이미지
               CachedNetworkImage(
                 imageUrl: album.imageUrl,
                 fit: BoxFit.cover,
-                // 메모리 캐시 최적화 (이벤트 커버는 작은 사이즈)
                 memCacheWidth: 240,
                 memCacheHeight: 240,
-                // 디스크 캐시
                 maxWidthDiskCache: 480,
                 maxHeightDiskCache: 480,
-                // 로딩 중
                 placeholder: (context, url) => Container(
                   color: Colors.grey[200],
                   child: const Center(
@@ -55,9 +44,8 @@ class EventAlbumCover extends StatelessWidget {
                     ),
                   ),
                 ),
-                // 에러 시
                 errorWidget: (context, url, error) {
-                  return Center(
+                  return const Center(
                     child: Icon(
                       Icons.error_outline,
                       color: Colors.grey,
@@ -67,6 +55,7 @@ class EventAlbumCover extends StatelessWidget {
                 },
               ),
 
+              // 하단 정보 영역
               Positioned(
                 bottom: 3,
                 left: 3,

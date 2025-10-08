@@ -1,10 +1,14 @@
+// 👈 1. 필요한 import 추가
+import 'package:go_router/go_router.dart';
+import 'package:cherrypic/core/router/route_path.dart';
+
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/%20create/create_event_sheet.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/components/event_album_cover.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/event_tab_view_model.dart';
 import 'package:cherrypic/presentation/widgets/album/album_group_section.dart';
-import 'package:cherrypic/presentation/widgets/album/image_full_screen_viewer.dart';
+// import 'package:cherrypic/presentation/widgets/album/image_full_screen_viewer.dart'; // 사용 안 함
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../album_detail_view_model.dart';
@@ -56,19 +60,13 @@ class AlbumContentList extends StatelessWidget {
                 imageUrls: g.images.map((img) => img.imageUrl).toList(),
                 selectedIndexes: g.selectedIndexes,
                 isSelectionMode: vm.isSelectionMode,
-
-                // 짧게 클릭
                 onImageTap: (imgIdx) {
                   if (vm.isSelectionMode) {
-                    // 선택 모드: 선택/해제
                     vm.toggleImage(index, imgIdx);
                   } else {
-                    // 일반 모드: 전체화면
                     _openFullScreen(context, vm, index, imgIdx);
                   }
                 },
-
-                // 롱프레스: 선택 모드 진입 + 해당 이미지 선택
                 onImageLongPress: (imgIdx) {
                   if (!vm.isSelectionMode) {
                     vm.enterSelectionMode();
@@ -105,13 +103,10 @@ class AlbumContentList extends StatelessWidget {
       allImageUrls.addAll(groupImages.map((img) => img.imageUrl));
     }
 
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => ImageFullScreenViewer(
-          imageUrls: allImageUrls,
-          initialIndex: initialIndex,
-        ),
-      ),
+    // 👇 2. Navigator.push를 context.push로 변경
+    context.push(
+      RoutePath.imageViewer,
+      extra: {'imageUrls': allImageUrls, 'initialIndex': initialIndex},
     );
   }
 
@@ -149,7 +144,16 @@ class AlbumContentList extends StatelessWidget {
                   itemCount: vm.albums.length,
                   itemBuilder: (context, index) {
                     final album = vm.albums[index];
-                    return EventAlbumCover(album: album);
+                    return EventAlbumCover(
+                      album: album,
+                      onTap: () => context.push(
+                        RoutePath.eventDetail.replaceFirst(
+                          ':eventId',
+                          album.eventId.toString(),
+                        ),
+                        extra: album,
+                      ),
+                    );
                   },
                 ),
               ),

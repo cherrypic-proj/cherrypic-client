@@ -33,6 +33,7 @@ import 'package:cherrypic/presentation/screens/main/home_tab/payment_complete_sc
 import 'package:cherrypic/presentation/screens/main/home_tab/payment_method_screen.dart';
 import 'package:cherrypic/presentation/screens/store/store_main_screen.dart';
 import 'package:cherrypic/presentation/screens/store/subscription/store_subs_info.dart';
+import 'package:cherrypic/presentation/widgets/album/image_full_screen_viewer.dart';
 import 'package:cherrypic/presentation/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -90,6 +91,17 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
     final albumData = state.extra as AlbumDetailDto;
 
     return AlbumEditScreen(albumId: albumId, albumData: albumData);
+  },
+
+  RoutePath.imageViewer: (context, state) {
+    final Map<String, dynamic> args = state.extra as Map<String, dynamic>;
+    final List<String> imageUrls = args['imageUrls'];
+    final int initialIndex = args['initialIndex'];
+
+    return ImageFullScreenViewer(
+      imageUrls: imageUrls,
+      initialIndex: initialIndex,
+    );
   },
 
   /// myPage
