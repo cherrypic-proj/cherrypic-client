@@ -27,7 +27,7 @@ class AlbumFloatingButtons extends StatelessWidget {
 
         return Stack(
           children: [
-            // 하단 좌측: 전체/이벤트 토글
+            // ... (사진 추가, 탭 전환 버튼 코드는 변경 없음) ...
             if (!isSelectionMode)
               Positioned(
                 bottom: 24 + bottomSafe,
@@ -40,16 +40,12 @@ class AlbumFloatingButtons extends StatelessWidget {
                   ),
                 ),
               ),
-
-            // 하단 우측: 사진 추가 버튼 (이벤트 탭일 때는 숨김)
             if (!isSelectionMode && tabIndex != 1)
               Positioned(
                 right: 45,
                 bottom: 24 + bottomSafe,
                 child: _AddPhotoButton(onTap: () => _handleAddPhoto(context)),
               ),
-
-            // 선택 바 - 선택 모드일 때 항상 표시
             if (isSelectionMode)
               Positioned(
                 left: 0,
@@ -58,12 +54,17 @@ class AlbumFloatingButtons extends StatelessWidget {
                 child: SafeArea(
                   top: false,
                   child: Center(
-                    child: SelectingBar(
-                      count: selectedCount,
-                      onMore: () => _openMoreSheet(context),
-                      onCancel: () {
-                        final vm = context.read<AlbumDetailViewModel>();
-                        vm.exitSelectionMode();
+                    // [수정] Builder로 감싸서 barContext를 가져옵니다.
+                    child: Builder(
+                      builder: (barContext) {
+                        return SelectingBar(
+                          count: selectedCount,
+                          onMore: () => _openMoreMenu(context, barContext),
+                          onCancel: () {
+                            final vm = context.read<AlbumDetailViewModel>();
+                            vm.exitSelectionMode();
+                          },
+                        );
                       },
                     ),
                   ),
@@ -76,17 +77,14 @@ class AlbumFloatingButtons extends StatelessWidget {
   }
 
   Future<void> _handleAddPhoto(BuildContext context) async {
+    // ... (이 함수는 변경 없음) ...
     final vm = context.read<AlbumDetailViewModel>();
     final uploadService = AlbumImageUploadService();
-
     final assets = await uploadService.pickImages(context);
     if (assets == null || assets.isEmpty) return;
     if (!context.mounted) return;
-
     final success = await vm.uploadImages(assets);
-
     if (!context.mounted) return;
-
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -104,19 +102,32 @@ class AlbumFloatingButtons extends StatelessWidget {
     }
   }
 
-  void _openMoreSheet(BuildContext context) {
-    // 1. showModalBottomSheet를 호출하는 context를 이용해 기존 ViewModel을 찾아옵니다.
+  // [수정] 위치 계산 로직을 barContext 기준으로 변경
+  void _openMoreMenu(BuildContext context, BuildContext barContext) {
     final viewModel = context.read<AlbumDetailViewModel>();
+    // barContext를 사용해 SelectingBar 전체의 위치와 크기를 가져옵니다.
+    final RenderBox renderBox = barContext.findRenderObject() as RenderBox;
+    final size = renderBox.size;
+    final position = renderBox.localToGlobal(Offset.zero);
 
-    showModalBottomSheet(
+    showDialog(
       context: context,
-      backgroundColor: Colors.transparent,
-      // 2. 바텀 시트의 builder가 만드는 위젯을 ChangeNotifierProvider.value로 감싸줍니다.
-      builder: (sheetContext) {
-        // 3. value 속성에 찾아온 viewModel을 전달합니다.
-        return ChangeNotifierProvider.value(
-          value: viewModel,
-          child: const AlbumActionSheet(),
+      barrierColor: Colors.black.withAlpha(25),
+
+      builder: (dialogContext) {
+        return Stack(
+          children: [
+            Positioned(
+              // left: 막대의 중앙에 메뉴의 중앙을 맞춥니다.
+              left: position.dx + (size.width / 2) - (130 / 2),
+              // top: 막대의 상단 위치에서 메뉴 높이(180)와 여백(10)만큼 위로 올립니다.
+              top: position.dy - 180 - 60,
+              child: ChangeNotifierProvider.value(
+                value: viewModel,
+                child: const AlbumActionSheet(),
+              ),
+            ),
+          ],
         );
       },
     );
@@ -124,10 +135,9 @@ class AlbumFloatingButtons extends StatelessWidget {
 }
 
 class _AddPhotoButton extends StatelessWidget {
+  // ... (이 위젯은 변경 없음) ...
   final VoidCallback onTap;
-
   const _AddPhotoButton({required this.onTap});
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
