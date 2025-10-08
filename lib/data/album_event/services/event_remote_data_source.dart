@@ -3,6 +3,7 @@ import 'package:cherrypic/core/network/api_response.dart';
 import 'package:cherrypic/core/network/dio_client.dart';
 import 'package:cherrypic/data/album_event/dto/request/event_create_request_dto.dart';
 import 'package:cherrypic/data/album_event/dto/request/event_add_images_request_dto.dart';
+import 'package:cherrypic/data/album_event/dto/request/event_update_request_dto.dart';
 import 'package:cherrypic/data/album_event/dto/response/event_create_response_dto.dart';
 import 'package:cherrypic/data/album_event/dto/response/event_detail_response_dto.dart';
 import 'package:cherrypic/data/album_event/dto/response/event_response.dart';
@@ -126,5 +127,19 @@ class EventRemoteDataSource {
     );
 
     return apiResponse.data!;
+  }
+
+  Future<void> updateEvent(
+    int eventId,
+    EventUpdateRequestDto requestDto,
+  ) async {
+    try {
+      await _dioClient.dio.patch(
+        ApiPath.eventDetail(eventId),
+        data: requestDto.toJson(),
+      );
+    } on DioException catch (e) {
+      throw Exception('이벤트 수정 실패: $e');
+    }
   }
 }

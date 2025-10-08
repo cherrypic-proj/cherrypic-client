@@ -13,6 +13,7 @@ class ApiPath {
   static const String events = '/events';
   static const String eventsCoverUploadUrl = '/events/cover-upload-url';
   static String eventImages(int eventId) => '/events/$eventId/images';
+  static String eventDetail(int eventId) => '/events/$eventId';
 
   // ... 다른 API 경로들도 여기에 추가
 }
