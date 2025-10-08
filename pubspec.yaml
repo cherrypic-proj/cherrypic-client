@@ -43,7 +43,10 @@ dependencies:
     iamport_flutter: ^0.10.21
 
     # 공유
-    share_plus: ^7.2.2
+    share_plus: ^12.0.0
+
+    # 이미지 저장
+    image_gallery_saver: ^2.0.3
 
 dev_dependencies:
     flutter_test:

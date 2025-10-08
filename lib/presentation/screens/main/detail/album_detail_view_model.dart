@@ -1,5 +1,7 @@
 import 'package:cherrypic/data/album/dto/request/album_image_delete_request_dto.dart';
+import 'package:cherrypic/presentation/screens/main/detail/components/image_action_service.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:cherrypic/data/album/repositories/album_repository.dart';
 import 'package:cherrypic/data/album/services/album_images_upload_service.dart';
@@ -157,6 +159,38 @@ class AlbumDetailViewModel extends ChangeNotifier
       } else {
         groups.add(newGroup);
       }
+    }
+  }
+
+  /// 선택된 이미지들 다운로드
+  Future<void> downloadSelectedImages(BuildContext context) async {
+    final service = ImageActionService();
+    final List<String> urlsToDownload = [];
+
+    for (final group in groups) {
+      for (final index in group.selectedIndexes) {
+        urlsToDownload.add(group.images[index].imageUrl);
+      }
+    }
+
+    if (urlsToDownload.isNotEmpty) {
+      await service.downloadImages(context, urlsToDownload);
+    }
+  }
+
+  /// 선택된 이미지들 공유
+  Future<void> shareSelectedImages(BuildContext context) async {
+    final service = ImageActionService();
+    final List<String> urlsToShare = [];
+
+    for (final group in groups) {
+      for (final index in group.selectedIndexes) {
+        urlsToShare.add(group.images[index].imageUrl);
+      }
+    }
+
+    if (urlsToShare.isNotEmpty) {
+      await service.shareImages(context, urlsToShare);
     }
   }
 }
