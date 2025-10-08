@@ -23,6 +23,20 @@ class AuthInterceptor extends Interceptor {
 
     // 401 에러 (토큰 만료) 시 처리
     if (err.response?.statusCode == 401) {
+      // 💥💥 추가된 코드 💥💥
+      // refreshToken이 없을 경우, 재발급을 시도하지 않고 바로 요청을 실패시킨다.
+      final cookies = await DioClient().cookieJar.loadForRequest(
+        err.requestOptions.uri,
+      );
+      final hasRefreshToken = cookies.any(
+        (c) => c.name == 'refreshToken' && c.value.isNotEmpty,
+      );
+
+      if (!hasRefreshToken) {
+        print('리프레시 토큰이 없으므로 재발급을 시도하지 않습니다.');
+        handler.reject(err);
+        return;
+      }
       final requestOptions = err.requestOptions;
 
       if (_isRefreshing) {
@@ -40,12 +54,16 @@ class AuthInterceptor extends Interceptor {
           handler.resolve(response);
           await _retryPendingRequests();
         } else {
-          await _handleRefreshFailure();
+          // 💥 수정된 부분
+          // _handleRefreshFailure() 호출을 제거합니다.
+          // 리프레시 실패는 그냥 원래 요청의 실패로 이어지게 합니다.
+          print('토큰 재발급 실패로 인한 원래 요청 실패 처리');
           handler.reject(err);
         }
       } catch (e) {
-        await _handleRefreshFailure();
-        handler.reject(err);
+        // 재발급 로직 자체에서 예외 발생 시 (네트워크 등)
+        print('토큰 재발급 로직 예외: $e');
+        handler.reject(err); // 원래 요청 실패 처리
       } finally {
         _isRefreshing = false;
         _pendingRequests.clear();

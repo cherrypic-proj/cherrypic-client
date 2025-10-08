@@ -26,7 +26,7 @@ class AuthRepository {
     return await _appleDataSource.login();
   }
 
-  Future<LoginResponseDto> socialLogin(String provider) async {
+  Future<void> socialLogin(String provider) async {
     String? idToken;
 
     if (provider == 'KAKAO') {
