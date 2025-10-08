@@ -82,8 +82,9 @@ class _MyPageScreenState extends State<MyPageScreen> {
                       Padding(
                         padding: const EdgeInsets.only(left: 30, right: 20),
                         child: HorizontalLabeledTextField(
-                          title: '이름',
-                          hintText: '홍길동',
+                            title: '닉네임',
+                            hintText: '홍길동',
+                            showEditIcon: true
                         ),
                       ),
                       const SizedBox(height: 20),
