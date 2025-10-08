@@ -28,12 +28,11 @@ class EventEditDialog extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _buildHeader(
-                      context,
-                      vm,
-                    ), // '수정' 버튼에 vm.hasChanges를 사용하도록 수정
+                    _buildHeader(context, vm),
                     const SizedBox(height: 24),
                     _buildCoverSection(context, vm),
+                    const SizedBox(height: 20), // [추가] 간격
+                    _buildDeleteButton(context, vm), // [추가] 삭제 버튼
                   ],
                 ),
               ),
@@ -45,6 +44,7 @@ class EventEditDialog extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context, EventEditViewModel vm) {
+    // ... 기존 헤더 코드 (변경 없음) ...
     return SizedBox(
       width: 330,
       child: Container(
@@ -81,7 +81,6 @@ class EventEditDialog extends StatelessWidget {
             Positioned(
               right: 15,
               child: GestureDetector(
-                // [수정] vm.hasChanges가 false이거나 로딩 중일 때 onTap을 null로 설정하여 비활성화
                 onTap: !vm.hasChanges || vm.isSaving || vm.isUploading
                     ? null
                     : () async {
@@ -110,7 +109,6 @@ class EventEditDialog extends StatelessWidget {
                   child: Text(
                     '수정',
                     style: AppFont.size14.copyWith(
-                      // [수정] hasChanges 값에 따라 텍스트 색상을 변경하여 비활성화 상태를 시각적으로 표시
                       color: !vm.hasChanges
                           ? Colors.white.withOpacity(0.5)
                           : Colors.white,
@@ -127,7 +125,7 @@ class EventEditDialog extends StatelessWidget {
   }
 
   Widget _buildCoverSection(BuildContext context, EventEditViewModel vm) {
-    // ... 이 함수는 변경사항 없음 ...
+    // ... 기존 커버 섹션 코드 (변경 없음) ...
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -217,6 +215,70 @@ class EventEditDialog extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  // [신규] 이벤트 삭제 버튼 위젯
+  Widget _buildDeleteButton(BuildContext context, EventEditViewModel vm) {
+    return GestureDetector(
+      onTap:
+          vm
+              .isDeleting // 삭제 중에는 버튼 비활성화
+          ? null
+          : () => _showDeleteConfirmDialog(context, vm),
+      child: Container(
+        alignment: Alignment.center,
+        child: Text(
+          vm.isDeleting ? '삭제 중...' : '이벤트 삭제',
+          style: AppFont.size14.copyWith(
+            color: vm.isDeleting ? Colors.grey : Colors.red,
+            decoration: TextDecoration.underline,
+            decorationColor: vm.isDeleting ? Colors.grey : Colors.red,
+          ),
+        ),
+      ),
+    );
+  }
+
+  // [신규] 삭제 확인 다이얼로그를 띄우는 함수
+  void _showDeleteConfirmDialog(BuildContext context, EventEditViewModel vm) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('이벤트 삭제'),
+          content: const Text('정말로 이벤트를 삭제하시겠습니까?\n삭제된 데이터는 복구할 수 없습니다.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('취소'),
+            ),
+            TextButton(
+              onPressed: () async {
+                final success = await vm.deleteEvent();
+                // dialogContext와 context가 모두 유효한지 확인
+                if (!dialogContext.mounted || !context.mounted) return;
+
+                Navigator.pop(dialogContext); // 확인 다이얼로그 닫기
+
+                if (success) {
+                  // 성공 시, 수정 다이얼로그를 닫으면서 삭제되었다는 신호를 보냄
+                  Navigator.pop(context, 'deleted');
+                } else if (vm.error != null) {
+                  // 실패 시, 스낵바 표시
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(vm.error!),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              },
+              child: const Text('삭제', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
     );
   }
 }

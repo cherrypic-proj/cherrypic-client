@@ -67,21 +67,28 @@ class EventHeader extends StatelessWidget {
                   const SizedBox(width: 8),
                   GestureDetector(
                     onTap: () async {
-                      // [수정] 반환 타입을 bool? -> EventAlbum? 으로 변경
-                      final result = await showDialog<EventAlbum>(
+                      // 1. 반환 타입을 <Object?>로 변경하여 여러 타입을 받을 수 있도록 합니다.
+                      final result = await showDialog<Object?>(
                         context: context,
                         builder: (_) => EventEditDialog(event: event),
+                        barrierDismissible: false,
                       );
 
-                      // 수정된 EventAlbum 객체를 받았다면 콜백 호출
-                      if (result != null && context.mounted) {
+                      if (!context.mounted) return;
+
+                      // 2. 돌아온 결과(result)의 타입에 따라 다른 동작을 수행합니다.
+                      if (result is EventAlbum) {
+                        // [수정 성공] 결과가 EventAlbum 타입이면, onEventUpdated 콜백을 호출합니다.
                         onEventUpdated(result);
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('이벤트 정보가 수정되었습니다.')),
                         );
+                      } else if (result == 'deleted') {
+                        // [삭제 성공] 결과가 'deleted' 문자열이면,
+                        // 상세 화면을 닫고 이전 화면(이벤트 목록)으로 돌아가 변경이 있었음을 알립니다.
+                        Navigator.pop(context, true);
                       }
                     },
-
                     child: Image.asset(
                       'assets/images/event_name_setting.png',
                       width: 24,
