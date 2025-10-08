@@ -32,12 +32,20 @@ class EventAlbumCover extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              // --- 배경 이미지 (기존과 동일) ---
-              CachedNetworkImage(
-                imageUrl: album.imageUrl,
-                fit: BoxFit.cover,
-                // ... (기존 placeholder, errorWidget 코드는 생략) ...
-              ),
+              // [수정] imageUrl이 비어있는지 확인하는 로직 추가
+              if (album.imageUrl.isNotEmpty)
+                // imageUrl이 있을 때만 이미지를 로드
+                CachedNetworkImage(
+                  imageUrl: album.imageUrl,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) =>
+                      Container(color: Colors.grey[300]),
+                  errorWidget: (context, url, error) =>
+                      Container(color: Colors.grey[300]),
+                )
+              else
+                // imageUrl이 없으면 회색 컨테이너를 표시
+                Container(color: Colors.grey[300]),
 
               // --- 하단 정보 영역 (기존과 동일) ---
               Positioned(

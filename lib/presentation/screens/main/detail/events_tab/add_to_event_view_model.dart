@@ -45,9 +45,9 @@ class AddToEventViewModel extends ChangeNotifier {
         return EventAlbum(
           eventId: dto.eventId,
           title: dto.title,
-          imageUrl: dto.coverUrl, // DTO의 coverUrl을 모델의 imageUrl로 매핑
-          photoCount:
-              dto.numberOfImages, // DTO의 numberOfImages를 모델의 photoCount로 매핑
+          // [수정] coverUrl이 null일 경우 빈 문자열('')을 대신 전달합니다.
+          imageUrl: dto.coverUrl ?? '',
+          photoCount: dto.numberOfImages,
         );
       }).toList();
     } catch (e) {

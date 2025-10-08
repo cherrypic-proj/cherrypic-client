@@ -21,7 +21,6 @@ class EventEditDialog extends StatelessWidget {
         backgroundColor: Colors.white,
         child: Consumer<EventEditViewModel>(
           builder: (context, vm, _) {
-            // 다이얼로그의 너비를 화면 너비의 90%로 고정하여 너비 문제 해결
             return Container(
               width: MediaQuery.of(context).size.width * 0.9,
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 28),
@@ -29,7 +28,10 @@ class EventEditDialog extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _buildHeader(context, vm),
+                    _buildHeader(
+                      context,
+                      vm,
+                    ), // '수정' 버튼에 vm.hasChanges를 사용하도록 수정
                     const SizedBox(height: 24),
                     _buildCoverSection(context, vm),
                   ],
@@ -42,9 +44,7 @@ class EventEditDialog extends StatelessWidget {
     );
   }
 
-  // Header UI (with edit button) - 이미지와 똑같이 수정
   Widget _buildHeader(BuildContext context, EventEditViewModel vm) {
-    // [수정] SizedBox를 추가하여 너비를 330으로 고정합니다.
     return SizedBox(
       width: 330,
       child: Container(
@@ -81,18 +81,17 @@ class EventEditDialog extends StatelessWidget {
             Positioned(
               right: 15,
               child: GestureDetector(
-                onTap: vm.isSaving || vm.isUploading
+                // [수정] vm.hasChanges가 false이거나 로딩 중일 때 onTap을 null로 설정하여 비활성화
+                onTap: !vm.hasChanges || vm.isSaving || vm.isUploading
                     ? null
                     : () async {
                         final success = await vm.updateEvent();
                         if (success && context.mounted) {
-                          // [수정] true 대신, 업데이트된 정보로 새 EventAlbum 객체를 만들어 반환합니다.
                           final updatedEvent = EventAlbum(
                             eventId: vm.event.eventId,
                             title: vm.titleController.text,
-
                             imageUrl: vm.coverImageUrl!,
-                            photoCount: vm.event.photoCount, // 사진 개수는 그대로 유지
+                            photoCount: vm.event.photoCount,
                           );
                           Navigator.pop(context, updatedEvent);
                         } else if (vm.error != null && context.mounted) {
@@ -111,7 +110,10 @@ class EventEditDialog extends StatelessWidget {
                   child: Text(
                     '수정',
                     style: AppFont.size14.copyWith(
-                      color: Colors.white,
+                      // [수정] hasChanges 값에 따라 텍스트 색상을 변경하여 비활성화 상태를 시각적으로 표시
+                      color: !vm.hasChanges
+                          ? Colors.white.withOpacity(0.5)
+                          : Colors.white,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -124,12 +126,11 @@ class EventEditDialog extends StatelessWidget {
     );
   }
 
-  // Cover image and title UI
   Widget _buildCoverSection(BuildContext context, EventEditViewModel vm) {
+    // ... 이 함수는 변경사항 없음 ...
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Left: Cover Image (130x130)
         Container(
           width: 130,
           height: 130,
@@ -159,14 +160,11 @@ class EventEditDialog extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 16),
-
-        // Right: Title input and upload button
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 24),
-              // Title Input
               SizedBox(
                 height: 40,
                 child: TextField(
@@ -194,7 +192,6 @@ class EventEditDialog extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
-              // Upload Cover Photo Button
               GestureDetector(
                 onTap: vm.isUploading ? null : () => vm.pickCoverImage(context),
                 child: Container(

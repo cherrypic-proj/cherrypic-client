@@ -6,9 +6,8 @@ import 'package:cherrypic/presentation/screens/main/detail/events_tab/event_albu
 import 'package:flutter/material.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
-/// 이벤트 수정을 위한 ViewModel
 class EventEditViewModel extends ChangeNotifier {
-  final EventAlbum event; // 수정할 기존 이벤트 정보
+  final EventAlbum event;
   final EventRepository _eventRepository;
   final EventCoverImageService _coverImageService;
 
@@ -18,30 +17,35 @@ class EventEditViewModel extends ChangeNotifier {
     EventCoverImageService? coverImageService,
   }) : _eventRepository = eventRepository ?? EventRepository(),
        _coverImageService = coverImageService ?? EventCoverImageService() {
-    // 기존 이벤트 제목으로 컨트롤러 초기화
     titleController = TextEditingController(text: event.title);
-    // 기존 커버 이미지 URL 설정
     _coverImageUrl = event.imageUrl;
+
+    // [추가] 텍스트 필드의 변경을 감지하기 위해 리스너를 추가합니다.
+    titleController.addListener(() {
+      notifyListeners(); // 텍스트가 변경될 때마다 UI를 갱신하여 버튼 상태를 업데이트
+    });
   }
 
-  // --- 상태 변수 ---
   late final TextEditingController titleController;
-
-  File? _coverImage; // 새로 선택한 커버 이미지 파일
+  File? _coverImage;
   File? get coverImage => _coverImage;
-
-  String? _coverImageUrl; // 현재 적용된 커버 이미지 URL (기존 또는 신규)
+  String? _coverImageUrl;
   String? get coverImageUrl => _coverImageUrl;
-
-  bool _isUploading = false; // 커버 이미지 업로드 중 상태
-  bool _isSaving = false; // 최종 저장 중 상태
+  bool _isUploading = false;
+  bool _isSaving = false;
   String? _error;
 
   bool get isUploading => _isUploading;
   bool get isSaving => _isSaving;
   String? get error => _error;
 
-  /// 커버 사진 선택 및 업로드
+  // [추가] 변경사항이 있는지 확인하는 getter
+  bool get hasChanges {
+    // 제목이 다르거나, 커버 이미지 URL이 다르면 변경된 것으로 간주
+    return titleController.text != event.title ||
+        _coverImageUrl != event.imageUrl;
+  }
+
   Future<void> pickCoverImage(BuildContext context) async {
     final List<AssetEntity>? assets = await AssetPicker.pickAssets(
       context,
@@ -50,34 +54,26 @@ class EventEditViewModel extends ChangeNotifier {
         requestType: RequestType.image,
       ),
     );
-
     if (assets == null || assets.isEmpty) return;
-
     final File? imageFile = await assets.first.file;
     if (imageFile != null) {
       _coverImage = imageFile;
       notifyListeners();
-      // 즉시 S3에 업로드
       await _uploadCoverImage(imageFile);
     }
   }
 
-  /// 커버 이미지를 S3에 업로드하고 URL 저장
   Future<void> _uploadCoverImage(File imageFile) async {
     _isUploading = true;
     _error = null;
     notifyListeners();
-
     try {
       final imageBytes = await imageFile.readAsBytes();
-      final uploadedUrl = await _coverImageService.uploadEventCoverImage(
+      _coverImageUrl = await _coverImageService.uploadEventCoverImage(
         imageBytes,
       );
-      _coverImageUrl = uploadedUrl;
-      debugPrint('새 커버 이미지 업로드 성공: $_coverImageUrl');
     } catch (e) {
       _error = '커버 이미지 업로드 실패: $e';
-      debugPrint(_error);
     } finally {
       _isUploading = false;
       notifyListeners();
@@ -86,7 +82,12 @@ class EventEditViewModel extends ChangeNotifier {
 
   /// 이벤트 정보 수정
   Future<bool> updateEvent() async {
-    // 유효성 검사
+    // [수정] 유효성 검사 및 변경사항 확인 로직 강화
+    if (!hasChanges) {
+      _error = '변경된 내용이 없습니다.';
+      notifyListeners();
+      return false;
+    }
     if (titleController.text.isEmpty) {
       _error = '이벤트 제목을 입력해주세요.';
       notifyListeners();
@@ -98,21 +99,15 @@ class EventEditViewModel extends ChangeNotifier {
       return false;
     }
 
-    // 변경사항이 있는지 확인
-    final isTitleChanged = titleController.text != event.title;
-    final isCoverChanged = _coverImageUrl != event.imageUrl;
-
-    if (!isTitleChanged && !isCoverChanged) {
-      _error = '변경된 내용이 없습니다.';
-      notifyListeners();
-      return false;
-    }
-
     _isSaving = true;
     _error = null;
     notifyListeners();
 
     try {
+      final isTitleChanged = titleController.text != event.title;
+      final isCoverChanged = _coverImageUrl != event.imageUrl;
+
+      // DTO를 만들 때, 변경된 필드만 포함하여 생성
       final requestDto = EventUpdateRequestDto(
         title: isTitleChanged ? titleController.text : null,
         coverUrl: isCoverChanged ? _coverImageUrl : null,
@@ -121,15 +116,13 @@ class EventEditViewModel extends ChangeNotifier {
       await _eventRepository.updateEvent(event.eventId, requestDto);
 
       debugPrint('이벤트 수정 성공');
-      _isSaving = false;
-      notifyListeners();
       return true;
     } catch (e) {
       _error = '이벤트 수정 실패: $e';
-      debugPrint(_error);
+      return false;
+    } finally {
       _isSaving = false;
       notifyListeners();
-      return false;
     }
   }
 
