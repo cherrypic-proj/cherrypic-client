@@ -1,5 +1,7 @@
 import 'package:cherrypic/data/album_event/repositories/event_repository.dart';
+import 'package:cherrypic/presentation/screens/main/detail/components/image_action_service.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 /// 날짜별 이벤트 이미지 묶음 상태
 class EventDayGroup {
@@ -227,5 +229,47 @@ class EventDetailViewModel extends ChangeNotifier {
       g.isAllSelected = false;
     }
     notifyListeners();
+  }
+
+  /// 선택된 이미지들 다운로드
+  Future<void> downloadSelectedImages(BuildContext context) async {
+    final service = ImageActionService();
+    final List<String> urlsToDownload = [];
+    for (final group in groups) {
+      for (final index in group.selectedIndexes) {
+        urlsToDownload.add(group.imageUrls[index]);
+      }
+    }
+    if (urlsToDownload.isNotEmpty) {
+      await service.downloadImages(context, urlsToDownload);
+    }
+    exitSelectionMode();
+  }
+
+  /// 선택된 이미지들 공유
+  Future<void> shareSelectedImages(BuildContext context) async {
+    final service = ImageActionService();
+    final List<String> urlsToShare = [];
+    for (final group in groups) {
+      for (final index in group.selectedIndexes) {
+        urlsToShare.add(group.imageUrls[index]);
+      }
+    }
+    if (urlsToShare.isNotEmpty) {
+      await service.shareImages(context, urlsToShare);
+    }
+    exitSelectionMode();
+  }
+
+  /// 선택된 이미지들 삭제
+  Future<void> deleteSelectedImages(BuildContext context) async {
+    // TODO: 이벤트 이미지 삭제 API 및 Repository 구현 필요.
+    // 현재 EventDetailViewModel은 imageUrl만 알고 있고, 삭제에 필요한 imageId를 알 수 없습니다.
+    // 이 기능을 구현하려면 API 명세 확인 후 EventRepository에 이미지 삭제 기능 추가 및
+    // EventDayGroup 모델에 imageId를 포함하도록 수정해야 합니다.
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('이벤트 사진 삭제 기능은 아직 지원되지 않습니다.')),
+    );
+    exitSelectionMode();
   }
 }

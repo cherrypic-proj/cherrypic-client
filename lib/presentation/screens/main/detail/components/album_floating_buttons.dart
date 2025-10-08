@@ -105,7 +105,6 @@ class AlbumFloatingButtons extends StatelessWidget {
   // [수정] 위치 계산 로직을 barContext 기준으로 변경
   void _openMoreMenu(BuildContext context, BuildContext barContext) {
     final viewModel = context.read<AlbumDetailViewModel>();
-    // barContext를 사용해 SelectingBar 전체의 위치와 크기를 가져옵니다.
     final RenderBox renderBox = barContext.findRenderObject() as RenderBox;
     final size = renderBox.size;
     final position = renderBox.localToGlobal(Offset.zero);
@@ -113,18 +112,24 @@ class AlbumFloatingButtons extends StatelessWidget {
     showDialog(
       context: context,
       barrierColor: Colors.black.withAlpha(25),
-
       builder: (dialogContext) {
         return Stack(
           children: [
             Positioned(
-              // left: 막대의 중앙에 메뉴의 중앙을 맞춥니다.
               left: position.dx + (size.width / 2) - (130 / 2),
-              // top: 막대의 상단 위치에서 메뉴 높이(180)와 여백(10)만큼 위로 올립니다.
               top: position.dy - 180 - 40,
               child: ChangeNotifierProvider.value(
                 value: viewModel,
-                child: const AlbumActionSheet(),
+                // [수정] AlbumActionSheet에 각 기능에 맞는 함수를 전달합니다.
+                child: AlbumActionSheet(
+                  onShare: () => viewModel.shareSelectedImages(context),
+                  onDelete: () => viewModel.deleteSelectedImages(),
+                  onDownload: () => viewModel.downloadSelectedImages(context),
+                  onAiSort: () {
+                    // TODO: AI 정리 기능 구현
+                    debugPrint('AI 정리 탭');
+                  },
+                ),
               ),
             ),
           ],
