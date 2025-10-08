@@ -100,10 +100,13 @@ class _MyPageScreenState extends State<MyPageScreen> {
                             context.push(RoutePath.myPage_notice);
                           }),
                           _buildCustomDivider(2),
+                          _buildListItem('앨범 관리', () {
+                            // context.push(RoutePath.myPage_setting);
+                          }),
                           _buildListItem('앨범 결제정보', () {
                             context.push(RoutePath.myPage_album_payment_info);
                           }),
-                          _buildListItem('실물사진 배송지 관리', () {
+                          _buildListItem('실물사진 관리', () {
                             context.push(RoutePath.myPage_address_management);
                           }),
                           _buildListItem('앨범 가입 이력', () {
