@@ -1,6 +1,7 @@
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:cherrypic/presentation/screens/main/detail/album_detail_view_model.dart';
+import 'package:cherrypic/presentation/screens/main/detail/components/add_to_event_sheet.dart';
 import 'package:cherrypic/presentation/widgets/dialogs/photo_delete_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -12,7 +13,6 @@ import 'package:provider/provider.dart';
 class ImageFullScreenViewer extends StatefulWidget {
   final List<String> imageUrls;
   final int initialIndex;
-  // [수정] 라우터로부터 받을 파라미터 추가
   final List<AlbumImage> allAlbumImages;
   final int albumId;
 
@@ -40,6 +40,7 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
     _pageController = PageController(initialPage: widget.initialIndex);
   }
 
+  // ... (dispose, _toggleUI, _getCurrentImageId 함수는 변경 없음) ...
   @override
   void dispose() {
     _pageController.dispose();
@@ -52,7 +53,6 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
     });
   }
 
-  // 현재 보고 있는 이미지의 ID를 가져오는 헬퍼 함수
   int? _getCurrentImageId() {
     if (_currentIndex >= widget.allAlbumImages.length) return null;
     return widget.allAlbumImages[_currentIndex].imageId;
@@ -60,14 +60,13 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
 
   @override
   Widget build(BuildContext context) {
-    // Provider.value를 통해 전달받은 ViewModel에 접근
     final vm = context.read<AlbumDetailViewModel>();
 
     return Scaffold(
       backgroundColor: _showUI ? Colors.white : Colors.black,
       body: Stack(
         children: [
-          // ... (이미지 갤러리, 상단 바 UI는 이전과 동일) ...
+          // ... (이미지 갤러리, 상단 바 UI는 변경 없음) ...
           GestureDetector(
             onTap: _toggleUI,
             child: PhotoViewGallery.builder(
@@ -156,7 +155,6 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
                         icon: Icons.share_outlined,
                         label: '공유',
                         onTap: () {
-                          // [구현] 공유 기능
                           final currentImageUrl =
                               widget.imageUrls[_currentIndex];
                           vm.shareSingleImage(context, currentImageUrl);
@@ -165,15 +163,27 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
                       _buildActionButton(
                         icon: Icons.add_circle_outline,
                         label: '이벤트 추가',
+                        // [수정] '이벤트 추가' 버튼 기능 구현
                         onTap: () {
-                          /* TODO */
+                          final imageId = _getCurrentImageId();
+                          if (imageId == null) return;
+
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled:
+                                true, // DraggableScrollableSheet를 위해 필수
+                            backgroundColor: Colors.transparent,
+                            builder: (_) => AddToEventSheet(
+                              albumId: widget.albumId,
+                              imageId: imageId,
+                            ),
+                          );
                         },
                       ),
                       _buildActionButton(
                         icon: Icons.delete_outline,
                         label: '삭제',
                         onTap: () {
-                          // [구현] 삭제 기능
                           final imageId = _getCurrentImageId();
                           if (imageId == null) return;
 
@@ -184,9 +194,6 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
                                 final success = await vm.deleteSingleImage(
                                   imageId,
                                 );
-                                // 삭제 성공 시, 이전 화면으로 돌아갑니다.
-                                // ViewModel에서 loadImages()가 호출되었으므로
-                                // 이전 화면은 자동으로 최신 상태가 됩니다.
                                 if (success && context.mounted) {
                                   context.pop();
                                 }
