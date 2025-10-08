@@ -53,7 +53,7 @@ class AlbumContentList extends StatelessWidget {
                 date: g.date,
                 isAllSelected: g.isAllSelected,
                 onToggleAll: () => vm.toggleAll(index),
-                imageUrls: g.imageUrls,
+                imageUrls: g.images.map((img) => img.imageUrl).toList(),
                 selectedIndexes: g.selectedIndexes,
                 isSelectionMode: vm.isSelectionMode,
 
@@ -96,12 +96,13 @@ class AlbumContentList extends StatelessWidget {
     int currentCount = 0;
 
     for (int i = 0; i < vm.groups.length; i++) {
+      final groupImages = vm.groups[i].images;
       if (i < groupIndex) {
-        currentCount += vm.groups[i].imageUrls.length;
+        currentCount += groupImages.length;
       } else if (i == groupIndex) {
         initialIndex = currentCount + imageIndex;
       }
-      allImageUrls.addAll(vm.groups[i].imageUrls);
+      allImageUrls.addAll(groupImages.map((img) => img.imageUrl));
     }
 
     Navigator.of(context).push(

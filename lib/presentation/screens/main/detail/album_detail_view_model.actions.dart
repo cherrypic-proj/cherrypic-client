@@ -79,6 +79,3 @@ mixin AlbumActionsLogic on ChangeNotifier {
     notifyListeners();
   }
 }
-
-// 2. 파일 맨 아래에 있던 이 부분을 완전히 삭제합니다.
-// class AssetEntity {}
