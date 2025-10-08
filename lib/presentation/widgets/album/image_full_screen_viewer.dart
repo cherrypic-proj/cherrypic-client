@@ -1,3 +1,5 @@
+import 'package:cherrypic/core/constants/color.dart';
+import 'package:cherrypic/core/constants/font.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:photo_view/photo_view.dart';
@@ -134,16 +136,7 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
                     horizontal: 20,
                     vertical: 16,
                   ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, -2),
-                      ),
-                    ],
-                  ),
+                  decoration: BoxDecoration(color: Colors.white),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -186,24 +179,24 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey[300]!),
-          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: AppColor.mainLightRed),
+          color: AppColor.mainLightRed.withAlpha(60),
+          borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 20, color: Colors.black87),
-            const SizedBox(width: 6),
             Text(
               label,
-              style: const TextStyle(
-                fontSize: 14,
+              style: AppFont.size16.copyWith(
                 color: Colors.black87,
                 fontWeight: FontWeight.w500,
               ),
             ),
+            const SizedBox(width: 6),
+            Icon(icon, size: 15, color: Colors.black87),
           ],
         ),
       ),
