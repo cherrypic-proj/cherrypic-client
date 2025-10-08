@@ -121,7 +121,7 @@ class AlbumFloatingButtons extends StatelessWidget {
               // left: 막대의 중앙에 메뉴의 중앙을 맞춥니다.
               left: position.dx + (size.width / 2) - (130 / 2),
               // top: 막대의 상단 위치에서 메뉴 높이(180)와 여백(10)만큼 위로 올립니다.
-              top: position.dy - 180 - 60,
+              top: position.dy - 180 - 40,
               child: ChangeNotifierProvider.value(
                 value: viewModel,
                 child: const AlbumActionSheet(),

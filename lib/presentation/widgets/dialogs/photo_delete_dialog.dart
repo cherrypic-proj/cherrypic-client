@@ -48,7 +48,7 @@ class PhotoDeleteDialog extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
 
             // --- 안내 문구 ---
             Text(
@@ -59,7 +59,7 @@ class PhotoDeleteDialog extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
 
             // --- 버튼 ---
             Row(
