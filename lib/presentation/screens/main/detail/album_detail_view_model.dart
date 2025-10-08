@@ -193,4 +193,27 @@ class AlbumDetailViewModel extends ChangeNotifier
       await service.shareImages(context, urlsToShare);
     }
   }
+
+  /// 단일 이미지 삭제 (Full Screen Viewer에서 사용)
+  Future<bool> deleteSingleImage(int imageId) async {
+    try {
+      await _repository.deleteAlbumImages(
+        albumId,
+        AlbumImageDeleteRequestDto(imageIds: [imageId]),
+      );
+      // 중요: 삭제 후 전체 이미지 목록을 즉시 새로고침합니다.
+      await loadImages();
+      return true;
+    } catch (e) {
+      debugPrint('단일 이미지 삭제 실패: $e');
+      return false;
+    }
+  }
+
+  /// 단일 이미지 공유 (Full Screen Viewer에서 사용)
+  Future<void> shareSingleImage(BuildContext context, String imageUrl) async {
+    final service = ImageActionService();
+    // 기존 서비스를 재사용하여 이미지 URL이 하나만 담긴 리스트를 전달합니다.
+    await service.shareImages(context, [imageUrl]);
+  }
 }

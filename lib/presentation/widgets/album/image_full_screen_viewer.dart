@@ -1,19 +1,27 @@
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
+import 'package:cherrypic/presentation/screens/main/detail/album_detail_view_model.dart';
+import 'package:cherrypic/presentation/widgets/dialogs/photo_delete_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:provider/provider.dart';
 
 class ImageFullScreenViewer extends StatefulWidget {
   final List<String> imageUrls;
   final int initialIndex;
+  // [수정] 라우터로부터 받을 파라미터 추가
+  final List<AlbumImage> allAlbumImages;
+  final int albumId;
 
   const ImageFullScreenViewer({
     super.key,
     required this.imageUrls,
     required this.initialIndex,
+    required this.allAlbumImages,
+    required this.albumId,
   });
 
   @override
@@ -23,7 +31,7 @@ class ImageFullScreenViewer extends StatefulWidget {
 class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
   late PageController _pageController;
   late int _currentIndex;
-  bool _showUI = true; // UI 표시 여부 (하단 버튼, 상단 바)
+  bool _showUI = true;
 
   @override
   void initState() {
@@ -44,13 +52,22 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
     });
   }
 
+  // 현재 보고 있는 이미지의 ID를 가져오는 헬퍼 함수
+  int? _getCurrentImageId() {
+    if (_currentIndex >= widget.allAlbumImages.length) return null;
+    return widget.allAlbumImages[_currentIndex].imageId;
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Provider.value를 통해 전달받은 ViewModel에 접근
+    final vm = context.read<AlbumDetailViewModel>();
+
     return Scaffold(
       backgroundColor: _showUI ? Colors.white : Colors.black,
       body: Stack(
         children: [
-          // 이미지 갤러리
+          // ... (이미지 갤러리, 상단 바 UI는 이전과 동일) ...
           GestureDetector(
             onTap: _toggleUI,
             child: PhotoViewGallery.builder(
@@ -68,16 +85,13 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
                   ),
                 );
               },
-              onPageChanged: (index) {
-                setState(() {
-                  _currentIndex = index;
-                });
-              },
+              onPageChanged: (index) => setState(() => _currentIndex = index),
               loadingBuilder: (context, event) => Center(
                 child: CircularProgressIndicator(
                   value: event == null
                       ? 0
-                      : event.cumulativeBytesLoaded / event.expectedTotalBytes!,
+                      : event.cumulativeBytesLoaded /
+                            (event.expectedTotalBytes ?? 1),
                 ),
               ),
               backgroundDecoration: BoxDecoration(
@@ -85,8 +99,6 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
               ),
             ),
           ),
-
-          // 상단 바 (닫기 버튼 + 카운터)
           if (_showUI)
             SafeArea(
               child: Padding(
@@ -125,7 +137,6 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
               ),
             ),
 
-          // 하단 버튼 3개 (공유, 이벤트 추가, 삭제)
           if (_showUI)
             Positioned(
               bottom: 0,
@@ -137,7 +148,7 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
                     horizontal: 20,
                     vertical: 16,
                   ),
-                  decoration: BoxDecoration(color: Colors.white),
+                  decoration: const BoxDecoration(color: Colors.white),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -145,21 +156,43 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
                         icon: Icons.share_outlined,
                         label: '공유',
                         onTap: () {
-                          // TODO: 공유 기능 구현
+                          // [구현] 공유 기능
+                          final currentImageUrl =
+                              widget.imageUrls[_currentIndex];
+                          vm.shareSingleImage(context, currentImageUrl);
                         },
                       ),
                       _buildActionButton(
                         icon: Icons.add_circle_outline,
                         label: '이벤트 추가',
                         onTap: () {
-                          // TODO: 이벤트 추가 기능 구현
+                          /* TODO */
                         },
                       ),
                       _buildActionButton(
                         icon: Icons.delete_outline,
                         label: '삭제',
                         onTap: () {
-                          // TODO: 삭제 기능 구현
+                          // [구현] 삭제 기능
+                          final imageId = _getCurrentImageId();
+                          if (imageId == null) return;
+
+                          showDialog(
+                            context: context,
+                            builder: (_) => PhotoDeleteDialog(
+                              onConfirm: () async {
+                                final success = await vm.deleteSingleImage(
+                                  imageId,
+                                );
+                                // 삭제 성공 시, 이전 화면으로 돌아갑니다.
+                                // ViewModel에서 loadImages()가 호출되었으므로
+                                // 이전 화면은 자동으로 최신 상태가 됩니다.
+                                if (success && context.mounted) {
+                                  context.pop();
+                                }
+                              },
+                            ),
+                          );
                         },
                       ),
                     ],
@@ -177,6 +210,7 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
     required String label,
     required VoidCallback onTap,
   }) {
+    // ... (이 위젯은 변경 없음) ...
     return GestureDetector(
       onTap: onTap,
       child: Container(

@@ -88,10 +88,11 @@ class AlbumContentList extends StatelessWidget {
     int groupIndex,
     int imageIndex,
   ) {
-    // 전체 이미지 URL 리스트 생성
+    // ... (기존 url, index 계산 로직은 동일) ...
     final allImageUrls = <String>[];
     int initialIndex = 0;
     int currentCount = 0;
+    final List<AlbumImage> allAlbumImages = [];
 
     for (int i = 0; i < vm.groups.length; i++) {
       final groupImages = vm.groups[i].images;
@@ -101,12 +102,19 @@ class AlbumContentList extends StatelessWidget {
         initialIndex = currentCount + imageIndex;
       }
       allImageUrls.addAll(groupImages.map((img) => img.imageUrl));
+      allAlbumImages.addAll(groupImages);
     }
 
-    // 👇 2. Navigator.push를 context.push로 변경
+    // [수정] context.push의 extra 맵 키를 문자열로 명시하고, 필요한 모든 데이터를 전달합니다.
     context.push(
       RoutePath.imageViewer,
-      extra: {'imageUrls': allImageUrls, 'initialIndex': initialIndex},
+      extra: {
+        'imageUrls': allImageUrls,
+        'initialIndex': initialIndex,
+        'allAlbumImages': allAlbumImages, // 삭제 기능을 위해 전체 이미지 정보 전달
+        'albumId': vm.albumId, // 삭제 기능을 위해 앨범 ID 전달
+        'viewModel': vm, // 새 화면에서 Provider를 통해 ViewModel을 사용하기 위해 전달
+      },
     );
   }
 
