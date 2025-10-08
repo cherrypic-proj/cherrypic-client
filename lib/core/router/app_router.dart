@@ -20,6 +20,7 @@ import 'package:cherrypic/presentation/screens/my_page/album_subscription_histor
 import 'package:cherrypic/presentation/screens/my_page/delete_account/delete_account_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/my_page_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/notice/notice_screen.dart';
+import 'package:cherrypic/presentation/screens/my_page/photo_management/photo_management_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/settings/setting_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/album_payment_info/album_payment_info_screen.dart';
 import 'package:cherrypic/presentation/screens/store/photo_printing/photo_printing_screen.dart';
@@ -101,6 +102,8 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
     // final viewModel = state.extra as PaymentInfoViewModel;
     return PaymentInfoScreen(item: item, viewModel: PaymentInfoViewModel());
   },
+  RoutePath.myPage_photo_management: (context, state) =>
+  const PhotoManagementScreen(),
   RoutePath.myPage_address_management: (context, state) =>
       const AddressManagementScreen(),
   RoutePath.myPage_add_address: (context, state) => const AddAddressScreen(),

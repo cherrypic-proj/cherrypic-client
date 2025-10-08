@@ -107,7 +107,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                             context.push(RoutePath.myPage_album_payment_info);
                           }),
                           _buildListItem('실물사진 관리', () {
-                            context.push(RoutePath.myPage_address_management);
+                            context.push(RoutePath.myPage_photo_management);
                           }),
                           _buildListItem('앨범 가입 이력', () {
                             context.push(RoutePath.myPage_subscription_history);
