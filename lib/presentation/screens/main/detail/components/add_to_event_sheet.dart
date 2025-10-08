@@ -84,67 +84,77 @@ class _SheetContent extends StatelessWidget {
     final isEventSelected = vm.selectedEventId != null;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // '이벤트 추가' 버튼
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            decoration: BoxDecoration(
-              color: AppColor.mainLightRed.withOpacity(0.5),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppColor.mainRed.withOpacity(0.7)),
-            ),
-            child: Row(
-              children: [
-                Text(
-                  '이벤트 추가',
-                  style: AppFont.size16.copyWith(
-                    color: AppColor.mainRed,
-                    fontWeight: FontWeight.bold,
+      // [수정] Row를 SizedBox와 Stack으로 변경
+      child: SizedBox(
+        height: 40, // 헤더 영역의 높이를 고정
+        child: Stack(
+          alignment: Alignment.center, // 자식들을 중앙에 정렬
+          children: [
+            // '이벤트 추가' 버튼 (항상 중앙)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              decoration: BoxDecoration(
+                color: AppColor.mainLightRed.withOpacity(0.5),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: AppColor.mainRed.withOpacity(0.7)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min, // Row가 최소한의 너비만 차지하도록 설정
+                children: [
+                  Text(
+                    '이벤트 추가',
+                    style: AppFont.size16.copyWith(
+                      color: AppColor.mainRed,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                Icon(
-                  Icons.add_photo_alternate_outlined,
-                  color: AppColor.mainRed.withOpacity(0.8),
-                  size: 20,
-                ),
-              ],
-            ),
-          ),
-          // '완료' 버튼 (이벤트가 선택됐을 때만 활성화)
-          GestureDetector(
-            onTap: isEventSelected
-                ? () async {
-                    final success = await vm.addPhotoToSelectedEvent();
-                    if (success && context.mounted) {
-                      Navigator.pop(context); // 시트 닫기
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('사진을 이벤트에 추가했습니다.'),
-                          backgroundColor: Colors.green,
-                        ),
-                      );
-                    } else if (vm.error != null && context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(vm.error!),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                    }
-                  }
-                : null, // 선택 안됐으면 비활성화
-            child: Text(
-              '완료',
-              style: AppFont.size18.copyWith(
-                fontWeight: FontWeight.bold,
-                color: isEventSelected ? AppColor.mainRed : Colors.grey[400],
+                  const SizedBox(width: 8),
+                  Icon(
+                    Icons.add_photo_alternate_outlined,
+                    color: AppColor.mainRed.withOpacity(0.8),
+                    size: 20,
+                  ),
+                ],
               ),
             ),
-          ),
-        ],
+            // '완료' 버튼 (우측 정렬)
+            Align(
+              alignment: Alignment.centerRight,
+              child: GestureDetector(
+                onTap: isEventSelected
+                    ? () async {
+                        final success = await vm.addPhotoToSelectedEvent();
+                        if (success && context.mounted) {
+                          Navigator.pop(context); // 시트 닫기
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('사진을 이벤트에 추가했습니다.'),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                        } else if (vm.error != null && context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(vm.error!),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      }
+                    : null, // 선택 안됐으면 비활성화
+                child: Text(
+                  '완료',
+                  style: AppFont.size18.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: isEventSelected
+                        ? AppColor.mainRed
+                        : Colors.grey[400],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
