@@ -7,6 +7,7 @@ class ApiPath {
   static String albumDetail(int albumId) => '/albums/$albumId';
   static String albumInvitationLink(int albumId) =>
       '/albums/$albumId/invitation-link';
+  static String albumImages(int albumId) => '/albums/$albumId/images';
 
   // 앨범 이벤트
   static const String events = '/events';

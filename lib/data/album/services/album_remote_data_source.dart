@@ -3,6 +3,7 @@ import 'package:cherrypic/core/network/api_response.dart';
 import 'package:cherrypic/core/network/dio_client.dart';
 import 'package:cherrypic/core/network/error_handler.dart';
 import 'package:cherrypic/data/album/dto/request/album_create_request_dto.dart';
+import 'package:cherrypic/data/album/dto/request/album_image_delete_request_dto.dart'; // 추가
 import 'package:cherrypic/data/album/dto/request/album_image_upload_request_dto.dart';
 import 'package:cherrypic/data/album/dto/request/album_update_request_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_detail_dto.dart';
@@ -103,7 +104,7 @@ class AlbumRemoteDataSource {
   }) async {
     try {
       final response = await _dio.get(
-        '${ApiPath.albumDetail(albumId)}/images',
+        ApiPath.albumImages(albumId),
         queryParameters: {
           if (lastImageId != null) 'lastImageId': lastImageId,
           'size': size,
@@ -131,7 +132,7 @@ class AlbumRemoteDataSource {
   ) async {
     try {
       final response = await _dio.post(
-        '${ApiPath.albumDetail(albumId)}/images',
+        ApiPath.albumImages(albumId),
         data: requestDto.toJson(),
       );
 
@@ -153,6 +154,21 @@ class AlbumRemoteDataSource {
       await _dio.post(
         '${ApiPath.albumDetail(albumId)}/images/upload-complete',
         data: {'imageKeys': imageKeys},
+      );
+    } on DioException catch (e) {
+      throw ErrorHandler.handle(e);
+    }
+  }
+
+  /// 앨범 이미지 삭제
+  Future<void> deleteAlbumImages(
+    int albumId,
+    AlbumImageDeleteRequestDto requestDto,
+  ) async {
+    try {
+      await _dio.delete(
+        ApiPath.albumImages(albumId),
+        data: requestDto.toJson(),
       );
     } on DioException catch (e) {
       throw ErrorHandler.handle(e);

@@ -1,4 +1,5 @@
 import 'package:cherrypic/data/album/dto/request/album_create_request_dto.dart';
+import 'package:cherrypic/data/album/dto/request/album_image_delete_request_dto.dart';
 import 'package:cherrypic/data/album/dto/request/album_image_upload_request_dto.dart';
 import 'package:cherrypic/data/album/dto/request/album_update_request_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_dto.dart';
@@ -99,6 +100,14 @@ class AlbumRepository {
       parameter: parameter,
       direction: direction,
     );
+  }
+
+  /// 앨범 이미지 삭제
+  Future<void> deleteAlbumImages(
+    int albumId,
+    AlbumImageDeleteRequestDto requestDto,
+  ) async {
+    return await _remoteDataSource.deleteAlbumImages(albumId, requestDto);
   }
 
   /// 앨범 수정
