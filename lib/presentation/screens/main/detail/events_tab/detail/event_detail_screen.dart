@@ -34,97 +34,136 @@ class _Body extends StatefulWidget {
 }
 
 class _BodyState extends State<_Body> {
+  // [추가] 화면의 상태를 담을 변수와, 업데이트 되었는지 여부를 추적할 변수
+  late EventAlbum _currentEvent;
+  bool _wasUpdated = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // 위젯이 처음 생성될 때 상태 변수를 초기화합니다.
+    _currentEvent = widget.event;
+  }
+
+  // [추가] EventHeader로부터 업데이트된 정보를 받아 상태를 변경하는 함수
+  void _onEventUpdated(EventAlbum updatedEvent) {
+    setState(() {
+      _currentEvent = updatedEvent;
+      _wasUpdated = true; // 업데이트가 발생했다고 기록
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<EventDetailViewModel>(
       builder: (context, vm, _) {
         final double bottomSafe = MediaQuery.of(context).padding.bottom;
 
-        return Scaffold(
-          backgroundColor: Colors.white,
-          extendBodyBehindAppBar: true,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => context.pop(),
-            ),
-          ),
-          body: Stack(
-            children: [
-              CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(child: EventHeader(event: widget.event)),
-                  const SliverToBoxAdapter(child: SizedBox(height: 16)),
-                  const EventSortButtons(),
-                  const SliverToBoxAdapter(child: SizedBox(height: 8)),
-                  if (vm.isLoading && vm.groups.isEmpty)
-                    const SliverFillRemaining(
-                      child: Center(child: CircularProgressIndicator()),
-                    ),
-                  if (!vm.isLoading && vm.groups.isEmpty)
-                    const SliverFillRemaining(
-                      child: Center(child: Text('이미지가 없습니다')),
-                    ),
-                  if (vm.groups.isNotEmpty)
-                    SliverList.builder(
-                      itemCount: vm.groups.length,
-                      itemBuilder: (context, index) {
-                        final g = vm.groups[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 24),
-                          child: AlbumGroupSection(
-                            date: g.date,
-                            isAllSelected: g.isAllSelected,
-                            onToggleAll: () => vm.toggleAll(index),
-                            imageUrls: g.imageUrls,
-                            selectedIndexes: g.selectedIndexes,
-                            isSelectionMode: vm.isSelectionMode,
-                            onImageTap: (imgIdx) {
-                              if (vm.isSelectionMode) {
-                                vm.toggleImage(index, imgIdx);
-                              } else {
-                                _openFullScreen(context, vm, index, imgIdx);
-                              }
-                            },
-                            onImageLongPress: (imgIdx) {
-                              if (!vm.isSelectionMode) {
-                                vm.enterSelectionMode();
-                              }
-                              vm.toggleImage(index, imgIdx);
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                  SliverToBoxAdapter(child: SizedBox(height: 120 + bottomSafe)),
-                ],
+        // [수정] Scaffold를 WillPopScope로 감싸서 뒤로가기 이벤트를 감지합니다.
+        return WillPopScope(
+          onWillPop: () async {
+            // 뒤로가기 시, 업데이트가 있었다면 true를 이전 화면으로 전달합니다.
+            Navigator.pop(context, _wasUpdated);
+            return false; // WillPopScope가 직접 화면을 닫는 것을 막습니다.
+          },
+          child: Scaffold(
+            backgroundColor: Colors.white,
+            extendBodyBehindAppBar: true,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                // [수정] context.pop() 대신 WillPopScope의 onWillPop이 호출되도록 변경
+                onPressed: () => Navigator.pop(context, _wasUpdated),
               ),
-              if (!vm.isSelectionMode)
-                Positioned(
-                  right: 45,
-                  bottom: 24 + bottomSafe,
-                  child: _AddPhotoButton(onTap: () => _handleAddPhoto(context)),
+            ),
+            body: Stack(
+              children: [
+                CustomScrollView(
+                  slivers: [
+                    // [수정] EventHeader에 상태 변수(_currentEvent)와 콜백 함수를 전달합니다.
+                    SliverToBoxAdapter(
+                      child: EventHeader(
+                        event: _currentEvent,
+                        onEventUpdated: _onEventUpdated,
+                      ),
+                    ),
+                    const SliverToBoxAdapter(child: SizedBox(height: 16)),
+                    const EventSortButtons(),
+                    const SliverToBoxAdapter(child: SizedBox(height: 8)),
+                    if (vm.isLoading && vm.groups.isEmpty)
+                      const SliverFillRemaining(
+                        child: Center(child: CircularProgressIndicator()),
+                      ),
+                    if (!vm.isLoading && vm.groups.isEmpty)
+                      const SliverFillRemaining(
+                        child: Center(child: Text('이미지가 없습니다')),
+                      ),
+                    if (vm.groups.isNotEmpty)
+                      SliverList.builder(
+                        itemCount: vm.groups.length,
+                        itemBuilder: (context, index) {
+                          final g = vm.groups[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 24),
+                            child: AlbumGroupSection(
+                              date: g.date,
+                              isAllSelected: g.isAllSelected,
+                              onToggleAll: () => vm.toggleAll(index),
+                              imageUrls: g.imageUrls,
+                              selectedIndexes: g.selectedIndexes,
+                              isSelectionMode: vm.isSelectionMode,
+                              onImageTap: (imgIdx) {
+                                if (vm.isSelectionMode) {
+                                  vm.toggleImage(index, imgIdx);
+                                } else {
+                                  _openFullScreen(context, vm, index, imgIdx);
+                                }
+                              },
+                              onImageLongPress: (imgIdx) {
+                                if (!vm.isSelectionMode) {
+                                  vm.enterSelectionMode();
+                                }
+                                vm.toggleImage(index, imgIdx);
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    SliverToBoxAdapter(
+                      child: SizedBox(height: 120 + bottomSafe),
+                    ),
+                  ],
                 ),
-              if (vm.isSelectionMode)
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 24 + bottomSafe,
-                  child: Center(
-                    child: Builder(
-                      builder: (barContext) {
-                        return SelectingBar(
-                          count: vm.selectedCount,
-                          onMore: () => _openMoreMenu(context, vm, barContext),
-                          onCancel: () => vm.exitSelectionMode(),
-                        );
-                      },
+                if (!vm.isSelectionMode)
+                  Positioned(
+                    right: 45,
+                    bottom: 24 + bottomSafe,
+                    child: _AddPhotoButton(
+                      onTap: () => _handleAddPhoto(context),
                     ),
                   ),
-                ),
-            ],
+                if (vm.isSelectionMode)
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 24 + bottomSafe,
+                    child: Center(
+                      child: Builder(
+                        builder: (barContext) {
+                          return SelectingBar(
+                            count: vm.selectedCount,
+                            onMore: () =>
+                                _openMoreMenu(context, vm, barContext),
+                            onCancel: () => vm.exitSelectionMode(),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
         );
       },

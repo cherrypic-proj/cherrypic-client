@@ -86,7 +86,15 @@ class EventEditDialog extends StatelessWidget {
                     : () async {
                         final success = await vm.updateEvent();
                         if (success && context.mounted) {
-                          Navigator.pop(context, true);
+                          // [수정] true 대신, 업데이트된 정보로 새 EventAlbum 객체를 만들어 반환합니다.
+                          final updatedEvent = EventAlbum(
+                            eventId: vm.event.eventId,
+                            title: vm.titleController.text,
+
+                            imageUrl: vm.coverImageUrl!,
+                            photoCount: vm.event.photoCount, // 사진 개수는 그대로 유지
+                          );
+                          Navigator.pop(context, updatedEvent);
                         } else if (vm.error != null && context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(

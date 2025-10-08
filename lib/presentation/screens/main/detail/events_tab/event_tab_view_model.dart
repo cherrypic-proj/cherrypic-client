@@ -95,8 +95,8 @@ class EventTabViewModel extends ChangeNotifier {
     }
   }
 
-  /// 새로고침
+  //  목록을 새로고침하는 함수
   Future<void> refresh() async {
-    await loadEvents(refresh: true);
+    await loadEvents();
   }
 }

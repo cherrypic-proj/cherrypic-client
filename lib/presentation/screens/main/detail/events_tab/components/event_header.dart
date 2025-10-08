@@ -8,8 +8,13 @@ import 'package:cherrypic/presentation/screens/main/detail/events_tab/edit/event
 
 class EventHeader extends StatelessWidget {
   final EventAlbum event;
+  final Function(EventAlbum) onEventUpdated;
 
-  const EventHeader({super.key, required this.event});
+  const EventHeader({
+    super.key,
+    required this.event,
+    required this.onEventUpdated,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -62,22 +67,21 @@ class EventHeader extends StatelessWidget {
                   const SizedBox(width: 8),
                   GestureDetector(
                     onTap: () async {
-                      // [수정] showModalBottomSheet -> showDialog
-                      final result = await showDialog<bool>(
+                      // [수정] 반환 타입을 bool? -> EventAlbum? 으로 변경
+                      final result = await showDialog<EventAlbum>(
                         context: context,
                         builder: (_) => EventEditDialog(event: event),
                       );
 
-                      // 만약 수정이 성공적으로 완료되었다면 (true 반환)
-                      if (result == true && context.mounted) {
-                        // TODO: 헤더 정보(제목, 커버)를 갱신하려면 EventDetailScreen의 구조 변경 필요
-                        // 현재는 이미지 목록만 새로고침합니다.
-                        context.read<EventDetailViewModel>().loadImages();
+                      // 수정된 EventAlbum 객체를 받았다면 콜백 호출
+                      if (result != null && context.mounted) {
+                        onEventUpdated(result);
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('이벤트 정보가 수정되었습니다.')),
                         );
                       }
                     },
+
                     child: Image.asset(
                       'assets/images/event_name_setting.png',
                       width: 24,

@@ -1,4 +1,3 @@
-// 👈 1. 필요한 import 추가
 import 'package:go_router/go_router.dart';
 import 'package:cherrypic/core/router/route_path.dart';
 
@@ -154,13 +153,22 @@ class AlbumContentList extends StatelessWidget {
                     final album = vm.albums[index];
                     return EventAlbumCover(
                       album: album,
-                      onTap: () => context.push(
-                        RoutePath.eventDetail.replaceFirst(
-                          ':eventId',
-                          album.eventId.toString(),
-                        ),
-                        extra: album,
-                      ),
+                      // [수정] onTap을 async로 바꾸고 결과를 기다립니다.
+                      onTap: () async {
+                        final result = await context.push<bool>(
+                          RoutePath.eventDetail.replaceFirst(
+                            ':eventId',
+                            album.eventId.toString(),
+                          ),
+                          extra: album,
+                        );
+
+                        // EventDetailScreen에서 업데이트가 있었다고 true를 반환하면,
+                        // EventTabViewModel의 refresh를 호출합니다.
+                        if (result == true && context.mounted) {
+                          context.read<EventTabViewModel>().refresh();
+                        }
+                      },
                     );
                   },
                 ),
