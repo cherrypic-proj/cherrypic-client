@@ -2,6 +2,7 @@ import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:cherrypic/presentation/screens/my_page/settings/setting_toggle.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../widgets/custom_sub_app_bar.dart';
 import '../../../widgets/common_popup_dialog.dart';
@@ -23,21 +24,15 @@ class _SettingScreenState extends State<SettingScreen> {
   List<Widget> _buildToggles() {
     return [
       SettingToggle(
-        label: '앨범 알림',
+        label: '서비스 알림 수신 동의',
         value: albumAlert,
         onChanged: (value) => setState(() => albumAlert = value),
       ),
       const SizedBox(height: 26.72),
       SettingToggle(
-        label: '사진 업로드',
+        label: '마케팅 알림 수신 동의',
         value: photoUpload,
         onChanged: (value) => setState(() => photoUpload = value),
-      ),
-      const SizedBox(height: 26.72),
-      SettingToggle(
-        label: '광고',
-        value: adToggle,
-        onChanged: (value) => setState(() => adToggle = value),
       ),
     ];
   }
@@ -84,9 +79,10 @@ class _SettingScreenState extends State<SettingScreen> {
                           ],
                           leftButtonText: '취소',
                           rightButtonText: '허용',
-                          onLeftTap: () {Navigator.of(context).pop();},
+                          onLeftTap: () {context.pop();},
                           onRightTap: () {
                             setState(() => deleteLocalImage = true);
+                            context.pop();
                           },
                         ),
                       );
@@ -103,7 +99,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    '사진을 공유 앨범에 업로드하면, 로컬에서 해당 사진을 삭제합니다',
+                    '사진을 공유 앨범에 업로드하면, 로컬에서 해당 사진을 삭제하여\n스마트폰 용량을 절약할 수 있습니다.',
                     style: AppFont.size12.copyWith(
                       color: AppColor.subGrey,
                       fontWeight: FontWeight.w500,

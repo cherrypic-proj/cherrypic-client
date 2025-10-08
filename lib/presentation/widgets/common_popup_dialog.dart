@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/constants/color.dart';
 import '../../core/constants/font.dart';
@@ -52,7 +53,7 @@ class CommonPopupDialog extends StatelessWidget {
                       ),
                       /// 닫기 버튼
                       GestureDetector(
-                        onTap: () => Navigator.of(context).pop(),
+                        onTap: () => context.pop(),
                         child: const Icon(
                           Icons.close_rounded,
                           color: AppColor.mainRed,
