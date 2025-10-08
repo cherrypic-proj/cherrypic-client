@@ -2,7 +2,8 @@ import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:flutter/material.dart';
 
-import '../info/payment_info_model.dart';
+import '../../screens/my_page/album_payment_info/info/payment_info_model.dart';
+
 
 class PaymentHistoryBox extends StatelessWidget {
   final PaymentInfoModel model;

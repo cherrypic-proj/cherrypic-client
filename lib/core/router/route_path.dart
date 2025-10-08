@@ -7,6 +7,7 @@ class RoutePath {
 
   static const String myPage = '/my_page/my_page_screen';
   static const String myPage_notice = '/my_page/notice/notice_screen';
+  static const String myPage_album_management = '/my_page/album_management/album_management_screen';
   static const String myPage_subscription_payment_info =
       '/my_page/subscription_payment_info/subscription_payment_info_screen';
   static const String myPage_address_management =

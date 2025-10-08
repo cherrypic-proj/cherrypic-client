@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/constants/font.dart';
-import '../../../../widgets/album/album_badge_type.dart';
-import '../album_payment_info_model.dart';
+import '../../screens/my_page/album_payment_info/album_payment_info_model.dart';
+import '../album/album_badge_type.dart';
 
 class PaymentBox extends StatelessWidget {
   final AlbumPaymentInfoModel model;
