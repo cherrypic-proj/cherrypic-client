@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../widgets/album/album_badge_type.dart';
 import '../album_payment_info/album_payment_info_model.dart';
-// ✅ AlbumFilterType(pro/premium) 타입 가져오기 (TypeToggle이 이 타입을 받음)
 import '../album_payment_info/album_payment_info_view_model.dart';
 
 enum PaymentStatusType { using, pending }
@@ -26,6 +25,24 @@ class AlbumManagementViewModel extends ChangeNotifier {
     ),
     AlbumPaymentInfoModel(
       badgeType: AlbumBadgeType.premium,
+      title: '프랑스 여행_2025.06.24',
+      createDate: '2025/06/23',
+      startDate: '2025/05/25',
+      nextDate: '2025/08/25',
+      price: '월 3,900원',
+      status: PaymentStatusType.using,
+    ),
+    AlbumPaymentInfoModel(
+      badgeType: AlbumBadgeType.pro,
+      title: '호주 여행',
+      createDate: '2025/06/23',
+      startDate: '2025/06/28',
+      nextDate: '2025/08/25',
+      price: '월 5,900원',
+      status: PaymentStatusType.pending,
+    ),
+    AlbumPaymentInfoModel(
+      badgeType: AlbumBadgeType.premium,
       title: '호주 여행',
       createDate: '2025/06/23',
       startDate: '2025/06/28',
@@ -35,17 +52,9 @@ class AlbumManagementViewModel extends ChangeNotifier {
     ),
   ];
 
-  // 1차: 상태 선택
-  PaymentStatusType _selectedFilter = PaymentStatusType.using;
-  PaymentStatusType get selectedFilter => _selectedFilter;
+  PaymentStatusType _selectedStatus = PaymentStatusType.using;
+  PaymentStatusType get selectedStatus => _selectedStatus;
 
-  // ✅ TypeToggle용 매핑 Getter (PaymentStatusType → AlbumFilterType)
-  AlbumFilterType get selectedFilterForToggle =>
-      _selectedFilter == PaymentStatusType.using
-          ? AlbumFilterType.pro          // '이용중' 라벨에 해당
-          : AlbumFilterType.premium;     // '결제대기' 라벨에 해당
-
-  // 2차: 배지 선택
   AlbumBadgeType _selectedBadge = AlbumBadgeType.basic;
   AlbumBadgeType get selectedBadge => _selectedBadge;
 
@@ -57,38 +66,43 @@ class AlbumManagementViewModel extends ChangeNotifier {
   }
 
   List<AlbumBadgeType> get availableBadges {
+    if (_selectedStatus == PaymentStatusType.pending) {
+      return [AlbumBadgeType.pro, AlbumBadgeType.premium];
+    }
+
     final set = <AlbumBadgeType>{};
     for (final item in allItems) {
-      if (item.status == _selectedFilter) set.add(item.badgeType);
+      if (item.status == _selectedStatus) {
+        set.add(item.badgeType);
+      }
     }
-    const order = [AlbumBadgeType.basic, AlbumBadgeType.pro, AlbumBadgeType.premium];
+    const order = [
+      AlbumBadgeType.basic,
+      AlbumBadgeType.pro,
+      AlbumBadgeType.premium
+    ];
     return order.where(set.contains).toList();
   }
 
   List<AlbumPaymentInfoModel> get displayedItems {
-    var filtered = allItems.where((e) => e.status == _selectedFilter).toList();
+    var filtered = allItems.where((e) => e.status == _selectedStatus).toList();
+
     if (availableBadges.contains(_selectedBadge)) {
       filtered = filtered.where((e) => e.badgeType == _selectedBadge).toList();
     }
-    if (!_isExpanded && filtered.length > 3) return filtered.take(3).toList();
+
+    if (!_isExpanded && filtered.length > 5) {
+      return filtered.take(5).toList();
+    }
     return filtered;
   }
 
-  // 기존 상태 변경
-  void changeFilter(PaymentStatusType filter) {
-    if (_selectedFilter == filter) return;
-    _selectedFilter = filter;
+  void changeStatus(PaymentStatusType status) {
+    if (_selectedStatus == status) return;
+    _selectedStatus = status;
     _isExpanded = false;
     _ensureSelectedBadge();
     notifyListeners();
-  }
-
-  // ✅ TypeToggle onChanged용 매핑 (AlbumFilterType → PaymentStatusType)
-  void changeFilterFromToggle(AlbumFilterType filterForToggle) {
-    final mapped = (filterForToggle == AlbumFilterType.pro)
-        ? PaymentStatusType.using
-        : PaymentStatusType.pending;
-    changeFilter(mapped);
   }
 
   void changeBadge(AlbumBadgeType badge) {
@@ -101,6 +115,29 @@ class AlbumManagementViewModel extends ChangeNotifier {
   void toggleExpand() {
     _isExpanded = !_isExpanded;
     notifyListeners();
+  }
+
+  AlbumFilterType get toggleTypeForSelectedStatus {
+    switch (_selectedStatus) {
+      case PaymentStatusType.using:
+        return AlbumFilterType.pro;
+      case PaymentStatusType.pending:
+        return AlbumFilterType.premium;
+    }
+  }
+
+  void onToggleTypeChanged(AlbumFilterType newToggleType) {
+    final mappedStatus = _mapToggleTypeToStatus(newToggleType);
+    changeStatus(mappedStatus);
+  }
+
+  PaymentStatusType _mapToggleTypeToStatus(AlbumFilterType toggleType) {
+    switch (toggleType) {
+      case AlbumFilterType.pro:
+        return PaymentStatusType.using;
+      case AlbumFilterType.premium:
+        return PaymentStatusType.pending;
+    }
   }
 
   void _ensureSelectedBadge() {
