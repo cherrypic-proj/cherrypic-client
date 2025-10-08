@@ -59,12 +59,12 @@ class _BodyState extends State<_Body> {
       builder: (context, vm, _) {
         final double bottomSafe = MediaQuery.of(context).padding.bottom;
 
-        // [수정] Scaffold를 WillPopScope로 감싸서 뒤로가기 이벤트를 감지합니다.
-        return WillPopScope(
-          onWillPop: () async {
-            // 뒤로가기 시, 업데이트가 있었다면 true를 이전 화면으로 전달합니다.
-            Navigator.pop(context, _wasUpdated);
-            return false; // WillPopScope가 직접 화면을 닫는 것을 막습니다.
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (bool didPop, dynamic result) {
+            if (!didPop) {
+              Navigator.pop(context, _wasUpdated);
+            }
           },
           child: Scaffold(
             backgroundColor: Colors.white,
@@ -111,7 +111,10 @@ class _BodyState extends State<_Body> {
                               date: g.date,
                               isAllSelected: g.isAllSelected,
                               onToggleAll: () => vm.toggleAll(index),
-                              imageUrls: g.imageUrls,
+                              // [수정] g.images 리스트에서 imageUrl만 추출하여 전달합니다.
+                              imageUrls: g.images
+                                  .map((img) => img.imageUrl)
+                                  .toList(),
                               selectedIndexes: g.selectedIndexes,
                               isSelectionMode: vm.isSelectionMode,
                               onImageTap: (imgIdx) {
@@ -189,7 +192,9 @@ class _BodyState extends State<_Body> {
     int initialIndex = 0;
     int currentCount = 0;
     for (int i = 0; i < vm.groups.length; i++) {
-      final groupImages = vm.groups[i].imageUrls;
+      final groupImages = vm.groups[i].images
+          .map((img) => img.imageUrl)
+          .toList();
       if (i < groupIndex) {
         currentCount += groupImages.length;
       } else if (i == groupIndex) {

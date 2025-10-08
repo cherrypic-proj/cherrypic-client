@@ -1,5 +1,6 @@
 import 'package:cherrypic/data/album_event/dto/request/event_create_request_dto.dart';
 import 'package:cherrypic/data/album_event/dto/request/event_add_images_request_dto.dart';
+import 'package:cherrypic/data/album_event/dto/request/event_delete_images_request_dto.dart';
 import 'package:cherrypic/data/album_event/dto/request/event_update_request_dto.dart';
 import 'package:cherrypic/data/album_event/dto/response/event_create_response_dto.dart';
 import 'package:cherrypic/data/album_event/dto/response/event_detail_response_dto.dart';
@@ -76,5 +77,13 @@ class EventRepository {
     EventUpdateRequestDto requestDto,
   ) async {
     return await _remoteDataSource.updateEvent(eventId, requestDto);
+  }
+
+  // 이벤트 이미지 삭제
+  Future<void> deleteImagesFromEvent(
+    int eventId,
+    EventDeleteImagesRequestDto requestDto,
+  ) async {
+    return await _remoteDataSource.deleteImagesFromEvent(eventId, requestDto);
   }
 }
