@@ -1,6 +1,7 @@
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/%20create/create_event_sort_buttons.dart';
+import 'package:cherrypic/presentation/screens/main/detail/events_tab/add/add_images_sort_buttons.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/add/add_images_view_model.dart';
 import 'package:cherrypic/presentation/widgets/album/album_group_section.dart';
 import 'package:flutter/material.dart';
@@ -74,19 +75,10 @@ class _SheetContent extends StatelessWidget {
                 // [수정] 헤더 텍스트 변경
                 _buildHeader(context),
                 const SizedBox(height: 24),
-                // [제거] 커버 및 제목 입력 섹션 제거
-
                 // --- 사진 목록 섹션 ---
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Text(
-                    '사진 추가',
-                    style: AppFont.size18.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                const CreateEventSortButtons(), // 정렬 버튼 재사용
-                const SizedBox(height: 10),
+                Padding(padding: const EdgeInsets.symmetric(horizontal: 20.0)),
+                const AddImagesSortButtons(),
+                const SizedBox(height: 22),
 
                 ListView.builder(
                   shrinkWrap: true,
