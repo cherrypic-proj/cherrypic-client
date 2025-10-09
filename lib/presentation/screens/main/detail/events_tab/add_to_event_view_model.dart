@@ -40,15 +40,9 @@ class AddToEventViewModel extends ChangeNotifier {
         size: 100,
       );
 
-      // [수정] API 응답(List<EventDto>)을 UI 모델(List<EventAlbum>)로 변환합니다.
+      // API 응답(List<EventDto>)을 UI 모델(List<EventAlbum>)로 변환합니다.
       _events = response.content.map((dto) {
-        return EventAlbum(
-          eventId: dto.eventId,
-          title: dto.title,
-          // [수정] coverUrl이 null일 경우 빈 문자열('')을 대신 전달합니다.
-          imageUrl: dto.coverUrl ?? '',
-          photoCount: dto.numberOfImages,
-        );
+        return EventAlbum.fromDto(dto, albumId: albumId);
       }).toList();
     } catch (e) {
       _error = '이벤트 목록을 불러오는 데 실패했습니다.';

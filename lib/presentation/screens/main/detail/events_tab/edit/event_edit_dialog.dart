@@ -88,6 +88,7 @@ class EventEditDialog extends StatelessWidget {
                         if (success && context.mounted) {
                           final updatedEvent = EventAlbum(
                             eventId: vm.event.eventId,
+                            albumId: vm.event.albumId,
                             title: vm.titleController.text,
                             imageUrl: vm.coverImageUrl!,
                             photoCount: vm.event.photoCount,

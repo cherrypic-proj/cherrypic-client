@@ -27,15 +27,16 @@ class EventTabViewModel extends ChangeNotifier {
 
   /// 이벤트 목록 초기 로드 또는 새로고침
   Future<void> loadEvents({bool refresh = false}) async {
-    // [수정] 새로고침 시, 기존 목록을 지우고 페이지네이션 상태를 초기화합니다.
     if (refresh) {
       _albums = [];
       _hasMore = true;
     }
-
+    if (_isLoading) return;
     _isLoading = true;
     _error = null;
-    notifyListeners();
+    if (!refresh) {
+      notifyListeners();
+    }
 
     try {
       final response = await _eventRepository.getEvents(
@@ -45,10 +46,10 @@ class EventTabViewModel extends ChangeNotifier {
       );
 
       final eventAlbums = response.content
-          .map((dto) => EventAlbum.fromMap(dto.toEventAlbum()))
+          .map((dto) => EventAlbum.fromDto(dto, albumId: albumId))
           .toList();
 
-      _albums.addAll(eventAlbums);
+      _albums = eventAlbums;
       _hasMore = !response.isLast;
     } catch (e) {
       _error = e.toString();
@@ -62,7 +63,6 @@ class EventTabViewModel extends ChangeNotifier {
   /// 추가 이벤트 로드 (무한 스크롤)
   Future<void> loadMoreEvents() async {
     if (_isLoadingMore || !_hasMore || _albums.isEmpty) return;
-
     _isLoadingMore = true;
     notifyListeners();
 
@@ -76,7 +76,7 @@ class EventTabViewModel extends ChangeNotifier {
       );
 
       final eventAlbums = response.content
-          .map((dto) => EventAlbum.fromMap(dto.toEventAlbum()))
+          .map((dto) => EventAlbum.fromDto(dto, albumId: albumId))
           .toList();
 
       _albums.addAll(eventAlbums);
@@ -92,7 +92,6 @@ class EventTabViewModel extends ChangeNotifier {
 
   /// 목록을 새로고침하는 함수
   Future<void> refresh() async {
-    // [수정] loadEvents를 호출할 때 refresh: true 파라미터를 전달합니다.
     await loadEvents(refresh: true);
   }
 }
