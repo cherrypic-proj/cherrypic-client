@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../my_page/address_management/address_management_screen.dart';
+import '../../../../../my_page/address_management/address_model.dart';
 
 class ChangeAddressViewModel extends ChangeNotifier {
   final List<AddressItem> _addressItems = [];

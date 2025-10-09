@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../../../widgets/custom_sub_app_bar.dart';
 import 'notice_list.dart';
 import 'notice_view_model.dart';
-import 'notice_model.dart';
 
 class NoticeScreen extends StatelessWidget {
   const NoticeScreen({super.key});
@@ -34,32 +33,12 @@ class NoticeScreen extends StatelessWidget {
                     title: item.title,
                     onTap: () {
                       viewModel.selectNotice(item);
-                      _navigateToDetail(context, item);
                     },
                   );
                 },
               ),
             );
           },
-        ),
-      ),
-    );
-  }
-
-  /// 공지 상세 페이지 이동
-  void _navigateToDetail(BuildContext context, NoticeModel item) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => Scaffold(
-          appBar: AppBar(title: const Text('공지 상세')),
-          body: Center(
-            child: Text(
-              '📢 ${item.title}\n\n게시일: ${item.date}',
-              style: const TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
-          ),
         ),
       ),
     );
