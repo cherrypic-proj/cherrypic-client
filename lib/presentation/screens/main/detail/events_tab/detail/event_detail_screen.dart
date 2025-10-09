@@ -6,6 +6,7 @@ import 'package:cherrypic/presentation/screens/main/detail/events_tab/detail/eve
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/event_album.dart';
 import 'package:cherrypic/presentation/screens/main/detail/parts/album_detail_selecting_bar.dart';
 import 'package:cherrypic/presentation/widgets/album/album_group_section.dart';
+import 'package:cherrypic/presentation/widgets/dialogs/event_photo_remove_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -228,7 +229,14 @@ class _BodyState extends State<_Body> {
               top: position.dy - 180 - 40,
               child: AlbumActionSheet(
                 onShare: () => vm.shareSelectedImages(context),
-                onDelete: () => vm.deleteSelectedImages(context),
+                onDelete: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) => EventPhotoRemoveDialog(
+                      onConfirm: () => vm.deleteSelectedImages(context),
+                    ),
+                  );
+                },
                 onDownload: () => vm.downloadSelectedImages(context),
                 onAiSort: () {
                   // TODO: AI 정리 기능 구현

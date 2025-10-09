@@ -1,13 +1,12 @@
 import 'package:cherrypic/presentation/widgets/custom_action_menu.dart';
-import 'package:cherrypic/presentation/widgets/dialogs/photo_delete_dialog.dart';
 import 'package:flutter/material.dart';
 
 class AlbumActionSheet extends StatelessWidget {
-  // [추가] 실행할 함수들을 외부에서 전달받기 위한 파라미터
   final VoidCallback onShare;
+  // [수정] onDelete는 이제 '삭제 버튼을 눌렀을 때의 동작' 전체를 담당합니다.
   final VoidCallback onDelete;
   final VoidCallback onDownload;
-  final VoidCallback onAiSort; // AI 정리 기능도 콜백으로 변경
+  final VoidCallback onAiSort;
 
   const AlbumActionSheet({
     super.key,
@@ -19,16 +18,14 @@ class AlbumActionSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // [삭제] ViewModel을 직접 읽어오던 코드를 제거합니다.
-    // final vm = context.read<AlbumDetailViewModel>();
-
     final List<ActionMenuItem> menuItems = [
+      // ... (공유, 다운로드, AI 정리 메뉴는 동일) ...
       ActionMenuItem(
         title: '공유',
         icon: const Icon(Icons.share_outlined, size: 18),
         onTap: () {
-          Navigator.pop(context); // 메뉴 닫기
-          onShare(); // 외부에서 전달받은 onShare 함수 실행
+          Navigator.pop(context);
+          onShare();
         },
       ),
       ActionMenuItem(
@@ -36,27 +33,23 @@ class AlbumActionSheet extends StatelessWidget {
         icon: const Icon(Icons.delete_outline, size: 18),
         onTap: () {
           Navigator.pop(context); // 메뉴 닫기
-          showDialog(
-            context: context,
-            // onDelete 콜백을 PhotoDeleteDialog의 onConfirm으로 전달
-            builder: (dialogContext) => PhotoDeleteDialog(onConfirm: onDelete),
-          );
+          onDelete(); // [수정] 외부에서 주입받은 onDelete 함수를 그대로 호출
         },
       ),
       ActionMenuItem(
         title: '다운로드',
         icon: const Icon(Icons.download_outlined, size: 18),
         onTap: () {
-          Navigator.pop(context); // 메뉴 닫기
-          onDownload(); // 외부에서 전달받은 onDownload 함수 실행
+          Navigator.pop(context);
+          onDownload();
         },
       ),
       ActionMenuItem(
         title: 'AI 정리',
         icon: const Icon(Icons.auto_awesome_outlined, size: 18),
         onTap: () {
-          Navigator.pop(context); // 메뉴 닫기
-          onAiSort(); // 외부에서 전달받은 onAiSort 함수 실행
+          Navigator.pop(context);
+          onAiSort();
         },
       ),
     ];

@@ -2,6 +2,7 @@ import 'package:cherrypic/data/album/services/album_images_upload_service.dart';
 import 'package:cherrypic/presentation/screens/main/detail/components/album_action_sheet.dart';
 import 'package:cherrypic/presentation/screens/main/detail/parts/album_detail_segmented.dart';
 import 'package:cherrypic/presentation/screens/main/detail/parts/album_detail_selecting_bar.dart';
+import 'package:cherrypic/presentation/widgets/dialogs/photo_delete_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../album_detail_view_model.dart';
@@ -123,10 +124,16 @@ class AlbumFloatingButtons extends StatelessWidget {
                 // [수정] AlbumActionSheet에 각 기능에 맞는 함수를 전달합니다.
                 child: AlbumActionSheet(
                   onShare: () => viewModel.shareSelectedImages(context),
-                  onDelete: () => viewModel.deleteSelectedImages(),
+                  onDelete: () {
+                    showDialog(
+                      context: context,
+                      builder: (_) => PhotoDeleteDialog(
+                        onConfirm: () => viewModel.deleteSelectedImages(),
+                      ),
+                    );
+                  },
                   onDownload: () => viewModel.downloadSelectedImages(context),
                   onAiSort: () {
-                    // TODO: AI 정리 기능 구현
                     debugPrint('AI 정리 탭');
                   },
                 ),
@@ -140,7 +147,6 @@ class AlbumFloatingButtons extends StatelessWidget {
 }
 
 class _AddPhotoButton extends StatelessWidget {
-  // ... (이 위젯은 변경 없음) ...
   final VoidCallback onTap;
   const _AddPhotoButton({required this.onTap});
   @override
