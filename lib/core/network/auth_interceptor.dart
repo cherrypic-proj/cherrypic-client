@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:cherrypic/core/network/api_path.dart';
 import 'package:cherrypic/core/network/dio_client.dart';
 import 'package:cherrypic/core/network/navigation_service.dart';
+import 'package:flutter/material.dart';
 
 class AuthInterceptor extends Interceptor {
   final Dio _dio;
@@ -33,7 +34,7 @@ class AuthInterceptor extends Interceptor {
       );
 
       if (!hasRefreshToken) {
-        print('리프레시 토큰이 없으므로 재발급을 시도하지 않습니다.');
+        debugPrint('리프레시 토큰이 없으므로 재발급을 시도하지 않습니다.');
         handler.reject(err);
         return;
       }
