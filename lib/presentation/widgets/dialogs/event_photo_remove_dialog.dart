@@ -1,3 +1,4 @@
+import 'package:cherrypic/presentation/widgets/dialogs/dialog_action_button.dart';
 import 'package:flutter/material.dart';
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
@@ -25,7 +26,7 @@ class EventPhotoRemoveDialog extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      '사진 제외', // 제목 변경
+                      '사진 제외',
                       style: AppFont.size18.copyWith(
                         fontWeight: FontWeight.w700,
                         color: AppColor.mainRed,
@@ -52,7 +53,7 @@ class EventPhotoRemoveDialog extends StatelessWidget {
 
             // --- 안내 문구 ---
             Text(
-              '이벤트에서 해당 사진을 제외하시겠습니까?\n앨범에서는 삭제되지 않습니다.', // 안내 문구 변경
+              '이벤트에서 해당 사진을 제외하시겠습니까?\n앨범에서는 삭제되지 않습니다.',
               style: AppFont.size16.copyWith(
                 height: 1.5,
                 color: Colors.black87,
@@ -65,16 +66,14 @@ class EventPhotoRemoveDialog extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildButton(
-                  context: context,
+                DialogActionButton(
                   text: '취소',
                   isConfirm: false,
                   onPressed: () => Navigator.of(context).pop(),
                 ),
                 const SizedBox(width: 12),
-                _buildButton(
-                  context: context,
-                  text: '제외', // 버튼 텍스트 변경
+                DialogActionButton(
+                  text: '제외',
                   isConfirm: true,
                   onPressed: () {
                     Navigator.of(context).pop(); // 다이얼로그 닫기
@@ -84,35 +83,6 @@ class EventPhotoRemoveDialog extends StatelessWidget {
               ],
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  /// 공통 버튼 위젯
-  Widget _buildButton({
-    required BuildContext context,
-    required String text,
-    required bool isConfirm,
-    required VoidCallback onPressed,
-  }) {
-    return SizedBox(
-      width: 130,
-      height: 44,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: isConfirm ? AppColor.mainRed : Colors.white,
-          foregroundColor: isConfirm ? Colors.white : AppColor.mainRed,
-          side: isConfirm
-              ? BorderSide.none
-              : const BorderSide(color: AppColor.mainRed, width: 1.5),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          elevation: 0,
-        ),
-        child: Text(
-          text,
-          style: AppFont.size16.copyWith(fontWeight: FontWeight.w600),
         ),
       ),
     );

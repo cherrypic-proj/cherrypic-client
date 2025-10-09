@@ -1,3 +1,4 @@
+import 'package:cherrypic/presentation/widgets/dialogs/dialog_action_button.dart';
 import 'package:flutter/material.dart';
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
@@ -65,15 +66,13 @@ class PhotoDeleteDialog extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildButton(
-                  context: context,
+                DialogActionButton(
                   text: '취소',
                   isConfirm: false,
                   onPressed: () => Navigator.of(context).pop(),
                 ),
                 const SizedBox(width: 12),
-                _buildButton(
-                  context: context,
+                DialogActionButton(
                   text: '삭제',
                   isConfirm: true,
                   onPressed: () {
@@ -84,35 +83,6 @@ class PhotoDeleteDialog extends StatelessWidget {
               ],
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  /// 공통 버튼 위젯 (participant_kick_dialog.dart 참고)
-  Widget _buildButton({
-    required BuildContext context,
-    required String text,
-    required bool isConfirm,
-    required VoidCallback onPressed,
-  }) {
-    return SizedBox(
-      width: 130,
-      height: 44,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: isConfirm ? AppColor.mainRed : Colors.white,
-          foregroundColor: isConfirm ? Colors.white : AppColor.mainRed,
-          side: isConfirm
-              ? BorderSide.none
-              : const BorderSide(color: AppColor.mainRed, width: 1.5),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          elevation: 0,
-        ),
-        child: Text(
-          text,
-          style: AppFont.size16.copyWith(fontWeight: FontWeight.w600),
         ),
       ),
     );
