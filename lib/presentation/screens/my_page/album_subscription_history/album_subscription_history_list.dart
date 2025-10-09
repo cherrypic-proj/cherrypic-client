@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/color.dart';
 import '../../../../core/constants/font.dart';
 
-/// 앨범 가입 이력 타입
+/// 앨범 가입 이력 아이콘 타입
 enum NoticeIconType { subscribeIn, subscribeOut }
 
 class AlbumSubscriptionHistoryList extends StatelessWidget {
@@ -19,7 +19,6 @@ class AlbumSubscriptionHistoryList extends StatelessWidget {
     required this.iconType,
   });
 
-  /// 앨범 가입 이력 타입 이미지 경로
   static const Map<NoticeIconType, String> _iconPathMap = {
     NoticeIconType.subscribeIn: 'assets/images/subscription_in.png',
     NoticeIconType.subscribeOut: 'assets/images/subscription_out.png',
@@ -35,7 +34,6 @@ class AlbumSubscriptionHistoryList extends StatelessWidget {
     );
   }
 
-  /// 앨범 가입 이력 리스트 본문
   Widget _buildContent() {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 16, 96, 16),
@@ -50,14 +48,11 @@ class AlbumSubscriptionHistoryList extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                /// 앨범 가입 이력 Title
                 Text(
                   title,
                   style: AppFont.size16.copyWith(color: Colors.black),
                 ),
                 const SizedBox(height: 4),
-
-                /// 앨범 가입 이력 SubTitle(날짜)
                 Text(
                   date,
                   style: AppFont.size10.copyWith(color: AppColor.subGrey),
@@ -70,7 +65,6 @@ class AlbumSubscriptionHistoryList extends StatelessWidget {
     );
   }
 
-  /// 리스트 구분선
   Widget _buildCustomDivider(double thickness) {
     return Divider(
       color: AppColor.subSlicer,
