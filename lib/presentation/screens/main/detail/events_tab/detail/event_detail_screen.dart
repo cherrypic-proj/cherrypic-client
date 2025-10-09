@@ -1,5 +1,6 @@
 import 'package:cherrypic/core/router/route_path.dart';
 import 'package:cherrypic/presentation/screens/main/detail/components/album_action_sheet.dart';
+import 'package:cherrypic/presentation/screens/main/detail/events_tab/add/add_images_sheet.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/components/event_header.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/components/event_sort_buttons.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/detail/event_detail_view_model.dart';
@@ -174,13 +175,34 @@ class _BodyState extends State<_Body> {
     );
   }
 
+  //  _handleAddPhoto 함수 전체를 아래 내용으로 교체합니다.
   Future<void> _handleAddPhoto(BuildContext context) async {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('사진 추가 기능을 구현해주세요'),
-        backgroundColor: Colors.blue,
-      ),
+    // 부모 위젯에서 EventDetailViewModel을 가져옵니다.
+    final vm = context.read<EventDetailViewModel>();
+
+    // showModalBottomSheet는 Future를 반환합니다.
+    final result = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true, // 시트가 화면의 90%까지 올라올 수 있도록 설정
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return AddImagesSheet(
+          // EventAlbum 객체에서 albumId를 가져와야 합니다.
+          // event_album.dart에 albumId 필드가 있다고 가정합니다.
+          albumId: widget.event.albumId,
+          eventId: widget.event.eventId,
+        );
+      },
     );
+
+    // 바텀시트에서 '추가하기' 버튼을 눌러 성공적으로 이미지를 추가했다면,
+    // Navigator.pop(context, true)가 호출되어 result가 true가 됩니다.
+    if (result == true) {
+      // 이미지 목록을 새로고침하여 추가된 사진을 즉시 화면에 표시합니다.
+      vm.loadImages();
+      // 목록이 업데이트 되었다고 표시
+      _wasUpdated = true;
+    }
   }
 
   void _openFullScreen(

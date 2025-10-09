@@ -1,22 +1,28 @@
+import 'package:cherrypic/core/constants/color.dart';
+import 'package:cherrypic/core/constants/font.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/%20create/create_event_sort_buttons.dart';
+import 'package:cherrypic/presentation/screens/main/detail/events_tab/add/add_images_view_model.dart';
 import 'package:cherrypic/presentation/widgets/album/album_group_section.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:cherrypic/core/constants/color.dart';
-import 'package:cherrypic/core/constants/font.dart';
-import 'create_event_view_model.dart';
 
-class CreateEventSheet extends StatelessWidget {
+class AddImagesSheet extends StatelessWidget {
   final int albumId;
+  final int eventId;
 
-  const CreateEventSheet({super.key, required this.albumId});
+  const AddImagesSheet({
+    super.key,
+    required this.albumId,
+    required this.eventId,
+  });
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => CreateEventViewModel(albumId: albumId),
+      // [수정] AddImagesViewModel을 주입합니다.
+      create: (_) => AddImagesViewModel(albumId: albumId, eventId: eventId),
       child: DraggableScrollableSheet(
-        initialChildSize: 0.9, // 초기 사이즈를 조금 늘려 더 많은 사진이 보이도록 함
+        initialChildSize: 0.9,
         minChildSize: 0.5,
         maxChildSize: 0.95,
         builder: (context, scrollController) {
@@ -39,15 +45,13 @@ class _SheetContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final vm = context.watch<CreateEventViewModel>();
+    final vm = context.watch<AddImagesViewModel>();
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
-    // 로딩 중일 때 UI
     if (vm.isLoading && vm.groups.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    // 에러 발생 시 UI
     if (vm.error != null && vm.groups.isEmpty) {
       return Center(
         child: Text('이미지를 불러올 수 없습니다: ${vm.error}', style: AppFont.size16),
@@ -60,21 +64,19 @@ class _SheetContent extends StatelessWidget {
         backgroundColor: Colors.white,
         body: Stack(
           children: [
-            // --- 메인 스크롤 영역 ---
             ListView(
               controller: scrollController,
               padding: EdgeInsets.only(
-                // 선택된 항목이 있을 때 하단 액션바에 가려지지 않도록 패딩 추가
                 bottom: bottomPadding + (vm.isAnythingSelected ? 120 : 20),
               ),
               children: [
                 const SizedBox(height: 20),
+                // [수정] 헤더 텍스트 변경
                 _buildHeader(context),
                 const SizedBox(height: 24),
-                _buildCoverSection(context, vm),
-                const SizedBox(height: 30),
+                // [제거] 커버 및 제목 입력 섹션 제거
 
-                // --- 사진 목록 섹션 (완전히 새로 구성) ---
+                // --- 사진 목록 섹션 ---
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Text(
@@ -83,10 +85,9 @@ class _SheetContent extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                const CreateEventSortButtons(), // [추가] 정렬 버튼 위젯
+                const CreateEventSortButtons(), // 정렬 버튼 재사용
                 const SizedBox(height: 10),
 
-                // [수정] 날짜별 그룹 리스트
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -103,11 +104,9 @@ class _SheetContent extends StatelessWidget {
                             .map((img) => img.imageUrl)
                             .toList(),
                         selectedIndexes: group.selectedIndexes,
-                        // 이벤트 생성 시에는 항상 선택모드
                         isSelectionMode: true,
                         onImageTap: (imageIndex) =>
                             vm.togglePhotoSelection(groupIndex, imageIndex),
-                        // 롱프레스도 일반 탭과 동일하게 토글 기능으로 연결
                         onImageLongPress: (imageIndex) =>
                             vm.togglePhotoSelection(groupIndex, imageIndex),
                       ),
@@ -117,7 +116,6 @@ class _SheetContent extends StatelessWidget {
               ],
             ),
 
-            // --- 하단 액션바 ---
             if (vm.isAnythingSelected)
               Positioned(
                 bottom: 0,
@@ -126,7 +124,6 @@ class _SheetContent extends StatelessWidget {
                 child: _buildBottomActionBar(context, vm),
               ),
 
-            // --- 업로드 중 오버레이 ---
             if (vm.isUploading)
               Positioned.fill(
                 child: Container(
@@ -142,8 +139,6 @@ class _SheetContent extends StatelessWidget {
     );
   }
 
-  // --- 기존 위젯 빌더 함수들 (변경 없음) ---
-
   Widget _buildHeader(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -156,7 +151,7 @@ class _SheetContent extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           Text(
-            '새 이벤트 생성',
+            '이미지 추가', // [수정] 헤더 텍스트
             style: AppFont.size18.copyWith(
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -182,110 +177,15 @@ class _SheetContent extends StatelessWidget {
     );
   }
 
-  Widget _buildCoverSection(BuildContext context, CreateEventViewModel vm) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 130,
-            height: 130,
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: BorderRadius.circular(10),
-              image: vm.coverImage != null
-                  ? DecorationImage(
-                      image: FileImage(vm.coverImage!),
-                      fit: BoxFit.cover,
-                    )
-                  : null,
-            ),
-            child: vm.coverImage == null
-                ? Icon(
-                    Icons.photo_library_outlined,
-                    color: Colors.grey[400],
-                    size: 40,
-                  )
-                : null,
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 24),
-                SizedBox(
-                  width: 175,
-                  height: 40,
-                  child: TextField(
-                    controller: vm.titleController,
-                    style: AppFont.size14,
-                    decoration: InputDecoration(
-                      hintText: '이벤트 제목',
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: Colors.grey[400]!),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: Colors.grey[400]!),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: const BorderSide(
-                          color: AppColor.mainRed,
-                          width: 1.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                GestureDetector(
-                  onTap: vm.isUploading
-                      ? null
-                      : () => vm.pickCoverImage(context),
-                  child: Container(
-                    width: 115,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      color: vm.isUploading ? Colors.grey : AppColor.mainRed,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Center(
-                      child: Text(
-                        vm.isUploading ? '업로드 중...' : '커버사진 업로드',
-                        style: AppFont.size14.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                          height: 1.2,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBottomActionBar(BuildContext context, CreateEventViewModel vm) {
+  Widget _buildBottomActionBar(BuildContext context, AddImagesViewModel vm) {
     return Container(
+      color: Colors.transparent,
       padding: EdgeInsets.fromLTRB(
         20,
         0,
         20,
         MediaQuery.of(context).padding.bottom + 20,
       ),
-      // [수정] 배경색과 그림자 제거
-      color: Colors.transparent, // 배경을 투명하게 설정
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -317,9 +217,11 @@ class _SheetContent extends StatelessWidget {
           const SizedBox(height: 10),
           GestureDetector(
             onTap: () async {
-              final success = await vm.createEvent();
+              // [수정] ViewModel의 addImagesToEvent 함수 호출
+              final success = await vm.addImagesToEvent();
               if (success && context.mounted) {
-                Navigator.pop(context, true); // true 반환하여 새로고침 트리거
+                // 성공 시 true를 반환하며 시트를 닫음
+                Navigator.pop(context, true);
               } else if (vm.error != null && context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -338,7 +240,7 @@ class _SheetContent extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  '이벤트 생성',
+                  '추가하기', // [수정] 버튼 텍스트
                   style: AppFont.size16.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
