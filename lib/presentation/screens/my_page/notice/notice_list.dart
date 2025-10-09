@@ -24,9 +24,8 @@ class NoticeList extends StatelessWidget {
     );
   }
 
-  /// 공지 사항 subTitle(날짜) & Title(공지 사항 제목)
   Widget _buildNoticeTile() {
-    const EdgeInsets contentPadding = EdgeInsets.fromLTRB(30, 20, 198, 20);
+    const EdgeInsets contentPadding = EdgeInsets.fromLTRB(30, 20, 30, 20);
 
     return Container(
       padding: contentPadding,
@@ -55,7 +54,6 @@ class NoticeList extends StatelessWidget {
     );
   }
 
-  /// 공지 사항 리스트 구분선
   Widget _buildCustomDivider(double thickness) {
     return Divider(
       color: AppColor.subSlicer,
