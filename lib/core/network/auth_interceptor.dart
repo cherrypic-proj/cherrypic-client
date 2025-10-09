@@ -54,9 +54,6 @@ class AuthInterceptor extends Interceptor {
           handler.resolve(response);
           await _retryPendingRequests();
         } else {
-          // 💥 수정된 부분
-          // _handleRefreshFailure() 호출을 제거합니다.
-          // 리프레시 실패는 그냥 원래 요청의 실패로 이어지게 합니다.
           print('토큰 재발급 실패로 인한 원래 요청 실패 처리');
           handler.reject(err);
         }

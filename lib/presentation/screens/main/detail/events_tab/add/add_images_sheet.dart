@@ -20,7 +20,7 @@ class AddImagesSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      // [수정] AddImagesViewModel을 주입합니다.
+      //   AddImagesViewModel을 주입합니다.
       create: (_) => AddImagesViewModel(albumId: albumId, eventId: eventId),
       child: DraggableScrollableSheet(
         initialChildSize: 0.9,
@@ -72,7 +72,7 @@ class _SheetContent extends StatelessWidget {
               ),
               children: [
                 const SizedBox(height: 20),
-                // [수정] 헤더 텍스트 변경
+                //   헤더 텍스트 변경
                 _buildHeader(context),
                 const SizedBox(height: 24),
                 // --- 사진 목록 섹션 ---
@@ -143,7 +143,7 @@ class _SheetContent extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           Text(
-            '이미지 추가', // [수정] 헤더 텍스트
+            '이미지 추가', //   헤더 텍스트
             style: AppFont.size18.copyWith(
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -209,7 +209,7 @@ class _SheetContent extends StatelessWidget {
           const SizedBox(height: 10),
           GestureDetector(
             onTap: () async {
-              // [수정] ViewModel의 addImagesToEvent 함수 호출
+              //   ViewModel의 addImagesToEvent 함수 호출
               final success = await vm.addImagesToEvent();
               if (success && context.mounted) {
                 // 성공 시 true를 반환하며 시트를 닫음
@@ -232,7 +232,7 @@ class _SheetContent extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  '추가하기', // [수정] 버튼 텍스트
+                  '추가하기', //   버튼 텍스트
                   style: AppFont.size16.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

@@ -163,7 +163,7 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
                       _buildActionButton(
                         icon: Icons.add_circle_outline,
                         label: '이벤트 추가',
-                        // [수정] '이벤트 추가' 버튼 기능 구현
+                        //   '이벤트 추가' 버튼 기능 구현
                         onTap: () {
                           final imageId = _getCurrentImageId();
                           if (imageId == null) return;

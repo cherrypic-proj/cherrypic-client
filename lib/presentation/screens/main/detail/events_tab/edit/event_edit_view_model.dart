@@ -20,7 +20,7 @@ class EventEditViewModel extends ChangeNotifier {
     titleController = TextEditingController(text: event.title);
     _coverImageUrl = event.imageUrl;
 
-    // [추가] 텍스트 필드의 변경을 감지하기 위해 리스너를 추가합니다.
+    //   텍스트 필드의 변경을 감지하기 위해 리스너를 추가합니다.
     titleController.addListener(() {
       notifyListeners(); // 텍스트가 변경될 때마다 UI를 갱신하여 버튼 상태를 업데이트
     });
@@ -41,7 +41,7 @@ class EventEditViewModel extends ChangeNotifier {
   bool get isSaving => _isSaving;
   String? get error => _error;
 
-  // [추가] 변경사항이 있는지 확인하는 getter
+  //   변경사항이 있는지 확인하는 getter
   bool get hasChanges {
     // 제목이 다르거나, 커버 이미지 URL이 다르면 변경된 것으로 간주
     return titleController.text != event.title ||
@@ -84,7 +84,7 @@ class EventEditViewModel extends ChangeNotifier {
 
   /// 이벤트 정보 수정
   Future<bool> updateEvent() async {
-    // [수정] 유효성 검사 및 변경사항 확인 로직 강화
+    //   유효성 검사 및 변경사항 확인 로직 강화
     if (!hasChanges) {
       _error = '변경된 내용이 없습니다.';
       notifyListeners();

@@ -55,7 +55,7 @@ class AlbumFloatingButtons extends StatelessWidget {
                 child: SafeArea(
                   top: false,
                   child: Center(
-                    // [수정] Builder로 감싸서 barContext를 가져옵니다.
+                    //   Builder로 감싸서 barContext를 가져옵니다.
                     child: Builder(
                       builder: (barContext) {
                         return SelectingBar(
@@ -103,7 +103,7 @@ class AlbumFloatingButtons extends StatelessWidget {
     }
   }
 
-  // [수정] 위치 계산 로직을 barContext 기준으로 변경
+  //   위치 계산 로직을 barContext 기준으로 변경
   void _openMoreMenu(BuildContext context, BuildContext barContext) {
     final viewModel = context.read<AlbumDetailViewModel>();
     final RenderBox renderBox = barContext.findRenderObject() as RenderBox;
@@ -121,7 +121,7 @@ class AlbumFloatingButtons extends StatelessWidget {
               top: position.dy - 180 - 40,
               child: ChangeNotifierProvider.value(
                 value: viewModel,
-                // [수정] AlbumActionSheet에 각 기능에 맞는 함수를 전달합니다.
+                //   AlbumActionSheet에 각 기능에 맞는 함수를 전달합니다.
                 child: AlbumActionSheet(
                   onShare: () => viewModel.shareSelectedImages(context),
                   onDelete: () {

@@ -84,7 +84,7 @@ class _SheetContent extends StatelessWidget {
     final isEventSelected = vm.selectedEventId != null;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      // [수정] Row를 SizedBox와 Stack으로 변경
+      // Row를 SizedBox와 Stack으로 변경
       child: SizedBox(
         height: 40, // 헤더 영역의 높이를 고정
         child: Stack(

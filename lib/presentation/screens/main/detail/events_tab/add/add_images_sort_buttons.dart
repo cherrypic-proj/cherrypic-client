@@ -2,7 +2,7 @@ import 'package:cherrypic/presentation/screens/main/detail/events_tab/add/add_im
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// [수정] CreateEventSortButtons -> AddImagesSortButtons로 이름 변경
+//   CreateEventSortButtons -> AddImagesSortButtons로 이름 변경
 class AddImagesSortButtons extends StatelessWidget {
   const AddImagesSortButtons({super.key});
 
@@ -21,7 +21,7 @@ class AddImagesSortButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-      // [수정] Consumer가 AddImagesViewModel을 바라보도록 변경
+      //   Consumer가 AddImagesViewModel을 바라보도록 변경
       child: Consumer<AddImagesViewModel>(
         builder: (context, vm, _) {
           return Row(

@@ -31,8 +31,8 @@ class EventEditDialog extends StatelessWidget {
                     _buildHeader(context, vm),
                     const SizedBox(height: 24),
                     _buildCoverSection(context, vm),
-                    const SizedBox(height: 20), // [추가] 간격
-                    _buildDeleteButton(context, vm), // [추가] 삭제 버튼
+                    const SizedBox(height: 20), //   간격
+                    _buildDeleteButton(context, vm), //   삭제 버튼
                   ],
                 ),
               ),

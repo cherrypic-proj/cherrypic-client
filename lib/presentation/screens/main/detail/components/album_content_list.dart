@@ -104,7 +104,7 @@ class AlbumContentList extends StatelessWidget {
       allAlbumImages.addAll(groupImages);
     }
 
-    // [수정] context.push의 extra 맵 키를 문자열로 명시하고, 필요한 모든 데이터를 전달합니다.
+    //   context.push의 extra 맵 키를 문자열로 명시하고, 필요한 모든 데이터를 전달합니다.
     context.push(
       RoutePath.imageViewer,
       extra: {
@@ -153,7 +153,7 @@ class AlbumContentList extends StatelessWidget {
                     final album = vm.albums[index];
                     return EventAlbumCover(
                       album: album,
-                      // [수정] onTap을 async로 바꾸고 결과를 기다립니다.
+                      //   onTap을 async로 바꾸고 결과를 기다립니다.
                       onTap: () async {
                         final result = await context.push<bool>(
                           RoutePath.eventDetail.replaceFirst(

@@ -83,10 +83,10 @@ class _SheetContent extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                const CreateEventSortButtons(), // [추가] 정렬 버튼 위젯
+                const CreateEventSortButtons(), //   정렬 버튼 위젯
                 const SizedBox(height: 10),
 
-                // [수정] 날짜별 그룹 리스트
+                //   날짜별 그룹 리스트
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -284,7 +284,7 @@ class _SheetContent extends StatelessWidget {
         20,
         MediaQuery.of(context).padding.bottom + 20,
       ),
-      // [수정] 배경색과 그림자 제거
+      //   배경색과 그림자 제거
       color: Colors.transparent, // 배경을 투명하게 설정
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

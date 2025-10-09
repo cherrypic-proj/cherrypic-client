@@ -36,7 +36,7 @@ class _Body extends StatefulWidget {
 }
 
 class _BodyState extends State<_Body> {
-  // [추가] 화면의 상태를 담을 변수와, 업데이트 되었는지 여부를 추적할 변수
+  //   화면의 상태를 담을 변수와, 업데이트 되었는지 여부를 추적할 변수
   late EventAlbum _currentEvent;
   bool _wasUpdated = false;
 
@@ -47,7 +47,7 @@ class _BodyState extends State<_Body> {
     _currentEvent = widget.event;
   }
 
-  // [추가] EventHeader로부터 업데이트된 정보를 받아 상태를 변경하는 함수
+  //   EventHeader로부터 업데이트된 정보를 받아 상태를 변경하는 함수
   void _onEventUpdated(EventAlbum updatedEvent) {
     setState(() {
       _currentEvent = updatedEvent;
@@ -76,7 +76,7 @@ class _BodyState extends State<_Body> {
               elevation: 0,
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.white),
-                // [수정] context.pop() 대신 WillPopScope의 onWillPop이 호출되도록 변경
+                //   context.pop() 대신 WillPopScope의 onWillPop이 호출되도록 변경
                 onPressed: () => Navigator.pop(context, _wasUpdated),
               ),
             ),
@@ -84,7 +84,7 @@ class _BodyState extends State<_Body> {
               children: [
                 CustomScrollView(
                   slivers: [
-                    // [수정] EventHeader에 상태 변수(_currentEvent)와 콜백 함수를 전달합니다.
+                    //   EventHeader에 상태 변수(_currentEvent)와 콜백 함수를 전달합니다.
                     SliverToBoxAdapter(
                       child: EventHeader(
                         event: _currentEvent,
@@ -113,7 +113,7 @@ class _BodyState extends State<_Body> {
                               date: g.date,
                               isAllSelected: g.isAllSelected,
                               onToggleAll: () => vm.toggleAll(index),
-                              // [수정] g.images 리스트에서 imageUrl만 추출하여 전달합니다.
+                              //   g.images 리스트에서 imageUrl만 추출하여 전달합니다.
                               imageUrls: g.images
                                   .map((img) => img.imageUrl)
                                   .toList(),

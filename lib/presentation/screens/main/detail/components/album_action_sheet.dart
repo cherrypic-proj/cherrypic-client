@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class AlbumActionSheet extends StatelessWidget {
   final VoidCallback onShare;
-  // [수정] onDelete는 이제 '삭제 버튼을 눌렀을 때의 동작' 전체를 담당합니다.
+  //   onDelete는 이제 '삭제 버튼을 눌렀을 때의 동작' 전체를 담당합니다.
   final VoidCallback onDelete;
   final VoidCallback onDownload;
   final VoidCallback onAiSort;
@@ -33,7 +33,7 @@ class AlbumActionSheet extends StatelessWidget {
         icon: const Icon(Icons.delete_outline, size: 18),
         onTap: () {
           Navigator.pop(context); // 메뉴 닫기
-          onDelete(); // [수정] 외부에서 주입받은 onDelete 함수를 그대로 호출
+          onDelete(); //   외부에서 주입받은 onDelete 함수를 그대로 호출
         },
       ),
       ActionMenuItem(

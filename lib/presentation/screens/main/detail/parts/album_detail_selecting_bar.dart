@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class SelectingBar extends StatelessWidget {
   final int count;
-  // [수정] 다시 원래의 VoidCallback 형태로 변경합니다.
+  //   다시 원래의 VoidCallback 형태로 변경합니다.
   final VoidCallback onMore;
   final VoidCallback onCancel;
 
@@ -44,7 +44,7 @@ class SelectingBar extends StatelessWidget {
           ),
           Row(
             children: [
-              // [수정] Builder를 제거하고 다시 심플하게 onMore를 호출합니다.
+              //   Builder를 제거하고 다시 심플하게 onMore를 호출합니다.
               GestureDetector(
                 onTap: onMore,
                 child: Container(

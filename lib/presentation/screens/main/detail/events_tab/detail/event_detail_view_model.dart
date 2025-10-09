@@ -15,7 +15,7 @@ class EventImageModel {
 /// 날짜별 이벤트 이미지 묶음 상태
 class EventDayGroup {
   final String date;
-  // [수정] String List 대신 EventImageModel List를 사용합니다.
+  //   String List 대신 EventImageModel List를 사용합니다.
   final List<EventImageModel> images;
   final Set<int> selectedIndexes;
   bool isAllSelected;
@@ -92,7 +92,7 @@ class EventDetailViewModel extends ChangeNotifier {
         parameter: _sortParameter,
         direction: _sortDirection,
       );
-      // [수정] API 응답을 새로운 모델에 맞게 그룹화합니다.
+      //   API 응답을 새로운 모델에 맞게 그룹화합니다.
       groups = _groupImagesByDate(response.content);
       _isLast = response.isLast;
       if (response.content.isNotEmpty) {
@@ -119,7 +119,7 @@ class EventDetailViewModel extends ChangeNotifier {
         parameter: _sortParameter,
         direction: _sortDirection,
       );
-      // [수정] API 응답을 새로운 모델에 맞게 그룹화합니다.
+      //   API 응답을 새로운 모델에 맞게 그룹화합니다.
       final newGroups = _groupImagesByDate(response.content);
       _mergeGroups(newGroups);
       _isLast = response.isLast;
@@ -134,7 +134,7 @@ class EventDetailViewModel extends ChangeNotifier {
     }
   }
 
-  /// [수정] API 응답(dynamic)을 EventImageModel로 변환하고 날짜별로 그룹화
+  ///   API 응답(dynamic)을 EventImageModel로 변환하고 날짜별로 그룹화
   List<EventDayGroup> _groupImagesByDate(List<dynamic> images) {
     // `images`의 각 요소는 eventImageId, imageUrl, date 등을 포함한 객체라고 가정합니다.
     final Map<String, List<EventImageModel>> dateMap = {};
@@ -156,7 +156,7 @@ class EventDetailViewModel extends ChangeNotifier {
     return apiDate.replaceAll('-', '.');
   }
 
-  /// [수정] 새로운 그룹 병합 로직
+  ///   새로운 그룹 병합 로직
   void _mergeGroups(List<EventDayGroup> newGroups) {
     for (final newGroup in newGroups) {
       final existingIndex = groups.indexWhere((g) => g.date == newGroup.date);
@@ -180,7 +180,7 @@ class EventDetailViewModel extends ChangeNotifier {
     } else {
       g.selectedIndexes.add(imgIndex);
     }
-    // [수정] images.length로 전체 선택 여부 확인
+    //   images.length로 전체 선택 여부 확인
     g.isAllSelected = g.selectedIndexes.length == g.images.length;
     notifyListeners();
   }
@@ -194,7 +194,7 @@ class EventDetailViewModel extends ChangeNotifier {
       if (!_isSelectionMode) _isSelectionMode = true;
       g.selectedIndexes
         ..clear()
-        // [수정] images.length 만큼 인덱스 생성
+        //   images.length 만큼 인덱스 생성
         ..addAll(List<int>.generate(g.images.length, (i) => i));
       g.isAllSelected = true;
     }
@@ -214,7 +214,7 @@ class EventDetailViewModel extends ChangeNotifier {
     final List<String> urlsToDownload = [];
     for (final group in groups) {
       for (final index in group.selectedIndexes) {
-        // [수정] 모델에서 imageUrl을 추출
+        //   모델에서 imageUrl을 추출
         urlsToDownload.add(group.images[index].imageUrl);
       }
     }
@@ -229,7 +229,7 @@ class EventDetailViewModel extends ChangeNotifier {
     final List<String> urlsToShare = [];
     for (final group in groups) {
       for (final index in group.selectedIndexes) {
-        // [수정] 모델에서 imageUrl을 추출
+        //   모델에서 imageUrl을 추출
         urlsToShare.add(group.images[index].imageUrl);
       }
     }
@@ -239,7 +239,7 @@ class EventDetailViewModel extends ChangeNotifier {
     exitSelectionMode();
   }
 
-  /// [수정] 선택된 이미지들 삭제 기능 구현
+  ///   선택된 이미지들 삭제 기능 구현
   Future<void> deleteSelectedImages(BuildContext context) async {
     // 1. 삭제할 이미지 ID 목록 추출
     final List<int> idsToDelete = [];

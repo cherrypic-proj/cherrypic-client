@@ -8,7 +8,7 @@ import '../../../../../../core/constants/font.dart';
 class EventAlbumCover extends StatelessWidget {
   final EventAlbum album;
   final VoidCallback? onTap;
-  // [추가] 선택 모드를 위한 파라미터
+  //   선택 모드를 위한 파라미터
   final bool isSelectable; // 선택 가능한 상태인지 여부
   final bool isSelected; // 현재 이 앨범이 선택되었는지 여부
 
@@ -32,7 +32,7 @@ class EventAlbumCover extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              // [수정] imageUrl이 비어있는지 확인하는 로직 추가
+              //   imageUrl이 비어있는지 확인하는 로직 추가
               if (album.imageUrl.isNotEmpty)
                 // imageUrl이 있을 때만 이미지를 로드
                 CachedNetworkImage(
@@ -87,7 +87,7 @@ class EventAlbumCover extends StatelessWidget {
                 ),
               ),
 
-              // --- [추가] 선택 모드 UI ---
+              // ---   선택 모드 UI ---
               // isSelectable이 true일 때만 보이는 UI 요소들
               if (isSelectable)
                 Container(
