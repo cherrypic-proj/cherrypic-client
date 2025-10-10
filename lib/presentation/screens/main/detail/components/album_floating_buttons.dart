@@ -1,6 +1,8 @@
 import 'package:cherrypic/data/album/services/album_images_upload_service.dart';
+import 'package:cherrypic/presentation/screens/main/detail/components/album_action_sheet.dart';
 import 'package:cherrypic/presentation/screens/main/detail/parts/album_detail_segmented.dart';
 import 'package:cherrypic/presentation/screens/main/detail/parts/album_detail_selecting_bar.dart';
+import 'package:cherrypic/presentation/widgets/dialogs/photo_delete_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../album_detail_view_model.dart';
@@ -26,7 +28,7 @@ class AlbumFloatingButtons extends StatelessWidget {
 
         return Stack(
           children: [
-            // 하단 좌측: 전체/이벤트 토글
+            // ... (사진 추가, 탭 전환 버튼 코드는 변경 없음) ...
             if (!isSelectionMode)
               Positioned(
                 bottom: 24 + bottomSafe,
@@ -39,16 +41,12 @@ class AlbumFloatingButtons extends StatelessWidget {
                   ),
                 ),
               ),
-
-            // 하단 우측: 사진 추가 버튼 (이벤트 탭일 때는 숨김)
             if (!isSelectionMode && tabIndex != 1)
               Positioned(
                 right: 45,
                 bottom: 24 + bottomSafe,
                 child: _AddPhotoButton(onTap: () => _handleAddPhoto(context)),
               ),
-
-            // 선택 바 - 선택 모드일 때 항상 표시
             if (isSelectionMode)
               Positioned(
                 left: 0,
@@ -57,12 +55,17 @@ class AlbumFloatingButtons extends StatelessWidget {
                 child: SafeArea(
                   top: false,
                   child: Center(
-                    child: SelectingBar(
-                      count: selectedCount,
-                      onMore: () => _openMoreSheet(context),
-                      onCancel: () {
-                        final vm = context.read<AlbumDetailViewModel>();
-                        vm.exitSelectionMode();
+                    //   Builder로 감싸서 barContext를 가져옵니다.
+                    child: Builder(
+                      builder: (barContext) {
+                        return SelectingBar(
+                          count: selectedCount,
+                          onMore: () => _openMoreMenu(context, barContext),
+                          onCancel: () {
+                            final vm = context.read<AlbumDetailViewModel>();
+                            vm.exitSelectionMode();
+                          },
+                        );
                       },
                     ),
                   ),
@@ -75,17 +78,14 @@ class AlbumFloatingButtons extends StatelessWidget {
   }
 
   Future<void> _handleAddPhoto(BuildContext context) async {
+    // ... (이 함수는 변경 없음) ...
     final vm = context.read<AlbumDetailViewModel>();
     final uploadService = AlbumImageUploadService();
-
     final assets = await uploadService.pickImages(context);
     if (assets == null || assets.isEmpty) return;
     if (!context.mounted) return;
-
     final success = await vm.uploadImages(assets);
-
     if (!context.mounted) return;
-
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -103,37 +103,43 @@ class AlbumFloatingButtons extends StatelessWidget {
     }
   }
 
-  void _openMoreSheet(BuildContext context) {
-    final vm = context.read<AlbumDetailViewModel>();
+  //   위치 계산 로직을 barContext 기준으로 변경
+  void _openMoreMenu(BuildContext context, BuildContext barContext) {
+    final viewModel = context.read<AlbumDetailViewModel>();
+    final RenderBox renderBox = barContext.findRenderObject() as RenderBox;
+    final size = renderBox.size;
+    final position = renderBox.localToGlobal(Offset.zero);
 
-    showModalBottomSheet(
+    showDialog(
       context: context,
-      builder: (_) {
-        return SafeArea(
-          child: Wrap(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.download),
-                title: const Text('다운로드'),
-                onTap: () {
-                  Navigator.pop(context);
-                  // TODO: 구현
-                  // 다운로드 완료 후 선택 모드 종료하려면:
-                  // vm.exitSelectionMode();
-                },
+      barrierColor: Colors.black.withAlpha(25),
+      builder: (dialogContext) {
+        return Stack(
+          children: [
+            Positioned(
+              left: position.dx + (size.width / 2) - (130 / 2),
+              top: position.dy - 180 - 40,
+              child: ChangeNotifierProvider.value(
+                value: viewModel,
+                //   AlbumActionSheet에 각 기능에 맞는 함수를 전달합니다.
+                child: AlbumActionSheet(
+                  onShare: () => viewModel.shareSelectedImages(context),
+                  onDelete: () {
+                    showDialog(
+                      context: context,
+                      builder: (_) => PhotoDeleteDialog(
+                        onConfirm: () => viewModel.deleteSelectedImages(),
+                      ),
+                    );
+                  },
+                  onDownload: () => viewModel.downloadSelectedImages(context),
+                  onAiSort: () {
+                    debugPrint('AI 정리 탭');
+                  },
+                ),
               ),
-              ListTile(
-                leading: const Icon(Icons.delete_outline),
-                title: const Text('삭제'),
-                onTap: () {
-                  Navigator.pop(context);
-                  // TODO: 구현
-                  // 삭제 완료 후 선택 모드 종료하려면:
-                  // vm.exitSelectionMode();
-                },
-              ),
-            ],
-          ),
+            ),
+          ],
         );
       },
     );
@@ -142,9 +148,7 @@ class AlbumFloatingButtons extends StatelessWidget {
 
 class _AddPhotoButton extends StatelessWidget {
   final VoidCallback onTap;
-
   const _AddPhotoButton({required this.onTap});
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

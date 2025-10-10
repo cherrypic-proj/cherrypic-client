@@ -3,7 +3,9 @@ import 'package:cherrypic/core/network/api_response.dart';
 import 'package:cherrypic/core/network/dio_client.dart';
 import 'package:cherrypic/core/network/error_handler.dart';
 import 'package:cherrypic/data/album/dto/request/album_create_request_dto.dart';
+import 'package:cherrypic/data/album/dto/request/album_image_delete_request_dto.dart'; // 추가
 import 'package:cherrypic/data/album/dto/request/album_image_upload_request_dto.dart';
+import 'package:cherrypic/data/album/dto/request/album_update_request_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_detail_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_image_list_response_dto.dart';
@@ -102,7 +104,7 @@ class AlbumRemoteDataSource {
   }) async {
     try {
       final response = await _dio.get(
-        '${ApiPath.albumDetail(albumId)}/images',
+        ApiPath.albumImages(albumId),
         queryParameters: {
           if (lastImageId != null) 'lastImageId': lastImageId,
           'size': size,
@@ -130,7 +132,7 @@ class AlbumRemoteDataSource {
   ) async {
     try {
       final response = await _dio.post(
-        '${ApiPath.albumDetail(albumId)}/images',
+        ApiPath.albumImages(albumId),
         data: requestDto.toJson(),
       );
 
@@ -152,6 +154,21 @@ class AlbumRemoteDataSource {
       await _dio.post(
         '${ApiPath.albumDetail(albumId)}/images/upload-complete',
         data: {'imageKeys': imageKeys},
+      );
+    } on DioException catch (e) {
+      throw ErrorHandler.handle(e);
+    }
+  }
+
+  /// 앨범 이미지 삭제
+  Future<void> deleteAlbumImages(
+    int albumId,
+    AlbumImageDeleteRequestDto requestDto,
+  ) async {
+    try {
+      await _dio.delete(
+        ApiPath.albumImages(albumId),
+        data: requestDto.toJson(),
       );
     } on DioException catch (e) {
       throw ErrorHandler.handle(e);
@@ -198,6 +215,48 @@ class AlbumRemoteDataSource {
       );
 
       return apiResponse.data!;
+    } on DioException catch (e) {
+      throw ErrorHandler.handle(e);
+    }
+  }
+
+  /// 앨범 수정
+  Future<AlbumDto> updateAlbum(
+    int albumId,
+    AlbumUpdateRequestDto requestDto,
+  ) async {
+    try {
+      final response = await _dio.patch(
+        ApiPath.albumDetail(albumId),
+        data: requestDto.toJson(),
+      );
+
+      final apiResponse = ApiResponse.fromJson(
+        response.data,
+        (json) => AlbumDto.fromJson(json as Map<String, dynamic>),
+      );
+
+      return apiResponse.data!;
+    } on DioException catch (e) {
+      throw ErrorHandler.handle(e);
+    }
+  }
+
+  /// 참가자 강퇴
+  Future<void> kickParticipant(int albumId, int participantId) async {
+    try {
+      await _dio.delete(
+        '${ApiPath.albumDetail(albumId)}/participants/$participantId',
+      );
+    } on DioException catch (e) {
+      throw ErrorHandler.handle(e);
+    }
+  }
+
+  /// 앨범 삭제
+  Future<void> deleteAlbum(int albumId) async {
+    try {
+      await _dio.delete(ApiPath.albumDetail(albumId));
     } on DioException catch (e) {
       throw ErrorHandler.handle(e);
     }

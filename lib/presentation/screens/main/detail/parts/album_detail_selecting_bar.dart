@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 class SelectingBar extends StatelessWidget {
   final int count;
+  //   다시 원래의 VoidCallback 형태로 변경합니다.
   final VoidCallback onMore;
   final VoidCallback onCancel;
 
@@ -17,63 +18,55 @@ class SelectingBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      width: 250,
+      height: 56,
       decoration: BoxDecoration(
         color: AppColor.mainRed,
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(28),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(40),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: Colors.black.withAlpha(50),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             '$count개 선택됨',
-            style: AppFont.size16.copyWith(
+            style: AppFont.size18.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(width: 16),
-          GestureDetector(
-            onTap: onMore,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                '더보기',
-                style: AppFont.size14.copyWith(
-                  color: AppColor.mainRed,
-                  fontWeight: FontWeight.bold,
+          Row(
+            children: [
+              //   Builder를 제거하고 다시 심플하게 onMore를 호출합니다.
+              GestureDetector(
+                onTap: onMore,
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  color: Colors.transparent, // 터치 영역 확보
+                  child: const Icon(
+                    Icons.more_horiz,
+                    color: Colors.white,
+                    size: 28,
+                  ),
                 ),
               ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          GestureDetector(
-            onTap: onCancel,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                '취소',
-                style: AppFont.size14.copyWith(
-                  color: AppColor.mainRed,
-                  fontWeight: FontWeight.bold,
+              const SizedBox(width: 12),
+              GestureDetector(
+                onTap: onCancel,
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  color: Colors.transparent, // 터치 영역 확보
+                  child: const Icon(Icons.close, color: Colors.white, size: 28),
                 ),
               ),
-            ),
+            ],
           ),
         ],
       ),

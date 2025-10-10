@@ -1,19 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
-import 'package:cherrypic/presentation/screens/main/album/edit/album_edit_view_model.dart';
+import 'package:cherrypic/data/album/dto/response/album_detail_dto.dart';
+import 'package:intl/intl.dart';
 
 class AlbumDeleteDialog extends StatelessWidget {
-  final AlbumEditViewModel viewModel;
+  final AlbumDetailDto albumData;
+  final VoidCallback onConfirm;
 
-  const AlbumDeleteDialog({super.key, required this.viewModel});
+  const AlbumDeleteDialog({
+    super.key,
+    required this.albumData,
+    required this.onConfirm,
+  });
+
+  String _getDeleteDate() {
+    final now = DateTime.now();
+    final deleteDate = now.add(const Duration(days: 14));
+    return DateFormat('yyyy. MM. dd').format(deleteDate);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final albumName = viewModel.albumCoverViewModel.albumName;
-    final coverUrl = viewModel.albumCoverViewModel.coverImageUrl;
-    const String ownerName = '방장';
-
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       backgroundColor: Colors.white,
@@ -23,7 +31,7 @@ class AlbumDeleteDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // --- 헤더 ---
+            // 헤더
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -55,20 +63,23 @@ class AlbumDeleteDialog extends StatelessWidget {
             ),
             const SizedBox(height: 24),
 
-            // --- 앨범 커버 미리보기 ---
-            _buildAlbumPreview(coverUrl, albumName),
+            // 앨범 커버 미리보기
+            _buildAlbumPreview(albumData.coverUrl, albumData.title),
             const SizedBox(height: 12),
 
-            // --- 방장 및 삭제일 정보 ---
-            Text('방장 홍길동', style: AppFont.size14.copyWith(color: Colors.black)),
+            // 방장 및 삭제일 정보
+            Text(
+              '방장 ${albumData.hostName}',
+              style: AppFont.size14.copyWith(color: Colors.black),
+            ),
             const SizedBox(height: 4),
             Text(
-              '삭제일 2025. 09. 14',
+              '삭제일 ${_getDeleteDate()}',
               style: AppFont.size14.copyWith(color: Colors.black),
             ),
             const SizedBox(height: 24),
 
-            // --- 안내 문구 ---
+            // 안내 문구
             Text.rich(
               TextSpan(
                 style: AppFont.size14.copyWith(
@@ -77,16 +88,16 @@ class AlbumDeleteDialog extends StatelessWidget {
                 ),
                 children: [
                   TextSpan(
-                    text: ownerName,
+                    text: albumData.hostName,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  const TextSpan(text: '님이 '),
+                  const TextSpan(text: '님이\n'),
                   TextSpan(
-                    text: albumName,
+                    text: albumData.title,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const TextSpan(
-                    text: ' 앨범을 삭제하려고 합니다.\n중요한 사진은 미리 다운로드 받은 뒤\n앨범에서 나가주세요.',
+                    text: ' 앨범을\n삭제하려고 합니다.\n중요한 사진은 미리 다운로드 받은 뒤\n앨범에서 나가주세요.',
                   ),
                 ],
               ),
@@ -94,7 +105,7 @@ class AlbumDeleteDialog extends StatelessWidget {
             ),
             const SizedBox(height: 24),
 
-            // --- 버튼 ---
+            // 버튼
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -109,7 +120,10 @@ class AlbumDeleteDialog extends StatelessWidget {
                   context: context,
                   text: '앨범 나가기',
                   isConfirm: true,
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    onConfirm();
+                  },
                 ),
               ],
             ),
@@ -121,8 +135,8 @@ class AlbumDeleteDialog extends StatelessWidget {
 
   Widget _buildAlbumPreview(String? coverUrl, String albumName) {
     return Container(
-      width: 160,
-      height: 220,
+      width: 150,
+      height: 210,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),

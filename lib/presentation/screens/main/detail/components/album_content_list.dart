@@ -1,10 +1,13 @@
+import 'package:go_router/go_router.dart';
+import 'package:cherrypic/core/router/route_path.dart';
+
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/%20create/create_event_sheet.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/components/event_album_cover.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/event_tab_view_model.dart';
 import 'package:cherrypic/presentation/widgets/album/album_group_section.dart';
-import 'package:cherrypic/presentation/widgets/album/image_full_screen_viewer.dart';
+// import 'package:cherrypic/presentation/widgets/album/image_full_screen_viewer.dart'; // 사용 안 함
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../album_detail_view_model.dart';
@@ -53,22 +56,16 @@ class AlbumContentList extends StatelessWidget {
                 date: g.date,
                 isAllSelected: g.isAllSelected,
                 onToggleAll: () => vm.toggleAll(index),
-                imageUrls: g.imageUrls,
+                imageUrls: g.images.map((img) => img.imageUrl).toList(),
                 selectedIndexes: g.selectedIndexes,
                 isSelectionMode: vm.isSelectionMode,
-
-                // 짧게 클릭
                 onImageTap: (imgIdx) {
                   if (vm.isSelectionMode) {
-                    // 선택 모드: 선택/해제
                     vm.toggleImage(index, imgIdx);
                   } else {
-                    // 일반 모드: 전체화면
                     _openFullScreen(context, vm, index, imgIdx);
                   }
                 },
-
-                // 롱프레스: 선택 모드 진입 + 해당 이미지 선택
                 onImageLongPress: (imgIdx) {
                   if (!vm.isSelectionMode) {
                     vm.enterSelectionMode();
@@ -90,27 +87,33 @@ class AlbumContentList extends StatelessWidget {
     int groupIndex,
     int imageIndex,
   ) {
-    // 전체 이미지 URL 리스트 생성
+    // ... (기존 url, index 계산 로직은 동일) ...
     final allImageUrls = <String>[];
     int initialIndex = 0;
     int currentCount = 0;
+    final List<AlbumImage> allAlbumImages = [];
 
     for (int i = 0; i < vm.groups.length; i++) {
+      final groupImages = vm.groups[i].images;
       if (i < groupIndex) {
-        currentCount += vm.groups[i].imageUrls.length;
+        currentCount += groupImages.length;
       } else if (i == groupIndex) {
         initialIndex = currentCount + imageIndex;
       }
-      allImageUrls.addAll(vm.groups[i].imageUrls);
+      allImageUrls.addAll(groupImages.map((img) => img.imageUrl));
+      allAlbumImages.addAll(groupImages);
     }
 
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => ImageFullScreenViewer(
-          imageUrls: allImageUrls,
-          initialIndex: initialIndex,
-        ),
-      ),
+    //   context.push의 extra 맵 키를 문자열로 명시하고, 필요한 모든 데이터를 전달합니다.
+    context.push(
+      RoutePath.imageViewer,
+      extra: {
+        'imageUrls': allImageUrls,
+        'initialIndex': initialIndex,
+        'allAlbumImages': allAlbumImages, // 삭제 기능을 위해 전체 이미지 정보 전달
+        'albumId': vm.albumId, // 삭제 기능을 위해 앨범 ID 전달
+        'viewModel': vm, // 새 화면에서 Provider를 통해 ViewModel을 사용하기 위해 전달
+      },
     );
   }
 
@@ -148,7 +151,25 @@ class AlbumContentList extends StatelessWidget {
                   itemCount: vm.albums.length,
                   itemBuilder: (context, index) {
                     final album = vm.albums[index];
-                    return EventAlbumCover(album: album);
+                    return EventAlbumCover(
+                      album: album,
+                      //   onTap을 async로 바꾸고 결과를 기다립니다.
+                      onTap: () async {
+                        final result = await context.push<bool>(
+                          RoutePath.eventDetail.replaceFirst(
+                            ':eventId',
+                            album.eventId.toString(),
+                          ),
+                          extra: album,
+                        );
+
+                        // EventDetailScreen에서 업데이트가 있었다고 true를 반환하면,
+                        // EventTabViewModel의 refresh를 호출합니다.
+                        if (result == true && context.mounted) {
+                          context.read<EventTabViewModel>().refresh();
+                        }
+                      },
+                    );
                   },
                 ),
               ),

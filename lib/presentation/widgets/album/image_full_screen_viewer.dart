@@ -1,16 +1,27 @@
+import 'package:cherrypic/core/constants/color.dart';
+import 'package:cherrypic/core/constants/font.dart';
+import 'package:cherrypic/presentation/screens/main/detail/album_detail_view_model.dart';
+import 'package:cherrypic/presentation/screens/main/detail/components/add_to_event_sheet.dart';
+import 'package:cherrypic/presentation/widgets/dialogs/photo_delete_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:go_router/go_router.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:provider/provider.dart';
 
 class ImageFullScreenViewer extends StatefulWidget {
   final List<String> imageUrls;
   final int initialIndex;
+  final List<AlbumImage> allAlbumImages;
+  final int albumId;
 
   const ImageFullScreenViewer({
     super.key,
     required this.imageUrls,
     required this.initialIndex,
+    required this.allAlbumImages,
+    required this.albumId,
   });
 
   @override
@@ -20,7 +31,7 @@ class ImageFullScreenViewer extends StatefulWidget {
 class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
   late PageController _pageController;
   late int _currentIndex;
-  bool _showUI = true; // UI 표시 여부 (하단 버튼, 상단 바)
+  bool _showUI = true;
 
   @override
   void initState() {
@@ -29,6 +40,7 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
     _pageController = PageController(initialPage: widget.initialIndex);
   }
 
+  // ... (dispose, _toggleUI, _getCurrentImageId 함수는 변경 없음) ...
   @override
   void dispose() {
     _pageController.dispose();
@@ -41,13 +53,20 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
     });
   }
 
+  int? _getCurrentImageId() {
+    if (_currentIndex >= widget.allAlbumImages.length) return null;
+    return widget.allAlbumImages[_currentIndex].imageId;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final vm = context.read<AlbumDetailViewModel>();
+
     return Scaffold(
       backgroundColor: _showUI ? Colors.white : Colors.black,
       body: Stack(
         children: [
-          // 이미지 갤러리
+          // ... (이미지 갤러리, 상단 바 UI는 변경 없음) ...
           GestureDetector(
             onTap: _toggleUI,
             child: PhotoViewGallery.builder(
@@ -65,16 +84,13 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
                   ),
                 );
               },
-              onPageChanged: (index) {
-                setState(() {
-                  _currentIndex = index;
-                });
-              },
+              onPageChanged: (index) => setState(() => _currentIndex = index),
               loadingBuilder: (context, event) => Center(
                 child: CircularProgressIndicator(
                   value: event == null
                       ? 0
-                      : event.cumulativeBytesLoaded / event.expectedTotalBytes!,
+                      : event.cumulativeBytesLoaded /
+                            (event.expectedTotalBytes ?? 1),
                 ),
               ),
               backgroundDecoration: BoxDecoration(
@@ -82,8 +98,6 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
               ),
             ),
           ),
-
-          // 상단 바 (닫기 버튼 + 카운터)
           if (_showUI)
             SafeArea(
               child: Padding(
@@ -93,11 +107,11 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
                   children: [
                     IconButton(
                       icon: const Icon(
-                        Icons.close,
+                        Icons.arrow_back_ios_new,
                         color: Colors.black,
-                        size: 28,
+                        size: 20,
                       ),
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () => context.pop(),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -122,7 +136,6 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
               ),
             ),
 
-          // 하단 버튼 3개 (공유, 이벤트 추가, 삭제)
           if (_showUI)
             Positioned(
               bottom: 0,
@@ -134,16 +147,7 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
                     horizontal: 20,
                     vertical: 16,
                   ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, -2),
-                      ),
-                    ],
-                  ),
+                  decoration: const BoxDecoration(color: Colors.white),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -151,21 +155,51 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
                         icon: Icons.share_outlined,
                         label: '공유',
                         onTap: () {
-                          // TODO: 공유 기능 구현
+                          final currentImageUrl =
+                              widget.imageUrls[_currentIndex];
+                          vm.shareSingleImage(context, currentImageUrl);
                         },
                       ),
                       _buildActionButton(
                         icon: Icons.add_circle_outline,
                         label: '이벤트 추가',
+                        //   '이벤트 추가' 버튼 기능 구현
                         onTap: () {
-                          // TODO: 이벤트 추가 기능 구현
+                          final imageId = _getCurrentImageId();
+                          if (imageId == null) return;
+
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled:
+                                true, // DraggableScrollableSheet를 위해 필수
+                            backgroundColor: Colors.transparent,
+                            builder: (_) => AddToEventSheet(
+                              albumId: widget.albumId,
+                              imageId: imageId,
+                            ),
+                          );
                         },
                       ),
                       _buildActionButton(
                         icon: Icons.delete_outline,
                         label: '삭제',
                         onTap: () {
-                          // TODO: 삭제 기능 구현
+                          final imageId = _getCurrentImageId();
+                          if (imageId == null) return;
+
+                          showDialog(
+                            context: context,
+                            builder: (_) => PhotoDeleteDialog(
+                              onConfirm: () async {
+                                final success = await vm.deleteSingleImage(
+                                  imageId,
+                                );
+                                if (success && context.mounted) {
+                                  context.pop();
+                                }
+                              },
+                            ),
+                          );
                         },
                       ),
                     ],
@@ -183,27 +217,28 @@ class _ImageFullScreenViewerState extends State<ImageFullScreenViewer> {
     required String label,
     required VoidCallback onTap,
   }) {
+    // ... (이 위젯은 변경 없음) ...
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey[300]!),
-          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: AppColor.mainLightRed),
+          color: AppColor.mainLightRed.withAlpha(60),
+          borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 20, color: Colors.black87),
-            const SizedBox(width: 6),
             Text(
               label,
-              style: const TextStyle(
-                fontSize: 14,
+              style: AppFont.size16.copyWith(
                 color: Colors.black87,
                 fontWeight: FontWeight.w500,
               ),
             ),
+            const SizedBox(width: 6),
+            Icon(icon, size: 15, color: Colors.black87),
           ],
         ),
       ),

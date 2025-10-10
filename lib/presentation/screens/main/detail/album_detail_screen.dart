@@ -31,9 +31,9 @@ class AlbumDetailScreen extends StatelessWidget {
 }
 
 class _Body extends StatefulWidget {
-  final int albumId; // albumId 추가
+  final int albumId;
 
-  const _Body({required this.albumId}); // 생성자 수정
+  const _Body({required this.albumId});
 
   @override
   State<_Body> createState() => _BodyState();

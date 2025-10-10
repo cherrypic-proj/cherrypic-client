@@ -53,4 +53,6 @@ class RoutePath {
 
   static const albumDetail = '/album/:albumId';
   static const String eventDetail = '/event/:eventId/detail';
+
+  static const String imageViewer = '/image_viewer';
 }

@@ -51,6 +51,9 @@
     <key>NSLocalNetworkUsageDescription</key>
     <string>결제 처리를 위해 로컬 네트워크에 접근합니다.</string>
     
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>선택한 사진을 기기의 앨범에 저장하기 위해 권한이 필요합니다.</string>
+    
     <key>NSBonjourServices</key>
     <array>
         <string>_http._tcp</string>

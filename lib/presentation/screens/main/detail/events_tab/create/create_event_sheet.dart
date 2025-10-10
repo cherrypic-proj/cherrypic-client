@@ -1,3 +1,5 @@
+import 'package:cherrypic/presentation/screens/main/detail/events_tab/%20create/create_event_sort_buttons.dart';
+import 'package:cherrypic/presentation/widgets/album/album_group_section.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cherrypic/core/constants/color.dart';
@@ -14,7 +16,7 @@ class CreateEventSheet extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => CreateEventViewModel(albumId: albumId),
       child: DraggableScrollableSheet(
-        initialChildSize: 0.7,
+        initialChildSize: 0.9, // 초기 사이즈를 조금 늘려 더 많은 사진이 보이도록 함
         minChildSize: 0.5,
         maxChildSize: 0.95,
         builder: (context, scrollController) {
@@ -40,23 +42,15 @@ class _SheetContent extends StatelessWidget {
     final vm = context.watch<CreateEventViewModel>();
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
-    if (vm.isLoading) {
+    // 로딩 중일 때 UI
+    if (vm.isLoading && vm.groups.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (vm.error != null && vm.allPhotos.isEmpty) {
+    // 에러 발생 시 UI
+    if (vm.error != null && vm.groups.isEmpty) {
       return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('이미지를 불러올 수 없습니다', style: AppFont.size16),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('닫기'),
-            ),
-          ],
-        ),
+        child: Text('이미지를 불러올 수 없습니다: ${vm.error}', style: AppFont.size16),
       );
     }
 
@@ -66,9 +60,11 @@ class _SheetContent extends StatelessWidget {
         backgroundColor: Colors.white,
         body: Stack(
           children: [
+            // --- 메인 스크롤 영역 ---
             ListView(
               controller: scrollController,
               padding: EdgeInsets.only(
+                // 선택된 항목이 있을 때 하단 액션바에 가려지지 않도록 패딩 추가
                 bottom: bottomPadding + (vm.isAnythingSelected ? 120 : 20),
               ),
               children: [
@@ -77,10 +73,51 @@ class _SheetContent extends StatelessWidget {
                 const SizedBox(height: 24),
                 _buildCoverSection(context, vm),
                 const SizedBox(height: 30),
-                _buildPhotoGridSection(context, vm),
+
+                // --- 사진 목록 섹션 (완전히 새로 구성) ---
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Text(
+                    '사진 추가',
+                    style: AppFont.size18.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                const CreateEventSortButtons(), //   정렬 버튼 위젯
+                const SizedBox(height: 10),
+
+                //   날짜별 그룹 리스트
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: vm.groups.length,
+                  itemBuilder: (context, groupIndex) {
+                    final group = vm.groups[groupIndex];
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 24),
+                      child: AlbumGroupSection(
+                        date: group.date,
+                        isAllSelected: group.isAllSelected,
+                        onToggleAll: () => vm.toggleAll(groupIndex),
+                        imageUrls: group.images
+                            .map((img) => img.imageUrl)
+                            .toList(),
+                        selectedIndexes: group.selectedIndexes,
+                        // 이벤트 생성 시에는 항상 선택모드
+                        isSelectionMode: true,
+                        onImageTap: (imageIndex) =>
+                            vm.togglePhotoSelection(groupIndex, imageIndex),
+                        // 롱프레스도 일반 탭과 동일하게 토글 기능으로 연결
+                        onImageLongPress: (imageIndex) =>
+                            vm.togglePhotoSelection(groupIndex, imageIndex),
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
 
+            // --- 하단 액션바 ---
             if (vm.isAnythingSelected)
               Positioned(
                 bottom: 0,
@@ -89,6 +126,7 @@ class _SheetContent extends StatelessWidget {
                 child: _buildBottomActionBar(context, vm),
               ),
 
+            // --- 업로드 중 오버레이 ---
             if (vm.isUploading)
               Positioned.fill(
                 child: Container(
@@ -103,6 +141,8 @@ class _SheetContent extends StatelessWidget {
       ),
     );
   }
+
+  // --- 기존 위젯 빌더 함수들 (변경 없음) ---
 
   Widget _buildHeader(BuildContext context) {
     return Container(
@@ -236,82 +276,21 @@ class _SheetContent extends StatelessWidget {
     );
   }
 
-  Widget _buildPhotoGridSection(BuildContext context, CreateEventViewModel vm) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Text(
-            '사진 추가',
-            style: AppFont.size18.copyWith(fontWeight: FontWeight.bold),
-          ),
-        ),
-        const SizedBox(height: 16),
-        GridView.builder(
-          padding: EdgeInsets.zero,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: vm.allPhotos.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            crossAxisSpacing: 2,
-            mainAxisSpacing: 2,
-            childAspectRatio: 1,
-          ),
-          itemBuilder: (context, index) {
-            final photo = vm.allPhotos[index];
-            final isSelected = vm.selectedImageIds.contains(photo.imageId);
-
-            return GestureDetector(
-              onTap: () => vm.togglePhotoSelection(photo.imageId),
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Image.network(photo.imageUrl, fit: BoxFit.cover),
-                  if (isSelected)
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: AppColor.mainRed, width: 3),
-                      ),
-                    ),
-                  if (isSelected)
-                    Positioned(
-                      top: 6,
-                      right: 6,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColor.mainRed,
-                        ),
-                        padding: const EdgeInsets.all(2),
-                        child: const Icon(
-                          Icons.check,
-                          color: Colors.white,
-                          size: 16,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            );
-          },
-        ),
-      ],
-    );
-  }
-
   Widget _buildBottomActionBar(BuildContext context, CreateEventViewModel vm) {
     return Container(
-      padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
-        bottom: MediaQuery.of(context).padding.bottom + 20,
+      padding: EdgeInsets.fromLTRB(
+        20,
+        0,
+        20,
+        MediaQuery.of(context).padding.bottom + 20,
       ),
+      //   배경색과 그림자 제거
+      color: Colors.transparent, // 배경을 투명하게 설정
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
+          const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
