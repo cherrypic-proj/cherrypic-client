@@ -12,7 +12,7 @@ class AuthRemoteDataSource {
 
   AuthRemoteDataSource({Dio? dio}) : _dio = dio ?? DioClient().dio;
 
-  Future<LoginResponseDto> socialLogin(
+  Future<void> socialLogin(
     String provider,
     SocialLoginRequestDto requestDto,
   ) async {
@@ -23,22 +23,11 @@ class AuthRemoteDataSource {
         data: requestDto.toJson(),
       );
 
-      // [수정] statusCode를 확인하는 로직 추가
-      if (response.statusCode == 204) {
-        // 성공했지만 본문이 없으므로, 비어있는 성공 객체를 반환하여 앱이 멈추지 않도록 함
-        return LoginResponseDto(
-          accessToken: 'success',
-          refreshToken: 'success',
-        );
-      } else {
-        // 204가 아닌 다른 성공 코드(200 등)의 경우 기존 로직대로 처리
-        final apiResponse = ApiResponse.fromJson(
-          response.data,
-          (json) => LoginResponseDto.fromJson(json as Map<String, dynamic>),
-        );
-        return apiResponse.data!;
-      }
+      // 200번대 응답 코드는 모두 성공으로 간주하고, 별도의 처리를 하지 않음
+      // Dio는 2xx가 아닐 경우 자동으로 Exception을 발생시키므로, 이 try 블록은 성공이 보장됨
+      return; // 성공 시 그냥 리턴
     } on DioException catch (e) {
+      // Dio에서 발생한 모든 에러는 여기서 잡아서 처리
       throw ErrorHandler.handle(e);
     }
   }

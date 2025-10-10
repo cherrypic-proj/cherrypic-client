@@ -19,7 +19,7 @@ class EventListResponse {
 class EventDto {
   final int eventId;
   final String title;
-  final String coverUrl;
+  final String? coverUrl;
   final int numberOfImages;
 
   EventDto({
@@ -33,7 +33,7 @@ class EventDto {
     return EventDto(
       eventId: json['eventId'] as int,
       title: json['title'] as String,
-      coverUrl: json['coverUrl'] as String,
+      coverUrl: json['coverUrl'] as String?,
       numberOfImages: json['numberOfImages'] as int,
     );
   }
@@ -42,7 +42,7 @@ class EventDto {
   Map<String, dynamic> toEventAlbum() {
     return {
       'eventId': eventId,
-      'imageUrl': coverUrl,
+      'imageUrl': coverUrl ?? '',
       'title': title,
       'photoCount': numberOfImages,
     };

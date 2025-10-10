@@ -1,51 +1,28 @@
+import 'package:cherrypic/presentation/widgets/dialogs/participant_kick_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:cherrypic/core/constants/color.dart';
-import 'package:cherrypic/presentation/screens/main/album/edit/album_edit_view_model.dart';
-import 'package:cherrypic/presentation/widgets/dialogs/custom_confirm_dialog.dart';
+import 'package:cherrypic/data/album/dto/response/participant_dto.dart';
 
 class AlbumPermissionToggle extends StatelessWidget {
   final bool isPermissionEnabled;
   final ValueChanged<bool> onPermissionToggled;
   final bool showMemberList;
-
-  // --- 멤버 리스트 관련 파라미터 (선택적) ---
-  final List<Member>? members;
-  final TextEditingController? searchController;
-  final Function(Member, String)? onUpdateRole;
-  final Function(Member)? onKickMember;
+  final List<ParticipantDto>? participants;
+  final bool isLoadingParticipants;
+  final bool isEditable;
+  final Function(ParticipantDto)? onKickMember;
 
   const AlbumPermissionToggle({
     super.key,
     required this.isPermissionEnabled,
     required this.onPermissionToggled,
-    this.showMemberList = false, // 기본값 false
-    // 멤버 리스트를 보여줄 때만 필요한 파라미터들
-    this.members,
-    this.searchController,
-    this.onUpdateRole,
+    this.showMemberList = false,
+    this.participants,
+    this.isLoadingParticipants = false,
+    this.isEditable = true,
     this.onKickMember,
   });
-
-  // --- 멤버 내보내기 확인 다이얼로그를 표시하는 함수 ---
-  void _showKickConfirmDialog(BuildContext context, Member member) {
-    showDialog(
-      context: context,
-      builder: (BuildContext dialogContext) {
-        return CustomConfirmDialog(
-          title: '내보내기',
-          content: '${member.name} 님을 앨범에서 내보내시겠습니까?',
-          confirmButtonText: '내보내기',
-          cancelButtonText: '취소',
-          onConfirm: () {
-            if (onKickMember != null) {
-              onKickMember!(member);
-            }
-          },
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +30,9 @@ class AlbumPermissionToggle extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildHeader(),
-        if (isPermissionEnabled && showMemberList) ...[
+        if (showMemberList) ...[
           const SizedBox(height: 20),
-          _buildMemberListBox(context), // context 전달
+          _buildMemberListBox(context),
         ],
       ],
     );
@@ -77,17 +54,16 @@ class AlbumPermissionToggle extends StatelessWidget {
         ),
         Switch(
           value: isPermissionEnabled,
-          // activeThumbColor: AppColor.mainRed,
-          /// activeTumColor가 없다고 오류가 떠서 일단 activeTrackColor로 대체.
-          activeTrackColor: AppColor.mainRed,
-          onChanged: onPermissionToggled,
+          activeTrackColor: isEditable
+              ? AppColor.mainRed
+              : Colors.grey, // 비활성화시 회색
+          onChanged: isEditable ? onPermissionToggled : null, // 비활성화시 클릭 불가
         ),
       ],
     );
   }
 
   Widget _buildMemberListBox(BuildContext context) {
-    // context 받도록 수정
     return Container(
       height: 350,
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 15),
@@ -99,7 +75,6 @@ class AlbumPermissionToggle extends StatelessWidget {
       child: Column(
         children: [
           TextField(
-            controller: searchController,
             decoration: InputDecoration(
               hintText: '멤버 검색',
               hintStyle: AppFont.size16.copyWith(color: Colors.grey.shade500),
@@ -118,37 +93,56 @@ class AlbumPermissionToggle extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Expanded(
-            child: ListView.separated(
-              itemCount: members?.length ?? 0,
-              itemBuilder: (context, index) => _buildMemberListItem(
-                context,
-                (members ?? [])[index],
-              ), // context 전달
-              separatorBuilder: (context, index) => const SizedBox(height: 15),
-            ),
+            child: isLoadingParticipants
+                ? const Center(child: CircularProgressIndicator())
+                : participants == null || participants!.isEmpty
+                ? Center(
+                    child: Text(
+                      '참가자가 없습니다',
+                      style: AppFont.size14.copyWith(
+                        color: Colors.grey.shade500,
+                      ),
+                    ),
+                  )
+                : ListView.separated(
+                    itemCount: participants!.length,
+                    itemBuilder: (context, index) =>
+                        _buildMemberListItem(context, participants![index]),
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 15),
+                  ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildMemberListItem(BuildContext context, Member member) {
-    // context 받도록 수정
-    const roles = ['방장', '일반회원', '읽기 전용'];
+  Widget _buildMemberListItem(
+    BuildContext context,
+    ParticipantDto participant,
+  ) {
     return SizedBox(
       height: 45,
       child: Row(
         children: [
           CircleAvatar(
             radius: 10,
-            backgroundImage: NetworkImage(member.profileImageUrl),
+            backgroundImage: participant.profileImageUrl != null
+                ? NetworkImage(participant.profileImageUrl!)
+                : null,
+            child: participant.profileImageUrl == null
+                ? const Icon(Icons.person, size: 12)
+                : null,
           ),
           const SizedBox(width: 10),
-          Text(member.name, style: AppFont.size16),
+          Text(participant.nickname, style: AppFont.size16),
           const Spacer(),
           TextButton(
-            onPressed: () =>
-                _showKickConfirmDialog(context, member), // 다이얼로그 호출
+            onPressed: () {
+              if (onKickMember != null) {
+                _showKickConfirmDialog(context, participant);
+              }
+            },
             child: Text(
               '내보내기',
               style: AppFont.size14.copyWith(
@@ -158,30 +152,36 @@ class AlbumPermissionToggle extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-          DropdownButton<String>(
-            value: member.role,
-            underline: const SizedBox.shrink(),
-            isDense: true,
-            icon: Icon(
-              Icons.keyboard_arrow_down,
-              color: Colors.grey.shade700,
-              size: 20,
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              borderRadius: BorderRadius.circular(4),
             ),
-            style: AppFont.size14.copyWith(color: Colors.grey.shade700),
-            items: roles
-                .map(
-                  (String value) => DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value, style: AppFont.size14),
-                  ),
-                )
-                .toList(),
-            onChanged: (String? newValue) {
-              if (newValue != null) onUpdateRole!(member, newValue);
-            },
+            child: Text(
+              participant.role,
+              style: AppFont.size14.copyWith(color: Colors.grey.shade700),
+            ),
           ),
         ],
       ),
+    );
+  }
+
+  void _showKickConfirmDialog(
+    BuildContext context,
+    ParticipantDto participant,
+  ) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return ParticipantKickDialog(
+          participant: participant,
+          onConfirm: () {
+            onKickMember?.call(participant);
+          },
+        );
+      },
     );
   }
 }

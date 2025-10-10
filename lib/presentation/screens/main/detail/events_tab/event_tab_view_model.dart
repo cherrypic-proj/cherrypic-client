@@ -25,16 +25,18 @@ class EventTabViewModel extends ChangeNotifier {
   bool get hasMore => _hasMore;
   String? get error => _error;
 
-  /// 이벤트 목록 초기 로드
+  /// 이벤트 목록 초기 로드 또는 새로고침
   Future<void> loadEvents({bool refresh = false}) async {
     if (refresh) {
-      _albums.clear();
+      _albums = [];
       _hasMore = true;
     }
-
+    if (_isLoading) return;
     _isLoading = true;
     _error = null;
-    notifyListeners();
+    if (!refresh) {
+      notifyListeners();
+    }
 
     try {
       final response = await _eventRepository.getEvents(
@@ -44,15 +46,10 @@ class EventTabViewModel extends ChangeNotifier {
       );
 
       final eventAlbums = response.content
-          .map((dto) => EventAlbum.fromMap(dto.toEventAlbum()))
+          .map((dto) => EventAlbum.fromDto(dto, albumId: albumId))
           .toList();
 
-      if (refresh) {
-        _albums = eventAlbums;
-      } else {
-        _albums.addAll(eventAlbums);
-      }
-
+      _albums = eventAlbums;
       _hasMore = !response.isLast;
     } catch (e) {
       _error = e.toString();
@@ -66,13 +63,11 @@ class EventTabViewModel extends ChangeNotifier {
   /// 추가 이벤트 로드 (무한 스크롤)
   Future<void> loadMoreEvents() async {
     if (_isLoadingMore || !_hasMore || _albums.isEmpty) return;
-
     _isLoadingMore = true;
     notifyListeners();
 
     try {
       final lastEventId = _albums.last.eventId;
-
       final response = await _eventRepository.getEvents(
         albumId: albumId,
         lastEventId: lastEventId,
@@ -81,7 +76,7 @@ class EventTabViewModel extends ChangeNotifier {
       );
 
       final eventAlbums = response.content
-          .map((dto) => EventAlbum.fromMap(dto.toEventAlbum()))
+          .map((dto) => EventAlbum.fromDto(dto, albumId: albumId))
           .toList();
 
       _albums.addAll(eventAlbums);
@@ -95,7 +90,7 @@ class EventTabViewModel extends ChangeNotifier {
     }
   }
 
-  /// 새로고침
+  /// 목록을 새로고침하는 함수
   Future<void> refresh() async {
     await loadEvents(refresh: true);
   }

@@ -1,5 +1,7 @@
 import 'package:cherrypic/data/album/dto/request/album_create_request_dto.dart';
+import 'package:cherrypic/data/album/dto/request/album_image_delete_request_dto.dart';
 import 'package:cherrypic/data/album/dto/request/album_image_upload_request_dto.dart';
+import 'package:cherrypic/data/album/dto/request/album_update_request_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_detail_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_image_list_response_dto.dart';
@@ -98,5 +100,31 @@ class AlbumRepository {
       parameter: parameter,
       direction: direction,
     );
+  }
+
+  /// 앨범 이미지 삭제
+  Future<void> deleteAlbumImages(
+    int albumId,
+    AlbumImageDeleteRequestDto requestDto,
+  ) async {
+    return await _remoteDataSource.deleteAlbumImages(albumId, requestDto);
+  }
+
+  /// 앨범 수정
+  Future<AlbumDto> updateAlbum(
+    int albumId,
+    AlbumUpdateRequestDto requestDto,
+  ) async {
+    return await _remoteDataSource.updateAlbum(albumId, requestDto);
+  }
+
+  /// 참가자 강퇴
+  Future<void> kickParticipant(int albumId, int participantId) async {
+    return await _remoteDataSource.kickParticipant(albumId, participantId);
+  }
+
+  /// 앨범 삭제
+  Future<void> deleteAlbum(int albumId) async {
+    return await _remoteDataSource.deleteAlbum(albumId);
   }
 }

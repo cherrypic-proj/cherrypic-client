@@ -121,7 +121,6 @@ class _AlbumCoverSectionState extends State<AlbumCoverSection> {
                     ),
                     child: Center(
                       child: Text(
-                        // ✨ 여기만 수정했습니다!
                         widget.viewModel.albumDisplayName,
                         style: AppFont.size14,
                         maxLines: 1,

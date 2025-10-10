@@ -1,3 +1,4 @@
+import 'package:cherrypic/data/album/dto/response/album_detail_dto.dart';
 import 'package:cherrypic/data/album/repositories/album_repository.dart';
 import 'package:cherrypic/presentation/screens/main/detail/Header/album_header_model.dart';
 import 'package:cherrypic/presentation/screens/main/detail/Header/components/member_list_popup.dart';
@@ -7,6 +8,8 @@ class AlbumHeaderViewModel extends ChangeNotifier {
   final int albumId;
   final AlbumRepository _albumRepository;
 
+  AlbumDetailDto? _originalDto; // 원본 DTO 보관
+  AlbumDetailDto? get originalDto => _originalDto;
   AlbumHeaderData? header;
   bool isLoading = false;
   String? error;
@@ -29,6 +32,8 @@ class AlbumHeaderViewModel extends ChangeNotifier {
 
     try {
       final dto = await _albumRepository.getAlbumDetail(albumId);
+      _originalDto = dto; // 원본 DTO 저장
+
       header = AlbumHeaderData(
         albumId: albumId,
         title: dto.title,

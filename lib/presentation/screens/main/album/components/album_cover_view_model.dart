@@ -61,4 +61,15 @@ class AlbumCoverViewModel extends ChangeNotifier {
     _albumName = newName;
     notifyListeners();
   }
+
+  // 초기 데이터 설정 (수정 화면용)
+  void setInitialData({String? albumName, String? coverImageUrl}) {
+    if (albumName != null && albumName.isNotEmpty) {
+      _albumName = albumName;
+    }
+    if (coverImageUrl != null) {
+      _coverImageUrl = coverImageUrl;
+    }
+    notifyListeners();
+  }
 }

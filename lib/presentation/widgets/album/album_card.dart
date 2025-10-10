@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:cherrypic/presentation/widgets/album/album_badge_type.dart';
@@ -62,11 +63,46 @@ class AlbumCard extends StatelessWidget {
                         top: Radius.circular(12),
                       ),
                       child: imageUrl.isNotEmpty
-                          ? Image.network(
-                              imageUrl,
+                          ? CachedNetworkImage(
+                              imageUrl: imageUrl,
                               width: 150,
                               height: 160,
                               fit: BoxFit.cover,
+                              // 메모리 캐시 최적화 (실제 표시 크기보다 약간 크게)
+                              memCacheWidth: 300,
+                              memCacheHeight: 320,
+                              // 디스크 캐시 크기 (고해상도 대비)
+                              maxWidthDiskCache: 600,
+                              maxHeightDiskCache: 640,
+                              // 로딩 중 placeholder
+                              placeholder: (context, url) => Container(
+                                width: 150,
+                                height: 160,
+                                color: Colors.grey[200],
+                                child: const Center(
+                                  child: SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              // 에러 시 fallback
+                              errorWidget: (context, url, error) => Container(
+                                width: 150,
+                                height: 160,
+                                color: Colors.grey[200],
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.image,
+                                    size: 40,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
                             )
                           : Container(
                               width: 150,
@@ -81,7 +117,7 @@ class AlbumCard extends StatelessWidget {
                               ),
                             ),
                     ),
-                    // 뱃지
+                    // 배지
                     if (badgeType != AlbumBadgeType.none)
                       Positioned(
                         top: 6,

@@ -1,5 +1,6 @@
 import 'package:cherrypic/core/router/route_path.dart';
 import 'package:cherrypic/core/network/navigation_service.dart';
+import 'package:cherrypic/data/album/dto/response/album_detail_dto.dart';
 import 'package:cherrypic/data/login/repositories/auth_repository.dart';
 import 'package:cherrypic/data/login/services/apple_auth_data_source.dart';
 import 'package:cherrypic/data/login/services/auth_remote_data_source.dart';
@@ -9,6 +10,7 @@ import 'package:cherrypic/presentation/screens/event/event_main_screen.dart';
 import 'package:cherrypic/presentation/screens/main/album/add/album_add_screen.dart';
 import 'package:cherrypic/presentation/screens/main/album/edit/album_edit_screen.dart';
 import 'package:cherrypic/presentation/screens/main/detail/album_detail_screen.dart';
+import 'package:cherrypic/presentation/screens/main/detail/album_detail_view_model.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/detail/event_detail_screen.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/event_album.dart';
 import 'package:cherrypic/presentation/screens/main/home_tab/main_screen.dart';
@@ -32,6 +34,7 @@ import 'package:cherrypic/presentation/screens/main/home_tab/payment_complete_sc
 import 'package:cherrypic/presentation/screens/main/home_tab/payment_method_screen.dart';
 import 'package:cherrypic/presentation/screens/store/store_main_screen.dart';
 import 'package:cherrypic/presentation/screens/store/subscription/store_subs_info.dart';
+import 'package:cherrypic/presentation/widgets/album/image_full_screen_viewer.dart';
 import 'package:cherrypic/presentation/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -86,7 +89,31 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
         state.uri.queryParameters['albumId'] ??
         '-1';
     final albumId = int.tryParse(idStr) ?? -1;
-    return AlbumEditScreen(albumId: albumId);
+    final albumData = state.extra as AlbumDetailDto;
+
+    return AlbumEditScreen(albumId: albumId, albumData: albumData);
+  },
+
+  RoutePath.imageViewer: (context, state) {
+    // 1. extra로 전달받은 모든 데이터를 캐스팅하여 추출합니다.
+    final Map<String, dynamic> args = state.extra as Map<String, dynamic>;
+    final List<String> imageUrls = args['imageUrls'];
+    final int initialIndex = args['initialIndex'];
+    final List<AlbumImage> allAlbumImages = args['allAlbumImages'];
+    final int albumId = args['albumId'];
+    final AlbumDetailViewModel viewModel = args['viewModel'];
+
+    // 2. 새 화면(ImageFullScreenViewer)이 기존 ViewModel을 계속 사용할 수 있도록
+    //    ChangeNotifierProvider.value로 감싸줍니다.
+    return ChangeNotifierProvider.value(
+      value: viewModel,
+      child: ImageFullScreenViewer(
+        imageUrls: imageUrls,
+        initialIndex: initialIndex,
+        allAlbumImages: allAlbumImages,
+        albumId: albumId,
+      ),
+    );
   },
 
   /// myPage
