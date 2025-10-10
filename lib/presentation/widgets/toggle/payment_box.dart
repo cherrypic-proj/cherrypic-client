@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/constants/font.dart';
-import '../../../../widgets/album/album_badge_type.dart';
-import '../album_payment_info_model.dart';
+import '../../screens/my_page/album_payment_info/album_payment_info_model.dart';
+import '../album/album_badge_type.dart';
 
 class PaymentBox extends StatelessWidget {
   final AlbumPaymentInfoModel model;
@@ -56,7 +56,7 @@ class PaymentBox extends StatelessWidget {
                     badgeType.label,
                     style: AppFont.size14.copyWith(
                       color: badgeType.textColor,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
@@ -65,7 +65,7 @@ class PaymentBox extends StatelessWidget {
                   model.price,
                   style: AppFont.size14.copyWith(
                     color: badgeType.textColor,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
@@ -80,9 +80,9 @@ class PaymentBox extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       model.title,
-                      style: AppFont.size20.copyWith(
+                      style: AppFont.size14.copyWith(
                         color: badgeType.textColor,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
@@ -116,7 +116,7 @@ class PaymentBox extends StatelessWidget {
           label,
           style: AppFont.size12.copyWith(
             color: badgeType.textColor,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w500,
           ),
         ),
         const SizedBox(width: 30),
@@ -124,7 +124,7 @@ class PaymentBox extends StatelessWidget {
           value,
           style: AppFont.size12.copyWith(
             color: badgeType.textColor,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ],

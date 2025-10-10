@@ -16,11 +16,14 @@ import 'package:cherrypic/presentation/screens/main/detail/events_tab/event_albu
 import 'package:cherrypic/presentation/screens/main/home_tab/main_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/address_management/add_address_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/address_management/address_management_screen.dart';
+import 'package:cherrypic/presentation/screens/my_page/album_management/album_management_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/album_payment_info/info/payment_info_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/album_subscription_history/album_subscription_history_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/delete_account/delete_account_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/my_page_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/notice/notice_screen.dart';
+import 'package:cherrypic/presentation/screens/my_page/photo_management/photo_bill/photo_bill_screen.dart';
+import 'package:cherrypic/presentation/screens/my_page/photo_management/photo_management_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/settings/setting_screen.dart';
 import 'package:cherrypic/presentation/screens/my_page/album_payment_info/album_payment_info_screen.dart';
 import 'package:cherrypic/presentation/screens/store/photo_printing/photo_printing_screen.dart';
@@ -119,6 +122,7 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
   /// myPage
   RoutePath.myPage: (context, state) => const MyPageScreen(),
   RoutePath.myPage_notice: (context, state) => const NoticeScreen(),
+  RoutePath.myPage_album_management: (context, state) => const AlbumManagementScreen(),
   RoutePath.myPage_album_payment_info: (context, state) =>
       const AlbumPaymentInfoScreen(),
   RoutePath.myPage_payment_info: (context, state) {
@@ -126,6 +130,10 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
     // final viewModel = state.extra as PaymentInfoViewModel;
     return PaymentInfoScreen(item: item, viewModel: PaymentInfoViewModel());
   },
+  RoutePath.myPage_photo_management: (context, state) =>
+  const PhotoManagementScreen(),
+  RoutePath.myPage_photo_bill: (context, state) =>
+  const PhotoBillScreen(),
   RoutePath.myPage_address_management: (context, state) =>
       const AddressManagementScreen(),
   RoutePath.myPage_add_address: (context, state) => const AddAddressScreen(),

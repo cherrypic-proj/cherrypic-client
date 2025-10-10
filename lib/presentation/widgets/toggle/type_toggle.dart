@@ -1,71 +1,90 @@
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
 import 'package:flutter/material.dart';
-import '../album_payment_info_view_model.dart';
 
-/// pro & premium 토글 버튼
+import '../../screens/my_page/album_payment_info/album_payment_info_view_model.dart';
+
+/// ✨ 토글 모드 (정보 / 관리)
+enum ToggleMode { info, manage }
+
 class TypeToggle extends StatelessWidget {
   final AlbumFilterType selected;
-  final ValueChanged<AlbumFilterType> onChanged;  
+  final ValueChanged<AlbumFilterType> onChanged;
+  final ToggleMode mode;
 
   const TypeToggle({
     super.key,
     required this.selected,
     required this.onChanged,
+    this.mode = ToggleMode.info,
   });
 
   @override
   Widget build(BuildContext context) {
+    // ✨ 모드별 텍스트 지정
+    final type1Text = mode == ToggleMode.manage ? '이용중' : 'pro';
+    final type2Text = mode == ToggleMode.manage ? '결제대기' : 'premium';
+
+    // ✨ 모드별 색상 지정
+    final isInfoMode = mode == ToggleMode.info;
+    final activeColor1 =
+    isInfoMode ? AppColor.mainLightRed : Colors.black;
+    final activeColor2 =
+    isInfoMode ? AppColor.mainRed : Colors.black;
+    final textColorActive = Colors.white;
+    final textColorInactive =
+    isInfoMode ? AppColor.subLightGrey : Colors.black54;
+
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        border: Border.all(color: AppColor.mainRed, width: 2),
+        border: Border.all(
+          color: isInfoMode ? AppColor.mainRed : Colors.black,
+          width: 2,
+        ),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Pro 버튼
           GestureDetector(
             onTap: () => onChanged(AlbumFilterType.pro),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
               decoration: BoxDecoration(
                 color: selected == AlbumFilterType.pro
-                    ? AppColor.mainLightRed
+                    ? activeColor1
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(999),
               ),
               child: Text(
-                "Pro",
+                type1Text,
                 style: AppFont.size14.copyWith(
                   fontWeight: FontWeight.w600,
                   color: selected == AlbumFilterType.pro
-                      ? AppColor.subDarkGrey
-                      : AppColor.subLightGrey,
+                      ? (isInfoMode ? AppColor.subDarkGrey : Colors.white)
+                      : textColorInactive,
                 ),
               ),
             ),
           ),
-
-          // Premium 버튼
           GestureDetector(
             onTap: () => onChanged(AlbumFilterType.premium),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
               decoration: BoxDecoration(
                 color: selected == AlbumFilterType.premium
-                    ? AppColor.mainRed
+                    ? activeColor2
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(999),
               ),
               child: Text(
-                "Premium",
+                type2Text,
                 style: AppFont.size14.copyWith(
                   fontWeight: FontWeight.w600,
                   color: selected == AlbumFilterType.premium
-                      ? Colors.white
-                      : AppColor.subLightGrey,
+                      ? textColorActive
+                      : textColorInactive,
                 ),
               ),
             ),

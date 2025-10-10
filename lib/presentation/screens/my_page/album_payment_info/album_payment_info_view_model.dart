@@ -12,12 +12,6 @@ class AlbumPaymentInfoViewModel extends ChangeNotifier {
   /// 전체 항목 리스트
   final List<AlbumPaymentInfoModel> allItems = const [
     AlbumPaymentInfoModel(
-      badgeType: AlbumBadgeType.basic,
-      title: '음식(양식, 중식, 한식, 일식) 음식 음식',
-      createDate: '2025/06/23',
-      price: '무료',
-    ),
-    AlbumPaymentInfoModel(
       badgeType: AlbumBadgeType.pro,
       title: '프랑스 여행_2025. 06. 24',
       createDate: '2025/06/23',
@@ -68,7 +62,7 @@ class AlbumPaymentInfoViewModel extends ChangeNotifier {
   AlbumFilterType get selectedFilter => _selectedFilter;
 
   /// 전체 항목 개수 기준 토글 표시 여부
-  bool get shouldShowToggle => allItems.length > 3;
+  bool get shouldShowToggle => allItems.length > 5;
 
   /// 현재 선택된 토글(Pro/Premium)에 맞게 필터링된 항목
   List<AlbumPaymentInfoModel> get displayedItems {
@@ -80,7 +74,7 @@ class AlbumPaymentInfoViewModel extends ChangeNotifier {
       }
     }).toList();
 
-    return _isExpanded ? filtered : filtered.take(3).toList();
+    return _isExpanded ? filtered : filtered.take(5).toList();
   }
 
   /// 전체 보기 토글
@@ -89,10 +83,10 @@ class AlbumPaymentInfoViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// 필터 변경 (Pro/Premium 토글 클릭 시 호출)
+  /// 필터 변경
   void changeFilter(AlbumFilterType type) {
     _selectedFilter = type;
-    _isExpanded = false; // 토글 바꿀 때마다 초기화
+    _isExpanded = false;
     notifyListeners();
   }
 }

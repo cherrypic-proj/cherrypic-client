@@ -4,10 +4,10 @@ import 'package:cherrypic/presentation/screens/my_page/album_payment_info/info/p
 import 'package:flutter/material.dart';
 
 import '../../../../widgets/custom_sub_app_bar.dart';
+import '../../../../widgets/toggle/payment_box.dart';
+import '../../../../widgets/toggle/payment_history_box.dart';
 import '../album_payment_info_model.dart';
 
-import '../components/payment_box.dart';
-import '../components/payment_history_box.dart';
 
 class PaymentInfoScreen extends StatelessWidget {
   final AlbumPaymentInfoModel item;

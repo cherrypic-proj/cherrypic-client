@@ -48,9 +48,9 @@ class MyPageViewModel extends ChangeNotifier {
   String get loginIconAsset {
     switch (loginType) {
       case LoginType.kakao:
-        return 'assets/images/kakao_icon.png';
+        return 'assets/images/kakao_icon_2.png';
       case LoginType.apple:
-        return 'assets/images/apple_icon.png';
+        return 'assets/images/apple_icon_2.png';
     }
   }
 

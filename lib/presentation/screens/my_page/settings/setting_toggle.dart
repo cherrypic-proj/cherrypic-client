@@ -34,7 +34,7 @@ class _SettingToggleState extends State<SettingToggle> {
               widget.textStyle ??
               AppFont.size16.copyWith(
                 color: Colors.black,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w500,
               ),
         ),
         Transform.scale(

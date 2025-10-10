@@ -7,6 +7,8 @@ class HorizontalLabeledTextField extends StatelessWidget {
   final String hintText;
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
+  final bool showEditIcon;
+  final VoidCallback? onEditTap;
 
   const HorizontalLabeledTextField({
     super.key,
@@ -14,6 +16,8 @@ class HorizontalLabeledTextField extends StatelessWidget {
     required this.hintText,
     this.controller,
     this.onChanged,
+    this.showEditIcon = false,
+    this.onEditTap,
   });
 
   @override
@@ -53,6 +57,20 @@ class HorizontalLabeledTextField extends StatelessWidget {
               focusedBorder: const UnderlineInputBorder(
                 borderSide: BorderSide(color: AppColor.mainLightRed, width: 1),
               ),
+
+              suffixIcon: showEditIcon
+                  ? IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                icon: Image.asset(
+                  'assets/images/ic_edit.png',
+                  width: 20,
+                  height: 20,
+                  color: Colors.black,
+                ),
+                onPressed: onEditTap,
+              )
+                  : null,
             ),
           ),
         ),
