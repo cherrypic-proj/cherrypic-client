@@ -28,11 +28,10 @@ class TypeToggle extends StatelessWidget {
     // ✨ 모드별 색상 지정
     final isInfoMode = mode == ToggleMode.info;
     final activeColor1 =
-    isInfoMode ? AppColor.mainLightRed : Colors.black; // pro or 이용중
+    isInfoMode ? AppColor.mainLightRed : Colors.black;
     final activeColor2 =
-    isInfoMode ? AppColor.mainRed : Colors.black; // premium or 결제대기
-    final textColorActive =
-    isInfoMode ? Colors.white : Colors.white; // 둘 다 white 유지
+    isInfoMode ? AppColor.mainRed : Colors.black;
+    final textColorActive = Colors.white;
     final textColorInactive =
     isInfoMode ? AppColor.subLightGrey : Colors.black54;
 
