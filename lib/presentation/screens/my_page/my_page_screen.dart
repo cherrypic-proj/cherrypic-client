@@ -1,4 +1,3 @@
-// my_page_screen.dart
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/presentation/screens/my_page/my_page_view_model.dart';
 import 'package:flutter/material.dart';
@@ -132,14 +131,11 @@ class _MyPageScreenState extends State<MyPageScreen> {
                   // 프로필 사진 수정 버튼
                   GestureDetector(
                     onTap: () async {
-                      // 1. 이미지 선택
-                      await viewModel.pickImage(context);
+                      await viewModel.pickAndSetProfileImage(context);
 
-                      // 2. 이미지가 성공적으로 선택되었다면 프로필 수정 API 호출
                       if (viewModel.coverImage != null) {
                         final success = await viewModel.updateProfile(
                           newCoverImage: viewModel.coverImage,
-                          // 프로필 사진 수정 시에도 기존 닉네임을 request에 전달해야 함
                           newNickname: viewModel.memberInfo?.nickname,
                         );
 

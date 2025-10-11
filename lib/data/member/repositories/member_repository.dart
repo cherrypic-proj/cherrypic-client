@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:cherrypic/data/member/dto/request/member_edit_profile_request_dto.dart';
 import 'package:cherrypic/data/member/dto/response/member_edit_profile_dto.dart';
 import 'package:cherrypic/data/member/dto/response/member_info_dto.dart';

@@ -3,15 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:cherrypic/data/member/dto/response/member_info_dto.dart';
 import 'package:cherrypic/data/member/dto/request/member_edit_profile_request_dto.dart';
-import '../../../data/member/repositories/member_repository.dart'; // 추가
+import '../../../data/member/repositories/member_repository.dart';
+import '../../../data/member/services/profile_image_upload_service.dart'; // 추가
 
 enum LoginType { kakao, apple }
 
 class MyPageViewModel extends ChangeNotifier {
   final MemberRepository _memberRepository;
+  final ProfileImageUploadService _uploadService;
 
-  MyPageViewModel({MemberRepository? memberRepository})
-      : _memberRepository = memberRepository ?? MemberRepository();
+  MyPageViewModel({
+    MemberRepository? memberRepository,
+
+    ProfileImageUploadService? uploadService,
+  })  : _memberRepository = memberRepository ?? MemberRepository(),
+        _uploadService = uploadService ?? ProfileImageUploadService(); // 기본 인스턴스 생성
 
   MemberInfoDto? _memberInfo;
   MemberInfoDto? get memberInfo => _memberInfo;
@@ -21,8 +27,7 @@ class MyPageViewModel extends ChangeNotifier {
 
   LoginType loginType = LoginType.kakao;
 
-  /// 갤러리에서 이미지를 선택
-  Future<void> pickImage(BuildContext context) async {
+  Future<void> pickAndSetProfileImage(BuildContext context) async {
     final List<AssetEntity>? assets = await AssetPicker.pickAssets(
       context,
       pickerConfig: const AssetPickerConfig(
@@ -37,7 +42,6 @@ class MyPageViewModel extends ChangeNotifier {
         const ThumbnailSize(500, 500),
       );
 
-      /// 미리보기
       _coverImage = imageData;
       notifyListeners();
 
@@ -56,7 +60,7 @@ class MyPageViewModel extends ChangeNotifier {
     }
   }
 
-  /// 멤버 정보 불러오기
+  /// 멤버 정보 불러오기 (로직 유지)
   Future<void> fetchMemberInfo() async {
     try {
       _memberInfo = await _memberRepository.getMemberInfo();
@@ -73,15 +77,17 @@ class MyPageViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-
-  /// TODO: 이 함수를 실제 이미지 업로드 로직으로 교체해야 합니다.
+  /// 프로필 이미지 수정
   Future<String?> _uploadCoverImage(Uint8List imageData) async {
-    debugPrint('Uploading image... (Placeholder)');
-    // 실제 이미지 업로드 로직 후 반환된 URL이라고 가정
-    return 'https://new-profile-image.com/uploaded-pic-${DateTime.now().millisecondsSinceEpoch}.jpg';
+    try {
+      return await _uploadService.uploadCoverImage(imageData);
+    } catch (e) {
+      debugPrint('Error uploading profile image: $e');
+      return null;
+    }
   }
 
-  /// 프로필 수정 (닉네임 또는 이미지 URL)
+  /// 프로필 수정
   Future<bool> updateProfile({
     String? newNickname,
     Uint8List? newCoverImage,
@@ -97,19 +103,16 @@ class MyPageViewModel extends ChangeNotifier {
     nicknameToSend = newNickname ?? _memberInfo!.nickname;
 
     if (newCoverImage != null) {
-      // 1. 이미지를 업로드하고 URL을 받습니다.
       profileImageUrlToSend = await _uploadCoverImage(newCoverImage);
       if (profileImageUrlToSend == null) {
         debugPrint('Image upload failed. Profile update aborted.');
         return false;
       }
     } else {
-      // 이미지 변경이 없다면 기존 URL을 사용합니다.
       profileImageUrlToSend = _memberInfo!.profileImageUrl;
     }
 
     try {
-      // 2. 받은 URL을 포함하여 프로필 정보를 업데이트합니다.
       final requestDto = MemberEditProfileRequestDto(
         nickname: nicknameToSend,
         profileImageUrl: profileImageUrlToSend,
@@ -117,9 +120,8 @@ class MyPageViewModel extends ChangeNotifier {
 
       await _memberRepository.updateProfile(requestDto);
 
-      // 3. 수정 성공 후 최신 정보를 다시 불러와 화면을 갱신합니다.
       await fetchMemberInfo();
-      _coverImage = null; // 미리 보기 이미지는 성공적으로 서버에 반영되었으므로 초기화
+      _coverImage = null;
 
       debugPrint('Profile update successful! New Nickname: $nicknameToSend');
       return true;
