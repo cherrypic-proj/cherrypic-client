@@ -90,6 +90,7 @@ class AlbumPaymentInfoViewModel extends ChangeNotifier {
       String formattedCreateDate = dto.createdAt.split('T').first.replaceAll('-', '/');
 
       return AlbumPaymentInfoModel(
+        albumId: dto.albumId,
         badgeType: badgeType,
         title: dto.title,
         createDate: formattedCreateDate,

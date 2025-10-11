@@ -8,6 +8,7 @@ enum PaymentStatusType { using, pending }
 class AlbumManagementViewModel extends ChangeNotifier {
   final List<AlbumPaymentInfoModel> allItems = const [
     AlbumPaymentInfoModel(
+      albumId: 1,
       badgeType: AlbumBadgeType.basic,
       title: '음식(양식, 중식, 한식, 일식) 음식 음식',
       createDate: '2025/06/23',
@@ -15,6 +16,7 @@ class AlbumManagementViewModel extends ChangeNotifier {
       status: PaymentStatusType.using,
     ),
     AlbumPaymentInfoModel(
+      albumId: 2,
       badgeType: AlbumBadgeType.pro,
       title: '프랑스 여행_2025.06.24',
       createDate: '2025/06/23',
@@ -24,6 +26,7 @@ class AlbumManagementViewModel extends ChangeNotifier {
       status: PaymentStatusType.using,
     ),
     AlbumPaymentInfoModel(
+      albumId: 3,
       badgeType: AlbumBadgeType.premium,
       title: '프랑스 여행_2025.06.24',
       createDate: '2025/06/23',
@@ -33,6 +36,7 @@ class AlbumManagementViewModel extends ChangeNotifier {
       status: PaymentStatusType.using,
     ),
     AlbumPaymentInfoModel(
+      albumId: 4,
       badgeType: AlbumBadgeType.pro,
       title: '호주 여행',
       createDate: '2025/06/23',
@@ -42,6 +46,7 @@ class AlbumManagementViewModel extends ChangeNotifier {
       status: PaymentStatusType.pending,
     ),
     AlbumPaymentInfoModel(
+      albumId: 5,
       badgeType: AlbumBadgeType.premium,
       title: '호주 여행',
       createDate: '2025/06/23',
