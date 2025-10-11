@@ -10,6 +10,8 @@ import 'package:cherrypic/data/album/dto/response/participant_dto.dart';
 import 'package:cherrypic/data/album/dto/response/presigned_url_response_dto.dart';
 import 'package:cherrypic/data/album/services/album_remote_data_source.dart';
 
+import '../dto/response/album_subscription_info_dto.dart';
+
 class AlbumRepository {
   final AlbumRemoteDataSource _remoteDataSource;
 
@@ -126,5 +128,14 @@ class AlbumRepository {
   /// 앨범 삭제
   Future<void> deleteAlbum(int albumId) async {
     return await _remoteDataSource.deleteAlbum(albumId);
+  }
+
+  /// 구독 정보 조회
+  Future<AlbumSubscriptionInfoDto> getAlbumSubscriptionInfo(int albumId) async {
+    try {
+      return await _remoteDataSource.getAlbumSubscriptionInfo(albumId);
+    } catch (e) {
+      rethrow;
+    }
   }
 }

@@ -9,6 +9,8 @@ class ApiPath {
       '/albums/$albumId/invitation-link';
   static String albumImages(int albumId) => '/albums/$albumId/images';
 
+  static String albumSubscription(int albumId) => '/albums/$albumId/subscriptions';
+
   // 앨범 이벤트
   static const String events = '/events';
   static const String eventsCoverUploadUrl = '/events/cover-upload-url';

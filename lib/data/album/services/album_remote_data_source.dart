@@ -14,6 +14,8 @@ import 'package:cherrypic/data/album/dto/response/participant_dto.dart';
 import 'package:cherrypic/data/album/dto/response/presigned_url_response_dto.dart';
 import 'package:dio/dio.dart';
 
+import '../dto/response/album_subscription_info_dto.dart';
+
 class AlbumRemoteDataSource {
   final Dio _dio = DioClient().dio;
 
@@ -257,6 +259,22 @@ class AlbumRemoteDataSource {
   Future<void> deleteAlbum(int albumId) async {
     try {
       await _dio.delete(ApiPath.albumDetail(albumId));
+    } on DioException catch (e) {
+      throw ErrorHandler.handle(e);
+    }
+  }
+
+  /// 구독 정보 조회
+  Future<AlbumSubscriptionInfoDto> getAlbumSubscriptionInfo(int albumId) async {
+    try {
+      final response = await _dio.get(ApiPath.albumSubscription(albumId));
+
+      final apiResponse = ApiResponse.fromJson(
+        response.data,
+            (json) => AlbumSubscriptionInfoDto.fromJson(json as Map<String, dynamic>),
+      );
+
+      return apiResponse.data!;
     } on DioException catch (e) {
       throw ErrorHandler.handle(e);
     }
