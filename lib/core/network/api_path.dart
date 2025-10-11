@@ -16,4 +16,7 @@ class ApiPath {
   static String eventDetail(int eventId) => '/events/$eventId';
 
   // ... 다른 API 경로들도 여기에 추가
+
+  // 멤버 관련 API
+  static String memberInfo() => '/members/me';
 }

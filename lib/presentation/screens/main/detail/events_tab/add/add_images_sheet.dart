@@ -1,6 +1,5 @@
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
-import 'package:cherrypic/presentation/screens/main/detail/events_tab/%20create/create_event_sort_buttons.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/add/add_images_sort_buttons.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/add/add_images_view_model.dart';
 import 'package:cherrypic/presentation/widgets/album/album_group_section.dart';

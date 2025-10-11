@@ -22,6 +22,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
   void initState() {
     super.initState();
     viewModel = MyPageViewModel();
+    // 화면 초기화 시 회원 정보 조회 API 호출
+    viewModel.fetchMemberInfo();
   }
 
   @override
@@ -31,6 +33,9 @@ class _MyPageScreenState extends State<MyPageScreen> {
       body: AnimatedBuilder(
         animation: viewModel,
         builder: (context, _) {
+          // 회원 정보 가져오기
+          final memberInfo = viewModel.memberInfo;
+
           return SingleChildScrollView(
             child: Align(
               alignment: Alignment.topCenter,
@@ -45,6 +50,19 @@ class _MyPageScreenState extends State<MyPageScreen> {
                       width: 120,
                       height: 120,
                       fit: BoxFit.cover,
+                    )
+                        : (memberInfo?.profileImageUrl != null && memberInfo!.profileImageUrl.isNotEmpty)
+                        ? Image.network(
+                      memberInfo.profileImageUrl,
+                      width: 120,
+                      height: 120,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Image.asset(
+                        'assets/images/sample_photo.png',
+                        width: 120,
+                        height: 120,
+                        fit: BoxFit.cover,
+                      ),
                     )
                         : Image.asset(
                       'assets/images/sample_photo.png',
@@ -83,7 +101,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
                         padding: const EdgeInsets.only(left: 30, right: 20),
                         child: HorizontalLabeledTextField(
                             title: '닉네임',
-                            hintText: '홍길동',
+                            // 조회된 닉네임 적용
+                            hintText: memberInfo?.nickname ?? '닉네임을 불러오는 중...',
                             showEditIcon: true
                         ),
                       ),
