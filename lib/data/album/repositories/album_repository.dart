@@ -5,6 +5,7 @@ import 'package:cherrypic/data/album/dto/request/album_update_request_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_detail_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_image_list_response_dto.dart';
+import 'package:cherrypic/data/album/dto/response/album_payment_info_dto.dart';
 import 'package:cherrypic/data/album/dto/response/invitation_link_dto.dart';
 import 'package:cherrypic/data/album/dto/response/participant_dto.dart';
 import 'package:cherrypic/data/album/dto/response/presigned_url_response_dto.dart';
@@ -137,5 +138,20 @@ class AlbumRepository {
     } catch (e) {
       rethrow;
     }
+  }
+
+  Future<AlbumPaymentInfoResponseDto> getAlbumPaymentInfo(
+      {
+        int? albumId,
+        int? lastPaymentId,
+        int size = 20,
+        String direction = 'DESC',
+      }) async {
+    return await _remoteDataSource.getAlbumPaymentInfo(
+      albumId: albumId,
+      lastPaymentId: lastPaymentId,
+      size: size,
+      direction: direction,
+    );
   }
 }

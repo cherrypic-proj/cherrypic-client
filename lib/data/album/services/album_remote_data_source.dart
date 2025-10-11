@@ -14,6 +14,7 @@ import 'package:cherrypic/data/album/dto/response/participant_dto.dart';
 import 'package:cherrypic/data/album/dto/response/presigned_url_response_dto.dart';
 import 'package:dio/dio.dart';
 
+import '../dto/response/album_payment_info_dto.dart';
 import '../dto/response/album_subscription_info_dto.dart';
 
 class AlbumRemoteDataSource {
@@ -272,6 +273,36 @@ class AlbumRemoteDataSource {
       final apiResponse = ApiResponse.fromJson(
         response.data,
             (json) => AlbumSubscriptionInfoDto.fromJson(json as Map<String, dynamic>),
+      );
+
+      return apiResponse.data!;
+    } on DioException catch (e) {
+      throw ErrorHandler.handle(e);
+    }
+  }
+
+  Future<AlbumPaymentInfoResponseDto> getAlbumPaymentInfo(
+      {
+        int? albumId,
+        int? lastPaymentId,
+        int size = 20,
+        String direction = 'DESC',
+      }) async {
+    try {
+      final response = await _dio.get(
+        ApiPath.albumPaymentInfo,
+        queryParameters: {
+         'albumId' : albumId,
+          'lastPaymentId' : lastPaymentId,
+          'size': size,
+          'direction': direction,
+        },
+      );
+
+      final apiResponse = ApiResponse.fromJson(
+        response.data,
+            (json) =>
+                AlbumPaymentInfoResponseDto.fromJson(json as Map<String, dynamic>),
       );
 
       return apiResponse.data!;

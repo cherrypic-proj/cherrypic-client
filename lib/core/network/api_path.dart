@@ -22,4 +22,7 @@ class ApiPath {
   // 멤버 관련 API
   static String memberInfo() => '/members/me';
   static const String memberProfileImage = '/members/profile-upload-url';
+
+  // 결제 관련 API
+  static const String albumPaymentInfo = '/payments';
 }

@@ -125,8 +125,10 @@ class _AlbumPaymentInfoScreenState extends State<AlbumPaymentInfoScreen> {
           child: PaymentBox(
             model: item,
             onTap: () {
+              final path = '${RoutePath.myPage_payment_info}?albumId=${item.albumId}';
+
               context.push(
-                RoutePath.myPage_payment_info,
+                path,
                 extra: item,
               );
             },
