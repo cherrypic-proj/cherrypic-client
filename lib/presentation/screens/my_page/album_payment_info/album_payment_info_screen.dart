@@ -40,6 +40,8 @@ class _AlbumPaymentInfoScreenState extends State<AlbumPaymentInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final filteredItems = viewModel.filteredItems;
+
     return Scaffold(
       appBar: const CustomSubAppBar(title: '앨범 결제정보'),
       backgroundColor: Colors.white,
@@ -49,45 +51,47 @@ class _AlbumPaymentInfoScreenState extends State<AlbumPaymentInfoScreen> {
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 28),
+                child: Center(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 28),
 
-                    // pro/premium 토글
-                    TypeToggle(
-                      selected: viewModel.selectedFilter,
-                      onChanged: (type) => viewModel.changeFilter(type),
-                    ),
-
-                    const SizedBox(height: 35),
-
-                    _buildSubscriptionList(viewModel.displayedItems),
-
-                    if (viewModel.shouldShowToggle)
-                      GestureDetector(
-                        onTap: viewModel.toggleExpand,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              viewModel.isExpanded ? '접기' : '전체 보기',
-                              style: AppFont.size16.copyWith(
-                                color: AppColor.mainRed,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Icon(
-                              viewModel.isExpanded
-                                  ? Icons.arrow_drop_up
-                                  : Icons.arrow_drop_down,
-                              color: AppColor.mainRed,
-                            ),
-                          ],
-                        ),
+                      // pro/premium 토글
+                      TypeToggle(
+                        selected: viewModel.selectedFilter,
+                        onChanged: (type) => viewModel.onToggleType(type),
                       ),
-                    const SizedBox(height: 30),
-                  ],
+
+                      const SizedBox(height: 35),
+
+                      _buildSubscriptionList(filteredItems),
+
+                      if (viewModel.shouldShowToggle)
+                        GestureDetector(
+                          onTap: viewModel.toggleExpansion,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                viewModel.isExpanded ? '접기' : '전체 보기',
+                                style: AppFont.size16.copyWith(
+                                  color: AppColor.mainRed,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Icon(
+                                viewModel.isExpanded
+                                    ? Icons.arrow_drop_up
+                                    : Icons.arrow_drop_down,
+                                color: AppColor.mainRed,
+                              ),
+                            ],
+                          ),
+                        ),
+                      const SizedBox(height: 30),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -99,6 +103,17 @@ class _AlbumPaymentInfoScreenState extends State<AlbumPaymentInfoScreen> {
 
   /// 리스트 빌더
   Widget _buildSubscriptionList(List<AlbumPaymentInfoModel> items) {
+    // 항목이 없을 경우 처리
+    if (items.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 50),
+        child: Text(
+          '결제 정보가 없습니다.',
+          style: AppFont.size16.copyWith(color: Colors.grey),
+        ),
+      );
+    }
+
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -109,7 +124,6 @@ class _AlbumPaymentInfoScreenState extends State<AlbumPaymentInfoScreen> {
           padding: EdgeInsets.only(bottom: index == items.length - 1 ? 0 : 30),
           child: PaymentBox(
             model: item,
-            showDates: false,
             onTap: () {
               context.push(
                 RoutePath.myPage_payment_info,
