@@ -67,7 +67,7 @@ class _AlbumManagementScreenState extends State<AlbumManagementScreen> {
                   children: [
                     _buildSubscriptionList(viewModel.displayedItems),
 
-                    if (viewModel.displayedItems.length > 3)
+                    if (viewModel.displayedItems.length > 5)
                       GestureDetector(
                         onTap: viewModel.toggleExpand,
                         child: Row(
