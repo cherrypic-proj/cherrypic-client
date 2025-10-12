@@ -281,6 +281,7 @@ class AlbumRemoteDataSource {
     }
   }
 
+  /// 앨범 결제 내역 정보 조회
   Future<AlbumPaymentInfoResponseDto> getAlbumPaymentInfo(
       {
         int? albumId,
