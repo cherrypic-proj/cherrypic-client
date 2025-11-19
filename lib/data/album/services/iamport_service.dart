@@ -3,7 +3,7 @@ import 'package:iamport_flutter/model/payment_data.dart';
 
 class IamportService {
   // React 코드와 동일한 가맹점 코드 사용
-  static const String userCode = 'imp14735503';
+  static const String userCode = 'imp51387560';
 
   // 기존 호환성을 위한 카카오페이 결제 데이터 생성
   static PaymentData createPaymentData({
