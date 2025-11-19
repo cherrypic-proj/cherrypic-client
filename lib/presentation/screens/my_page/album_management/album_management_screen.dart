@@ -67,7 +67,7 @@ class _AlbumManagementScreenState extends State<AlbumManagementScreen> {
                   children: [
                     _buildSubscriptionList(viewModel.displayedItems),
 
-                    if (viewModel.displayedItems.length > 3)
+                    if (viewModel.displayedItems.length > 5)
                       GestureDetector(
                         onTap: viewModel.toggleExpand,
                         child: Row(
@@ -114,7 +114,12 @@ class _AlbumManagementScreenState extends State<AlbumManagementScreen> {
             model: item,
             showDates: false,
             onTap: () {
-              context.push(RoutePath.myPage_payment_info, extra: item);
+              final path = '${RoutePath.myPage_payment_info}?albumId=${item.albumId}';
+
+              context.push(
+                path,
+                extra: item,
+              );
             },
           ),
         );

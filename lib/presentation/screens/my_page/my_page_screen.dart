@@ -17,11 +17,70 @@ class MyPageScreen extends StatefulWidget {
 
 class _MyPageScreenState extends State<MyPageScreen> {
   late final MyPageViewModel viewModel;
+  late final TextEditingController _nicknameController; // 닉네임 입력을 위한 컨트롤러 추가
 
   @override
   void initState() {
     super.initState();
     viewModel = MyPageViewModel();
+    // 화면 초기화 시 회원 정보 조회 API 호출
+    viewModel.fetchMemberInfo();
+    _nicknameController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _nicknameController.dispose();
+    super.dispose();
+  }
+
+  // 닉네임 수정을 처리하는 다이얼로그 함수
+  void _editNickname(BuildContext context) {
+    // 현재 닉네임을 컨트롤러에 설정
+    _nicknameController.text = viewModel.memberInfo?.nickname ?? '';
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('닉네임 수정'),
+          content: TextField(
+            controller: _nicknameController,
+            decoration: const InputDecoration(hintText: "새 닉네임을 입력하세요"),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('취소'),
+            ),
+            TextButton(
+              onPressed: () async {
+                final newNickname = _nicknameController.text.trim();
+                final currentNickname = viewModel.memberInfo?.nickname;
+
+                if (newNickname.isNotEmpty && newNickname != currentNickname) {
+                  Navigator.pop(context);
+                  // 닉네임 수정 API 호출 (새 닉네임과 기존 이미지 URL 전달)
+                  final success = await viewModel.updateProfile(newNickname: newNickname);
+
+                  if (success) {
+                    // 성공 피드백 (추가 구현 필요)
+                    if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('닉네임이 성공적으로 수정되었습니다.')));
+                  } else {
+                    // 실패 피드백 (추가 구현 필요)
+                    if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('닉네임 수정에 실패했습니다.')));
+                  }
+                } else {
+                  // 변경 사항이 없거나 유효하지 않은 경우
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('저장'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -31,6 +90,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
       body: AnimatedBuilder(
         animation: viewModel,
         builder: (context, _) {
+          final memberInfo = viewModel.memberInfo;
+
           return SingleChildScrollView(
             child: Align(
               alignment: Alignment.topCenter,
@@ -46,6 +107,19 @@ class _MyPageScreenState extends State<MyPageScreen> {
                       height: 120,
                       fit: BoxFit.cover,
                     )
+                        : (memberInfo?.profileImageUrl != null && memberInfo!.profileImageUrl.isNotEmpty)
+                        ? Image.network(
+                      memberInfo.profileImageUrl,
+                      width: 120,
+                      height: 120,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Image.asset(
+                        'assets/images/sample_photo.png',
+                        width: 120,
+                        height: 120,
+                        fit: BoxFit.cover,
+                      ),
+                    )
                         : Image.asset(
                       'assets/images/sample_photo.png',
                       width: 120,
@@ -54,8 +128,26 @@ class _MyPageScreenState extends State<MyPageScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
+                  // 프로필 사진 수정 버튼
                   GestureDetector(
-                    onTap: () => viewModel.pickImage(context),
+                    onTap: () async {
+                      await viewModel.pickAndSetProfileImage(context);
+
+                      if (viewModel.coverImage != null) {
+                        final success = await viewModel.updateProfile(
+                          newCoverImage: viewModel.coverImage,
+                          newNickname: viewModel.memberInfo?.nickname,
+                        );
+
+                        if (success) {
+                          // 성공 피드백
+                          if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('프로필 사진이 성공적으로 수정되었습니다.')));
+                        } else {
+                          // 실패 피드백
+                          if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('프로필 사진 수정에 실패했습니다.')));
+                        }
+                      }
+                    },
                     child: Text(
                       '프로필 사진 수정',
                       style: AppFont.size14.copyWith(
@@ -82,9 +174,11 @@ class _MyPageScreenState extends State<MyPageScreen> {
                       Padding(
                         padding: const EdgeInsets.only(left: 30, right: 20),
                         child: HorizontalLabeledTextField(
-                            title: '닉네임',
-                            hintText: '홍길동',
-                            showEditIcon: true
+                          title: '닉네임',
+                          hintText: memberInfo?.nickname ?? '닉네임을 불러오는 중...',
+                          showEditIcon: true,
+                          // 닉네임 수정 아이콘 탭 이벤트 연결
+                          onEditTap: () => _editNickname(context),
                         ),
                       ),
                       const SizedBox(height: 20),

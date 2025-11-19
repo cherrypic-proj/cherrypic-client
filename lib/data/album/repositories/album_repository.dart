@@ -5,10 +5,13 @@ import 'package:cherrypic/data/album/dto/request/album_update_request_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_detail_dto.dart';
 import 'package:cherrypic/data/album/dto/response/album_image_list_response_dto.dart';
+import 'package:cherrypic/data/album/dto/response/album_payment_info_dto.dart';
 import 'package:cherrypic/data/album/dto/response/invitation_link_dto.dart';
 import 'package:cherrypic/data/album/dto/response/participant_dto.dart';
 import 'package:cherrypic/data/album/dto/response/presigned_url_response_dto.dart';
 import 'package:cherrypic/data/album/services/album_remote_data_source.dart';
+
+import '../dto/response/album_subscription_info_dto.dart';
 
 class AlbumRepository {
   final AlbumRemoteDataSource _remoteDataSource;
@@ -126,5 +129,30 @@ class AlbumRepository {
   /// 앨범 삭제
   Future<void> deleteAlbum(int albumId) async {
     return await _remoteDataSource.deleteAlbum(albumId);
+  }
+
+  /// 구독 정보 조회
+  Future<AlbumSubscriptionInfoDto> getAlbumSubscriptionInfo(int albumId) async {
+    try {
+      return await _remoteDataSource.getAlbumSubscriptionInfo(albumId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// 앨범 결제 내역 정보 조회
+  Future<AlbumPaymentInfoResponseDto> getAlbumPaymentInfo(
+      {
+        int? albumId,
+        int? lastPaymentId,
+        int size = 20,
+        String direction = 'DESC',
+      }) async {
+    return await _remoteDataSource.getAlbumPaymentInfo(
+      albumId: albumId,
+      lastPaymentId: lastPaymentId,
+      size: size,
+      direction: direction,
+    );
   }
 }

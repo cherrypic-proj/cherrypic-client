@@ -1,4 +1,4 @@
-import 'package:cherrypic/presentation/screens/main/detail/events_tab/%20create/create_event_view_model.dart';
+import 'package:cherrypic/presentation/screens/main/detail/events_tab/create/create_event_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

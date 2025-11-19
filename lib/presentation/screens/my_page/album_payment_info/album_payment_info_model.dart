@@ -2,6 +2,7 @@ import '../../../widgets/album/album_badge_type.dart';
 import '../album_management/album_management_view_model.dart';
 
 class AlbumPaymentInfoModel {
+  final int albumId;
   final AlbumBadgeType badgeType;
   final String title;
   final String createDate;
@@ -12,6 +13,7 @@ class AlbumPaymentInfoModel {
 
 
   const AlbumPaymentInfoModel({
+    required this.albumId,
     required this.badgeType,
     required this.title,
     required this.createDate,

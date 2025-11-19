@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import '../../../../data/album/dto/response/album_dto.dart';
+import '../../../../data/album/repositories/album_repository.dart';
 import '../../../widgets/album/album_badge_type.dart';
 import '../album_payment_info/album_payment_info_model.dart';
 import '../album_payment_info/album_payment_info_view_model.dart';
@@ -6,51 +9,13 @@ import '../album_payment_info/album_payment_info_view_model.dart';
 enum PaymentStatusType { using, pending }
 
 class AlbumManagementViewModel extends ChangeNotifier {
-  final List<AlbumPaymentInfoModel> allItems = const [
-    AlbumPaymentInfoModel(
-      badgeType: AlbumBadgeType.basic,
-      title: '음식(양식, 중식, 한식, 일식) 음식 음식',
-      createDate: '2025/06/23',
-      price: '무료',
-      status: PaymentStatusType.using,
-    ),
-    AlbumPaymentInfoModel(
-      badgeType: AlbumBadgeType.pro,
-      title: '프랑스 여행_2025.06.24',
-      createDate: '2025/06/23',
-      startDate: '2025/05/25',
-      nextDate: '2025/08/25',
-      price: '월 3,900원',
-      status: PaymentStatusType.using,
-    ),
-    AlbumPaymentInfoModel(
-      badgeType: AlbumBadgeType.premium,
-      title: '프랑스 여행_2025.06.24',
-      createDate: '2025/06/23',
-      startDate: '2025/05/25',
-      nextDate: '2025/08/25',
-      price: '월 3,900원',
-      status: PaymentStatusType.using,
-    ),
-    AlbumPaymentInfoModel(
-      badgeType: AlbumBadgeType.pro,
-      title: '호주 여행',
-      createDate: '2025/06/23',
-      startDate: '2025/06/28',
-      nextDate: '2025/08/25',
-      price: '월 5,900원',
-      status: PaymentStatusType.pending,
-    ),
-    AlbumPaymentInfoModel(
-      badgeType: AlbumBadgeType.premium,
-      title: '호주 여행',
-      createDate: '2025/06/23',
-      startDate: '2025/06/28',
-      nextDate: '2025/08/25',
-      price: '월 5,900원',
-      status: PaymentStatusType.pending,
-    ),
-  ];
+  List<AlbumPaymentInfoModel> _allAlbums = [];
+  List<AlbumPaymentInfoModel> get allItems => _allAlbums;
+
+  final AlbumRepository _repository;
+
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
 
   PaymentStatusType _selectedStatus = PaymentStatusType.using;
   PaymentStatusType get selectedStatus => _selectedStatus;
@@ -61,8 +26,97 @@ class AlbumManagementViewModel extends ChangeNotifier {
   bool _isExpanded = false;
   bool get isExpanded => _isExpanded;
 
-  AlbumManagementViewModel() {
-    _ensureSelectedBadge();
+  AlbumManagementViewModel({AlbumRepository? repository})
+      : _repository = repository ?? AlbumRepository() {
+    fetchAlbums();
+  }
+
+  PaymentStatusType _mapSubscriptionStatus(String? dtoStatus) {
+    if (dtoStatus == null) return PaymentStatusType.pending;
+    switch (dtoStatus.toUpperCase()) {
+      case 'ACTIVE':
+        return PaymentStatusType.using;
+      case 'CANCELED':
+      case 'EXPIRED':
+        return PaymentStatusType.pending;
+      default:
+        return PaymentStatusType.pending;
+    }
+  }
+
+  Future<AlbumPaymentInfoModel> _mapDtoToModel(AlbumDto dto) async {
+    AlbumBadgeType badgeType = switch (dto.type.toUpperCase()) {
+      'PRO' => AlbumBadgeType.pro,
+      'PREMIUM' => AlbumBadgeType.premium,
+      _ => AlbumBadgeType.basic,
+    };
+
+    final priceFormatter = NumberFormat.currency(locale: 'ko_KR', symbol: '원', decimalDigits: 0);
+    final priceFormatted = priceFormatter.format(dto.price);
+    final String price = badgeType == AlbumBadgeType.basic ? '무료' : '월 $priceFormatted';
+
+    final String formattedCreateDate = dto.createdAt.split('T').first.replaceAll('-', '/');
+
+    String? startDate;
+    String? nextDate;
+    PaymentStatusType status = PaymentStatusType.using;
+
+    if (badgeType != AlbumBadgeType.basic) {
+      status = _mapSubscriptionStatus(dto.status);
+
+      try {
+        final subscriptionInfo = await _repository.getAlbumSubscriptionInfo(dto.albumId);
+
+        startDate = subscriptionInfo.subscriptionStartAt.split('T').first.replaceAll('-', '/');
+        nextDate = subscriptionInfo.subscriptionNextBillingAt.split('T').first.replaceAll('-', '/');
+
+      } catch (e) {
+        debugPrint('Error fetching subscription info for album ${dto.albumId}: $e');
+      }
+    }
+
+    return AlbumPaymentInfoModel(
+      albumId: dto.albumId,
+      badgeType: badgeType,
+      title: dto.title,
+      createDate: formattedCreateDate,
+      startDate: startDate,
+      nextDate: nextDate,
+      price: price,
+      status: status,
+    );
+  }
+
+  /// 앨범 목록 및 구독 정보를 비동기로 가져오는 메인 함수
+  Future<void> fetchAlbums() async {
+    if (_isLoading) return;
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final Future<AlbumListResponseDto> basicFuture = _repository.getAlbums(type: 'BASIC');
+      final Future<AlbumListResponseDto> proFuture = _repository.getAlbums(type: 'PRO');
+      final Future<AlbumListResponseDto> premiumFuture = _repository.getAlbums(type: 'PREMIUM');
+
+      final List<AlbumListResponseDto> responses = await Future.wait([basicFuture, proFuture, premiumFuture]);
+
+      final List<AlbumDto> allDtos = [
+        ...responses[0].albums,
+        ...responses[1].albums,
+        ...responses[2].albums,
+      ];
+
+      _allAlbums = await Future.wait(allDtos.map(_mapDtoToModel));
+
+      _ensureSelectedBadge();
+
+    } catch (e) {
+      debugPrint('Error during fetchAlbums in AlbumManagementViewModel: $e');
+      _allAlbums = [];
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
   List<AlbumBadgeType> get availableBadges {
@@ -70,31 +124,36 @@ class AlbumManagementViewModel extends ChangeNotifier {
       return [AlbumBadgeType.pro, AlbumBadgeType.premium];
     }
 
-    final set = <AlbumBadgeType>{};
-    for (final item in allItems) {
-      if (item.status == _selectedStatus) {
-        set.add(item.badgeType);
-      }
-    }
-    const order = [
+    return [
       AlbumBadgeType.basic,
       AlbumBadgeType.pro,
       AlbumBadgeType.premium
     ];
-    return order.where(set.contains).toList();
   }
 
   List<AlbumPaymentInfoModel> get displayedItems {
-    var filtered = allItems.where((e) => e.status == _selectedStatus).toList();
+    var filtered = _allAlbums.where((e) => e.status == _selectedStatus).toList();
 
-    if (availableBadges.contains(_selectedBadge)) {
-      filtered = filtered.where((e) => e.badgeType == _selectedBadge).toList();
-    }
+    filtered = filtered.where((e) => e.badgeType == _selectedBadge).toList();
 
     if (!_isExpanded && filtered.length > 5) {
       return filtered.take(5).toList();
     }
     return filtered;
+  }
+
+  void _ensureSelectedBadge() {
+    final avail = availableBadges;
+
+    if (_selectedStatus == PaymentStatusType.using) {
+      if (!avail.contains(_selectedBadge)) {
+        _selectedBadge = AlbumBadgeType.basic;
+      }
+    } else if (_selectedStatus == PaymentStatusType.pending) {
+      if (!avail.contains(_selectedBadge)) {
+        _selectedBadge = AlbumBadgeType.pro;
+      }
+    }
   }
 
   void changeStatus(PaymentStatusType status) {
@@ -137,14 +196,6 @@ class AlbumManagementViewModel extends ChangeNotifier {
         return PaymentStatusType.using;
       case AlbumFilterType.premium:
         return PaymentStatusType.pending;
-    }
-  }
-
-  void _ensureSelectedBadge() {
-    final avail = availableBadges;
-    if (avail.isEmpty) return;
-    if (!avail.contains(_selectedBadge)) {
-      _selectedBadge = avail.first;
     }
   }
 }

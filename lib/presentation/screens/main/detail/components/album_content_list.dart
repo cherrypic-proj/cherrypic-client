@@ -3,7 +3,6 @@ import 'package:cherrypic/core/router/route_path.dart';
 
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:cherrypic/core/constants/font.dart';
-import 'package:cherrypic/presentation/screens/main/detail/events_tab/%20create/create_event_sheet.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/components/event_album_cover.dart';
 import 'package:cherrypic/presentation/screens/main/detail/events_tab/event_tab_view_model.dart';
 import 'package:cherrypic/presentation/widgets/album/album_group_section.dart';
@@ -11,6 +10,7 @@ import 'package:cherrypic/presentation/widgets/album/album_group_section.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../album_detail_view_model.dart';
+import '../events_tab/create/create_event_sheet.dart';
 
 class AlbumContentList extends StatelessWidget {
   final int tabIndex;

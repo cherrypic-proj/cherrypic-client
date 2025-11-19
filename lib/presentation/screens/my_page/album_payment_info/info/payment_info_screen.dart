@@ -12,8 +12,9 @@ import '../album_payment_info_model.dart';
 class PaymentInfoScreen extends StatelessWidget {
   final AlbumPaymentInfoModel item;
   final PaymentInfoViewModel viewModel;
+  final int albumId;
 
-  const PaymentInfoScreen({super.key, required this.item, required this.viewModel});
+  const PaymentInfoScreen({super.key, required this.item, required this.viewModel, required this.albumId});
 
   @override
   Widget build(BuildContext context) {

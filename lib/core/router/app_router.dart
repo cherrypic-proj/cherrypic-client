@@ -127,8 +127,14 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
       const AlbumPaymentInfoScreen(),
   RoutePath.myPage_payment_info: (context, state) {
     final item = state.extra as AlbumPaymentInfoModel;
-    // final viewModel = state.extra as PaymentInfoViewModel;
-    return PaymentInfoScreen(item: item, viewModel: PaymentInfoViewModel());
+    final idStr = state.uri.queryParameters['albumId'] ?? '-1';
+    final albumId = int.tryParse(idStr) ?? -1;
+
+    return PaymentInfoScreen(
+      item: item,
+      viewModel: PaymentInfoViewModel(),
+      albumId: albumId,
+    );
   },
   RoutePath.myPage_photo_management: (context, state) =>
   const PhotoManagementScreen(),

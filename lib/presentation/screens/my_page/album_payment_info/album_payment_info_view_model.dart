@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import '../../../../data/album/dto/response/album_dto.dart';
+import '../../../../data/album/repositories/album_repository.dart';
 import '../../../widgets/album/album_badge_type.dart';
+
 import 'album_payment_info_model.dart';
 
 /// Pro / Premium 타입
@@ -9,84 +13,143 @@ enum AlbumFilterType {
 }
 
 class AlbumPaymentInfoViewModel extends ChangeNotifier {
-  /// 전체 항목 리스트
-  final List<AlbumPaymentInfoModel> allItems = const [
-    AlbumPaymentInfoModel(
-      badgeType: AlbumBadgeType.pro,
-      title: '프랑스 여행_2025. 06. 24',
-      createDate: '2025/06/23',
-      startDate: '2025/05/25',
-      nextDate: '2025/08/25',
-      price: '월 3,900원',
-    ),
-    AlbumPaymentInfoModel(
-      badgeType: AlbumBadgeType.premium,
-      title: '호주 여행',
-      createDate: '2025/06/23',
-      startDate: '2025/06/28',
-      nextDate: '2025/08/25',
-      price: '월 5,900원',
-    ),
-    AlbumPaymentInfoModel(
-      badgeType: AlbumBadgeType.pro,
-      title: '등반',
-      createDate: '2025/06/23',
-      startDate: '2025/07/01',
-      nextDate: '2025/09/01',
-      price: '월 3,900원',
-    ),
-    AlbumPaymentInfoModel(
-      badgeType: AlbumBadgeType.premium,
-      title: '호주 여행',
-      createDate: '2025/06/23',
-      startDate: '2025/06/28',
-      nextDate: '2025/08/25',
-      price: '월 5,900원',
-    ),
-    AlbumPaymentInfoModel(
-      badgeType: AlbumBadgeType.pro,
-      title: '프랑스 여행_2025. 06. 24',
-      createDate: '2025/06/23',
-      startDate: '2025/05/25',
-      nextDate: '2025/08/25',
-      price: '월 3,900원',
-    ),
-  ];
+  final AlbumRepository _albumRepository;
+
+  AlbumPaymentInfoViewModel({AlbumRepository? albumRepository})
+      : _albumRepository = albumRepository ?? AlbumRepository() {
+    fetchAlbums();
+  }
+
+  List<AlbumDto> _proAlbums = [];
+  List<AlbumDto> _premiumAlbums = [];
+
+  List<AlbumPaymentInfoModel> _paymentInfoModels = [];
+  List<AlbumPaymentInfoModel> get filteredItems => _paymentInfoModels;
 
   /// 전체 보기 여부
   bool _isExpanded = false;
   bool get isExpanded => _isExpanded;
 
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
   /// 현재 선택된 필터 (기본값: Pro)
   AlbumFilterType _selectedFilter = AlbumFilterType.pro;
   AlbumFilterType get selectedFilter => _selectedFilter;
 
-  /// 전체 항목 개수 기준 토글 표시 여부
-  bool get shouldShowToggle => allItems.length > 5;
+  Future<void> fetchAlbums() async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final proResponse = await _albumRepository.getAlbums(type: 'PRO');
+      _proAlbums = proResponse.albums;
 
-  /// 현재 선택된 토글(Pro/Premium)에 맞게 필터링된 항목
-  List<AlbumPaymentInfoModel> get displayedItems {
-    final filtered = allItems.where((item) {
-      if (_selectedFilter == AlbumFilterType.pro) {
-        return item.badgeType == AlbumBadgeType.pro;
-      } else {
-        return item.badgeType == AlbumBadgeType.premium;
-      }
-    }).toList();
+      final premiumResponse = await _albumRepository.getAlbums(type: 'PREMIUM');
+      _premiumAlbums = premiumResponse.albums;
 
-    return _isExpanded ? filtered : filtered.take(5).toList();
+      await _loadFilteredItems();
+
+    } catch (e) {
+      debugPrint('Error fetching albums: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
-  /// 전체 보기 토글
-  void toggleExpand() {
-    _isExpanded = !_isExpanded;
+  Future<void> _loadFilteredItems() async {
+    final List<AlbumDto> albums = _selectedFilter == AlbumFilterType.pro
+        ? _proAlbums
+        : _premiumAlbums;
+
+    final List<AlbumDto> displayAlbums = _isExpanded || albums.length <= 5
+        ? albums
+        : albums.take(5).toList();
+
+    fetchAndMap(dto) async {
+      AlbumBadgeType badgeType;
+      if (dto.type.toUpperCase() == 'PRO') {
+        badgeType = AlbumBadgeType.pro;
+      } else if (dto.type.toUpperCase() == 'PREMIUM') {
+        badgeType = AlbumBadgeType.premium;
+      } else {
+        badgeType = AlbumBadgeType.none;
+      }
+
+      final priceFormatted = NumberFormat.currency(
+          locale: 'ko_KR',
+          symbol: '원',
+          decimalDigits: 0
+      ).format(dto.price);
+
+      final String formattedCreateDate = dto.createdAt.split('T').first.replaceAll('-', '/');
+
+      String? startDate;
+      String? nextDate;
+
+      if (dto.type.toUpperCase() == 'PRO' || dto.type.toUpperCase() == 'PREMIUM') {
+        try {
+          final subscriptionInfo = await _albumRepository.getAlbumSubscriptionInfo(dto.albumId);
+
+          startDate = subscriptionInfo.subscriptionStartAt.split('T').first.replaceAll('-', '/');
+
+          nextDate = subscriptionInfo.subscriptionNextBillingAt.split('T').first.replaceAll('-', '/');
+
+        } catch (e) {
+          debugPrint('Error fetching subscription info for album ${dto.albumId}: $e');
+        }
+      }
+
+      // 3. 최종 모델 생성
+      return AlbumPaymentInfoModel(
+        albumId: dto.albumId,
+        badgeType: badgeType,
+        title: dto.title,
+        createDate: formattedCreateDate,
+        startDate: startDate,
+        nextDate: nextDate,
+        price: '월 $priceFormatted',
+        status: null,
+      );
+    }
+
+    _paymentInfoModels = await Future.wait(displayAlbums.map(fetchAndMap));
+
     notifyListeners();
   }
 
+
+  /// 전체 항목 개수 기준 토글 표시 여부
+  bool get shouldShowToggle {
+    final bool proExceeds = _proAlbums.length > 5;
+    final bool premiumExceeds = _premiumAlbums.length > 5;
+    return proExceeds || premiumExceeds;
+  }
+
   /// 필터 변경
-  void changeFilter(AlbumFilterType type) {
-    _selectedFilter = type;
-    _isExpanded = false;
+  void onToggleType(AlbumFilterType type) async {
+    if (_selectedFilter != type) {
+      _selectedFilter = type;
+      _isExpanded = false;
+      _isLoading = true;
+      notifyListeners();
+
+      await _loadFilteredItems();
+
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// 전체 보기 토글
+  void toggleExpansion() async {
+    _isExpanded = !_isExpanded;
+    _isLoading = true;
+    notifyListeners();
+
+    await _loadFilteredItems();
+
+    _isLoading = false;
     notifyListeners();
   }
 }
