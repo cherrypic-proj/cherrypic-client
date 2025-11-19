@@ -1,6 +1,10 @@
 import 'package:cherrypic/core/constants/color.dart';
+import 'package:cherrypic/core/router/app_router.dart'; // [중요] rootNavigatorKey 사용
 import 'package:cherrypic/core/router/route_path.dart';
+import 'package:cherrypic/data/album/dto/request/album_create_request_dto.dart';
+import 'package:cherrypic/data/album/repositories/album_repository.dart';
 import 'package:cherrypic/data/album/repositories/payment_repository.dart';
+import 'package:cherrypic/data/album/services/album_cover_image_service.dart';
 import 'package:cherrypic/data/album/services/iamport_service.dart';
 import 'package:cherrypic/presentation/screens/store/subscription/payment/payment_info.dart';
 import 'package:cherrypic/presentation/screens/store/subscription/payment/payment_info_model.dart';
@@ -14,8 +18,8 @@ import '../../../widgets/custom_sub_app_bar.dart';
 import '../../store/components/payment_method_box.dart';
 
 class PaymentMethodScreen extends StatefulWidget {
-  final String? subscriptionType; // 'pro' 또는 'premium'
-  final Map<String, dynamic>? albumData; // 앨범 생성 데이터
+  final String? subscriptionType;
+  final Map<String, dynamic>? albumData;
 
   const PaymentMethodScreen({super.key, this.subscriptionType, this.albumData});
 
@@ -26,18 +30,13 @@ class PaymentMethodScreen extends StatefulWidget {
 class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
   PaymentMethodType _selectedMethod = PaymentMethodType.kakao;
   bool _isProcessingPayment = false;
-  bool _callbackExecuted = false;
 
-  // 구독 타입에 따른 결제 정보 생성
+  final AlbumRepository _albumRepository = AlbumRepository();
+  final PaymentRepository _paymentRepository = PaymentRepository();
+  final ImageUploadService _imageUploadService = ImageUploadService();
+
   PaymentInfoModel _getPaymentModel() {
-    if (widget.subscriptionType == 'pro') {
-      return PaymentInfoModel(
-        productPrice: 3900,
-        subscriptionValue: 'CherryPic Pro',
-        nextPaymentDate: '2025년 9월 20일',
-        totalPrice: 3900,
-      );
-    } else if (widget.subscriptionType == 'premium') {
+    if (widget.subscriptionType == 'premium') {
       return PaymentInfoModel(
         productPrice: 6900,
         subscriptionValue: 'CherryPic Premium',
@@ -45,7 +44,6 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
         totalPrice: 6900,
       );
     } else {
-      // 기본값 (기존 코드와 동일)
       return PaymentInfoModel(
         productPrice: 3900,
         subscriptionValue: 'CherryPic Pro',
@@ -55,27 +53,23 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
     }
   }
 
-  // 실제 결제 처리 - mounted 체크 추가
   Future<void> _processPayment() async {
     if (_isProcessingPayment) return;
-
-    if (!mounted) return; // 초기 체크
+    if (!mounted) return;
 
     setState(() {
       _isProcessingPayment = true;
     });
 
     try {
-      // 1. 결제 준비 API 호출
       final subscriptionType = widget.subscriptionType?.toUpperCase() ?? 'PRO';
-      final readyResponse = await PaymentRepository().readyPayment(
+      final readyResponse = await _paymentRepository.readyPayment(
         type: subscriptionType,
         albumId: null,
       );
 
-      if (!mounted) return; // API 응답 후 체크
+      if (!mounted) return;
 
-      // 2. 아임포트 결제 데이터 생성
       final paymentData = IamportService.createPaymentDataForEnvironment(
         merchantUid: readyResponse.merchantUid,
         name: readyResponse.purpose,
@@ -85,8 +79,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
         isProduction: false,
       );
 
-      // 3. 결제 진행
-      final result = await Navigator.push(
+      // ignore: use_build_context_synchronously
+      Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => IamportPayment(
@@ -94,97 +88,137 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
               title: const Text('결제하기'),
               backgroundColor: Colors.white,
               foregroundColor: Colors.black,
-            ),
-            initialChild: const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 16),
-                  Text('결제 준비중...'),
-                ],
+              leading: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () => Navigator.pop(context),
               ),
             ),
+            initialChild: const Center(child: CircularProgressIndicator()),
             userCode: IamportService.userCode,
             data: paymentData,
-            callback: (result) {
-              // 중복 실행 방지
-              if (_callbackExecuted) return;
-              _callbackExecuted = true;
-
-              print('=== 아임포트 콜백 실행 ===');
-              print('전체 결과: $result');
-
-              // 반드시 Navigator.pop을 호출해야 함
-              Navigator.pop(context, result);
+            callback: (Map<String, String> result) {
+              _handlePaymentResultAndCreateAlbum(result);
             },
           ),
         ),
       );
-
-      print('Navigator.push 결과: $result');
-      print('result가 null인가? ${result == null}');
-
-      // 결제창에서 돌아온 후 mounted 체크
-      if (!mounted) return;
-
-      if (result != null) {
-        _handlePaymentResult(result);
-      } else {
-        _showErrorDialog('결제가 취소되었습니다.');
-      }
     } catch (e) {
-      if (!mounted) return; // 에러 발생 시에도 체크
-      _showErrorDialog('결제 준비 중 오류가 발생했습니다: ${e.toString()}');
-    } finally {
-      _callbackExecuted = false; // 플래그 리셋
-      if (mounted) {
-        setState(() {
-          _isProcessingPayment = false;
-        });
-      }
+      if (!mounted) return;
+      _showErrorDialog('결제 준비 중 오류: ${e.toString()}');
+      setState(() {
+        _isProcessingPayment = false;
+      });
     }
   }
 
-  // 결제 결과 처리 - mounted 체크 추가
-  void _handlePaymentResult(Map<String, String> result) {
-    print('결제 결과: $result'); // 이 로그가 찍히는지 확인
-
-    if (!mounted) return; // 초기 체크
+  Future<void> _handlePaymentResultAndCreateAlbum(
+    Map<String, String> result,
+  ) async {
+    // 1. 아임포트 웹뷰 닫기 (화면이 살아있으면)
+    if (mounted) {
+      Navigator.pop(context);
+    }
+    // 화면 전환 애니메이션 대기
+    await Future.delayed(const Duration(milliseconds: 300));
 
     final isSuccess = IamportService.isPaymentSuccessful(result);
     final impUid = IamportService.getImpUid(result);
-    print('결제 성공: $isSuccess, impUid: $impUid'); // 추가 로그
+    final errorMsg = result['error_msg'];
 
-    if (isSuccess && impUid != null) {
-      // 결제 성공 - 완료 화면으로 이동
-      if (!mounted) return; // 화면 이동 전 한번 더 체크
+    // 실패 시 전역 다이얼로그
+    if (!isSuccess || impUid == null) {
+      _showGlobalDialog('결제 실패', errorMsg ?? '결제가 취소되었습니다.');
+      if (mounted) {
+        setState(() => _isProcessingPayment = false);
+      }
+      return;
+    }
 
-      context.pushReplacement(
-        RoutePath.payment_complete,
-        extra: {
-          'subscriptionType': widget.subscriptionType,
-          'albumData': widget.albumData,
-          'paymentMethod': _selectedMethod,
-          'impUid': impUid,
-          'isSuccess': true,
-        },
+    // 2. 로딩 다이얼로그 표시 (rootNavigatorKey 사용)
+    final globalContext = rootNavigatorKey.currentContext;
+    if (globalContext != null) {
+      showDialog(
+        context: globalContext,
+        barrierDismissible: false,
+        builder: (_) => const Center(child: CircularProgressIndicator()),
       );
-    } else {
-      // 결제 실패
-      final errorMsg = result['error_msg'] ?? '결제에 실패했습니다.';
-      _showErrorDialog('결제 실패: $errorMsg');
+    }
+
+    try {
+      print('[DEBUG] 1. 결제 검증 시작: $impUid');
+      // 결제 검증
+      final verifyResponse = await _paymentRepository.verifyPayment(impUid);
+      final paymentId = verifyResponse.paymentId;
+
+      print('[DEBUG] 2. 커버 이미지 업로드 시작');
+      // 이미지 업로드
+      String? coverUrl;
+      final albumData = widget.albumData ?? {};
+      final coverImage = albumData['coverImage'];
+
+      if (coverImage != null) {
+        coverUrl = await _imageUploadService.uploadCoverImage(coverImage);
+      }
+
+      print('[DEBUG] 3. 앨범 생성 요청');
+      // 앨범 생성
+      String apiType = widget.subscriptionType?.toUpperCase() ?? 'PRO';
+      final requestDto = AlbumCreateRequestDto(
+        title: (albumData['albumName'] as String? ?? '').trim(),
+        coverUrl: coverUrl,
+        type: apiType,
+        paymentId: paymentId,
+        permissionControl: albumData['isPermissionEnabled'] as bool? ?? false,
+      );
+
+      await _albumRepository.createAlbum(requestDto);
+
+      // 로딩 닫기
+      if (globalContext != null && Navigator.canPop(globalContext)) {
+        Navigator.pop(globalContext);
+      }
+
+      print('[DEBUG] 4. 모든 과정 성공! 홈으로 이동');
+      // [핵심] 홈으로 이동 (rootNavigatorKey 사용)
+      rootNavigatorKey.currentContext?.go(RoutePath.home);
+    } catch (e) {
+      print('[ERROR] 앨범 생성 실패: $e');
+
+      // 로딩 닫기
+      if (globalContext != null && Navigator.canPop(globalContext)) {
+        Navigator.pop(globalContext);
+      }
+
+      _showGlobalDialog('오류', '결제는 성공했으나 앨범 생성 중 오류가 발생했습니다.\n${e.toString()}');
     }
   }
 
-  // 에러 다이얼로그 - mounted 체크 추가
-  void _showErrorDialog(String message) {
-    if (!mounted) return; // 다이얼로그 표시 전 체크
+  // 전역 다이얼로그 표시 헬퍼 (화면이 죽어도 뜸)
+  void _showGlobalDialog(String title, String message) {
+    final ctx = rootNavigatorKey.currentContext;
+    if (ctx != null) {
+      showDialog(
+        context: ctx,
+        builder: (_) => AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('확인'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
 
+  void _showErrorDialog(String message) {
+    if (!mounted) return;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('오류'),
+        title: const Text('알림'),
         content: Text(message),
         actions: [
           TextButton(
@@ -213,8 +247,6 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                   child: Column(
                     children: [
                       const SizedBox(height: 39.5),
-
-                      /// Title
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(
@@ -226,8 +258,6 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                         ),
                       ),
                       const SizedBox(height: 38.8),
-
-                      /// 결제 수단 방식 Row
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -235,22 +265,18 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                             type: PaymentMethodType.kakao,
                             isSelected:
                                 _selectedMethod == PaymentMethodType.kakao,
-                            onTap: () {
-                              setState(() {
-                                _selectedMethod = PaymentMethodType.kakao;
-                              });
-                            },
+                            onTap: () => setState(
+                              () => _selectedMethod = PaymentMethodType.kakao,
+                            ),
                           ),
                           const SizedBox(width: 70),
                           PaymentMethodBox(
                             type: PaymentMethodType.toss,
                             isSelected:
                                 _selectedMethod == PaymentMethodType.toss,
-                            onTap: () {
-                              setState(() {
-                                _selectedMethod = PaymentMethodType.toss;
-                              });
-                            },
+                            onTap: () => setState(
+                              () => _selectedMethod = PaymentMethodType.toss,
+                            ),
                           ),
                         ],
                       ),
@@ -258,12 +284,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                   ),
                 ),
                 const SizedBox(height: 38.8),
-
-                /// 구분선
                 Container(height: 4, color: AppColor.subSlicer),
                 const SizedBox(height: 46.28),
-
-                /// 결제 정보
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: Column(
@@ -279,12 +301,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                         ),
                       ),
                       const SizedBox(height: 28),
-
-                      /// 결제 세부 정보
                       PaymentInfo(viewModel: viewModel),
                       const SizedBox(height: 92.45),
-
-                      /// 결제하기 버튼
                       CustomButton(
                         onPressed: _isProcessingPayment
                             ? null

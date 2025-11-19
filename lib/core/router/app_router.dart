@@ -49,6 +49,8 @@ import '../../presentation/screens/login/login_screen.dart';
 import '../../presentation/screens/login/login_view_model.dart';
 import '../../presentation/screens/store/components/store_type_selector.dart';
 
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
+
 // 앱바 고정 UI 레퍼
 class ScaffoldWithNavBar extends StatelessWidget {
   final Widget child;
@@ -60,7 +62,7 @@ class ScaffoldWithNavBar extends StatelessWidget {
   }
 }
 
-// 경로별 화면 빌더 매핑 -> 여기 작성 필수!
+// 경로별 화면 빌더 매핑
 final Map<String, GoRouterWidgetBuilder> routeBuilders = {
   RoutePath.login: (context, state) => ChangeNotifierProvider(
     create: (_) => LoginViewModel(
@@ -98,7 +100,6 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
   },
 
   RoutePath.imageViewer: (context, state) {
-    // 1. extra로 전달받은 모든 데이터를 캐스팅하여 추출합니다.
     final Map<String, dynamic> args = state.extra as Map<String, dynamic>;
     final List<String> imageUrls = args['imageUrls'];
     final int initialIndex = args['initialIndex'];
@@ -106,8 +107,6 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
     final int albumId = args['albumId'];
     final AlbumDetailViewModel viewModel = args['viewModel'];
 
-    // 2. 새 화면(ImageFullScreenViewer)이 기존 ViewModel을 계속 사용할 수 있도록
-    //    ChangeNotifierProvider.value로 감싸줍니다.
     return ChangeNotifierProvider.value(
       value: viewModel,
       child: ImageFullScreenViewer(
@@ -122,7 +121,8 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
   /// myPage
   RoutePath.myPage: (context, state) => const MyPageScreen(),
   RoutePath.myPage_notice: (context, state) => const NoticeScreen(),
-  RoutePath.myPage_album_management: (context, state) => const AlbumManagementScreen(),
+  RoutePath.myPage_album_management: (context, state) =>
+      const AlbumManagementScreen(),
   RoutePath.myPage_album_payment_info: (context, state) =>
       const AlbumPaymentInfoScreen(),
   RoutePath.myPage_payment_info: (context, state) {
@@ -137,9 +137,8 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
     );
   },
   RoutePath.myPage_photo_management: (context, state) =>
-  const PhotoManagementScreen(),
-  RoutePath.myPage_photo_bill: (context, state) =>
-  const PhotoBillScreen(),
+      const PhotoManagementScreen(),
+  RoutePath.myPage_photo_bill: (context, state) => const PhotoBillScreen(),
   RoutePath.myPage_address_management: (context, state) =>
       const AddressManagementScreen(),
   RoutePath.myPage_add_address: (context, state) => const AddAddressScreen(),
@@ -204,35 +203,28 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
   },
 };
 
-// 앱바 고정 경로 목록 -> 여기 적으면 앱바 고정됨.
 final List<String> shellRoutes = [
   RoutePath.home,
-  // RoutePath.albumAdd,
-  // 필요시 추가
   RoutePath.albumDetail,
-
-  /// myPage
   RoutePath.myPage,
-
-  /// event
   RoutePath.event,
   RoutePath.eventList,
-
-  /// store
   RoutePath.store,
 ];
 
-// GoRouter
 GoRouter createAppRouter(String initialRoute) {
   final router = GoRouter(
+    navigatorKey: rootNavigatorKey, // [추가 2] 마스터 키 등록 (필수!)
     initialLocation: initialRoute,
+    errorBuilder: (context, state) {
+      // 딥링크 등으로 알 수 없는 경로로 왔을 때 앱이 죽는 것을 방지
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    },
     routes: [
-      // 앱바 없는 개별 라우트들
       ...routeBuilders.keys
           .where((path) => !shellRoutes.contains(path))
           .map((path) => GoRoute(path: path, builder: routeBuilders[path]!)),
 
-      // 앱바 고정 ShellRoute
       ShellRoute(
         builder: (context, state, child) => ScaffoldWithNavBar(child: child),
         routes: shellRoutes.map((path) {
@@ -242,7 +234,6 @@ GoRouter createAppRouter(String initialRoute) {
     ],
   );
 
-  // NavigationService에 라우터 등록
   NavigationService.initialize(router);
 
   return router;
