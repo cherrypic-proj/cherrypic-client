@@ -6,7 +6,7 @@ class IamportService {
   static const String userCode = 'imp51387560';
 
   /// ------------------------------------------------------------
-  /// ✅ [핵심] 환경별/결제수단별 통합 결제 데이터 생성 함수
+  /// [핵심] 환경별/결제수단별 통합 결제 데이터 생성 함수
   /// 이 함수 하나로 카카오페이와 토스페이를 모두 처리합니다.
   /// ------------------------------------------------------------
   static PaymentData createPaymentDataForEnvironment({
@@ -46,7 +46,6 @@ class IamportService {
       buyerPostcode: '06018',
       appScheme: 'cherrypic', // 필수 설정
 
-      // ⚠️ mRedirectUrl은 제거했습니다 (앱 복귀 충돌 방지)
       customData: {
         'service_type': 'subscription',
         'platform': 'mobile_app',
@@ -56,7 +55,7 @@ class IamportService {
   }
 
   /// ------------------------------------------------------------
-  /// ✅ 결제 결과 성공 여부 판단 함수
+  ///  결제 결과 성공 여부 판단 함수
   /// (imp_uid가 있으면 성공으로 간주하도록 수정됨)
   /// ------------------------------------------------------------
   static bool isPaymentSuccessful(Map<String, String> result) {
@@ -73,11 +72,11 @@ class IamportService {
     if (success == 'true' ||
         impSuccess == 'true' ||
         (impUid != null && errorMsg == null)) {
-      print('✅ 결제 성공 확인 (imp_uid: $impUid)');
+      print('결제 성공 확인 (imp_uid: $impUid)');
       return true;
     } else {
       final errorCode = result['error_code'];
-      print('❌ 결제 실패: $errorCode - $errorMsg');
+      print('결제 실패: $errorCode - $errorMsg');
       return false;
     }
   }
@@ -88,7 +87,7 @@ class IamportService {
   }
 }
 
-// (선택 사항) 결제 결과 모델 클래스 - 필요하면 사용
+//  결제 결과 모델 클래스 - 필요하면 사용
 class PaymentResult {
   final bool isSuccess;
   final String? impUid;
