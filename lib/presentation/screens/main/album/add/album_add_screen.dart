@@ -151,14 +151,20 @@ class _AlbumAddScreenState extends State<AlbumAddScreen> {
         _showErrorDialog(_albumAddViewModel.error!);
       }
     } else {
-      // 유료 앨범인 경우 결제 화면으로 이동
+      // 유료 앨범인 경우 결제 화면으로 이동하고 결과를 기다림
       final subscriptionType = _getSubscriptionTypeString(selectedType);
       final albumData = _getAlbumData();
 
-      context.push(
+      final result = await context.push(
         RoutePath.payment_method,
         extra: {'subscriptionType': subscriptionType, 'albumData': albumData},
       );
+
+      // 결제 및 생성이 성공적으로 완료되었다면(result == true),
+      // 이 화면도 닫으면서 이전(AlbumOptionMenu)에 성공 신호를 전달합니다.
+      if (result == true && mounted) {
+        context.pop(true);
+      }
     }
   }
 

@@ -84,7 +84,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
         isProduction: false, // 실배포 시 true로 변경 필요
       );
 
-      // 3. 결제 화면(WebView)으로 이동
+      // 3. 결제 화면(WebView)으로 이동하고, 결과(성공 시 true)를 기다림
       // ignore: use_build_context_synchronously
       Navigator.push(
         context,
@@ -110,12 +110,16 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
             );
           },
         ),
-      ).then((_) {
-        // 결제창이 닫히면 버튼 잠금 해제
+      ).then((paymentAndAlbumCreationSuccess) {
+        // 결제창이 닫히면 항상 버튼 잠금 해제
         if (mounted) {
           setState(() {
             _isProcessingPayment = false;
           });
+        }
+        // 최종 성공 신호(true)를 받으면 이 화면도 닫고 이전 화면(AlbumAddScreen)으로 신호를 전달
+        if (paymentAndAlbumCreationSuccess == true) {
+          context.pop(true);
         }
       });
     } catch (e) {
@@ -138,6 +142,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
     final impUid = IamportService.getImpUid(result);
     final errorMsg = result['error_msg'];
 
+
     // 실패 시 처리
     if (!isSuccess || impUid == null) {
       if (mounted) Navigator.pop(context); // 웹뷰 닫기
@@ -158,6 +163,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
       // 2. 서버 검증 (Verify)
       final verifyResponse = await _paymentRepository.verifyPayment(impUid);
       final paymentId = verifyResponse.paymentId;
+
 
       // 3. 커버 이미지 업로드 (이미지가 있는 경우만)
       String? coverUrl;
@@ -181,13 +187,14 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
 
       await _albumRepository.createAlbum(requestDto);
 
-      // 5. 모든 과정 성공 시 홈으로 이동
+      // 5. 모든 과정 성공 시: 로딩 다이얼로그 닫고, 결제창에 성공(true) 신호 보내기
       if (mounted) {
-        context.go(RoutePath.home);
+        // Pop loading dialog
+        Navigator.pop(context);
+        // Pop IamportPayment screen, returning `true` for success
+        Navigator.pop(context, true);
       }
     } catch (e) {
-      print('[ERROR] 앨범 생성 실패: $e');
-
       // 로딩 및 웹뷰 닫기 (안전 처리)
       if (mounted && Navigator.canPop(context)) Navigator.pop(context);
       if (mounted && Navigator.canPop(context)) Navigator.pop(context);
