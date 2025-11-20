@@ -108,6 +108,7 @@ class IamportService {
       buyerAddr: '서울시 강남구 신사동 661-16',
       buyerPostcode: '06018',
       appScheme: 'cherrypic',
+      mRedirectUrl: 'cherrypic://app/payment-result',
       customData: {
         'service_type': 'subscription',
         'platform': 'mobile_app',

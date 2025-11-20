@@ -7,11 +7,14 @@ class RoutePath {
 
   static const String myPage = '/my_page/my_page_screen';
   static const String myPage_notice = '/my_page/notice/notice_screen';
-  static const String myPage_album_management = '/my_page/album_management/album_management_screen';
+  static const String myPage_album_management =
+      '/my_page/album_management/album_management_screen';
   static const String myPage_subscription_payment_info =
       '/my_page/subscription_payment_info/subscription_payment_info_screen';
-  static const String myPage_photo_management = '/my_page/photo_management/photo_management_screen';
-  static const String myPage_photo_bill = '/my_page/photo_management/photo_bill_screen';
+  static const String myPage_photo_management =
+      '/my_page/photo_management/photo_management_screen';
+  static const String myPage_photo_bill =
+      '/my_page/photo_management/photo_bill_screen';
   static const String myPage_address_management =
       '/my_page/address_management/address_management_screen';
   static const String myPage_add_address =
@@ -35,6 +38,7 @@ class RoutePath {
       '/store/subscription/payment_method_screen';
   static const String payment_complete =
       '/store/subscription/payment_complete_screen';
+  static const String paymentResult = '/payment-result';
 
   static const String photo_printing =
       '/store/photo_printing/photo_printing_screen';

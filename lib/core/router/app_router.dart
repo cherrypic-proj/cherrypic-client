@@ -8,6 +8,7 @@ import 'package:cherrypic/data/login/services/kakao_auth_data_source.dart';
 import 'package:cherrypic/presentation/screens/event/event_list_detail/event_list_screen.dart';
 import 'package:cherrypic/presentation/screens/event/event_main_screen.dart';
 import 'package:cherrypic/presentation/screens/main/album/add/album_add_screen.dart';
+import 'package:cherrypic/presentation/screens/main/album/add/payment_result_processing_screen.dart';
 import 'package:cherrypic/presentation/screens/main/album/edit/album_edit_screen.dart';
 import 'package:cherrypic/presentation/screens/main/detail/album_detail_screen.dart';
 import 'package:cherrypic/presentation/screens/main/detail/album_detail_view_model.dart';
@@ -184,6 +185,14 @@ final Map<String, GoRouterWidgetBuilder> routeBuilders = {
       isSuccess: extra?['isSuccess'] ?? false,
     );
   },
+
+  RoutePath.paymentResult: (context, state) {
+    // URL의 쿼리 파라미터(imp_uid, success 등)를 모두 가져와서 화면으로 넘깁니다.
+    return PaymentResultProcessingScreen(
+      queryParams: state.uri.queryParameters,
+    );
+  },
+
   RoutePath.photo_printing: (context, state) => const PhotoPrintingScreen(),
   RoutePath.select_album: (context, state) => const SelectAlbumScreen(),
   RoutePath.select_image: (context, state) {
@@ -216,6 +225,7 @@ GoRouter createAppRouter(String initialRoute) {
   final router = GoRouter(
     navigatorKey: rootNavigatorKey, // [추가 2] 마스터 키 등록 (필수!)
     initialLocation: initialRoute,
+
     errorBuilder: (context, state) {
       // 딥링크 등으로 알 수 없는 경로로 왔을 때 앱이 죽는 것을 방지
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
