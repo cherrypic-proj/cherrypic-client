@@ -1,7 +1,9 @@
+import 'package:cherrypic/presentation/screens/main/home_tab/main_view_model.dart';
 import 'package:cherrypic/presentation/screens/main/mini_add_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:cherrypic/core/constants/color.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../../core/router/route_path.dart';
 
@@ -26,10 +28,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       title: GestureDetector(
-        onTap: (){
+        onTap: () {
+          context.read<MainViewModel>().refresh();
+          // 홈 화면으로 이동합니다.
           context.go(RoutePath.home);
         },
-          child: Image.asset('assets/images/CherryPic_logo.png', height: 50)),
+        child: Image.asset('assets/images/CherryPic_logo.png', height: 50),
+      ),
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 10),
