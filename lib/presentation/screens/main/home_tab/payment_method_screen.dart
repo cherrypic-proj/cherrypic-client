@@ -142,7 +142,6 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
     final impUid = IamportService.getImpUid(result);
     final errorMsg = result['error_msg'];
 
-
     // 실패 시 처리
     if (!isSuccess || impUid == null) {
       if (mounted) Navigator.pop(context); // 웹뷰 닫기
@@ -163,7 +162,6 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
       // 2. 서버 검증 (Verify)
       final verifyResponse = await _paymentRepository.verifyPayment(impUid);
       final paymentId = verifyResponse.paymentId;
-
 
       // 3. 커버 이미지 업로드 (이미지가 있는 경우만)
       String? coverUrl;
@@ -196,7 +194,6 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
       }
     } catch (e) {
       // 로딩 및 웹뷰 닫기 (안전 처리)
-      if (mounted && Navigator.canPop(context)) Navigator.pop(context);
       if (mounted && Navigator.canPop(context)) Navigator.pop(context);
 
       if (mounted) {

@@ -69,6 +69,9 @@ class IamportService {
     );
 
     // 성공 조건: success가 true이거나, imp_uid가 존재하면 성공으로 간주
+    // TODO: 결제 시스템 수정이 필요합니다.
+    // 일부 PG사(예: 토스페이)는 success 플래그를 리턴하지 않는 경우가 있어,
+    // 명시적인 에러 메시지가 없고 imp_uid가 존재하면 성공으로 간주합니다.
     if (success == 'true' ||
         impSuccess == 'true' ||
         (impUid != null && errorMsg == null)) {

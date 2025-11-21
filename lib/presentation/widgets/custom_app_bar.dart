@@ -29,8 +29,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       title: GestureDetector(
         onTap: () {
-          context.read<MainViewModel>().refresh();
-          // 홈 화면으로 이동합니다.
+          final viewModel = Provider.of<MainViewModel?>(context, listen: false);
+          viewModel?.refresh();
           context.go(RoutePath.home);
         },
         child: Image.asset('assets/images/CherryPic_logo.png', height: 50),

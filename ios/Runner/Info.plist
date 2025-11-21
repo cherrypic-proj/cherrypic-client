@@ -71,7 +71,9 @@
         <string>kakaopay</string>
         <string>toss</string>
         <string>tosspayments</string>
-        <string>supertoss</string> <string>mpocket.online.ansimclick</string> <string>ansimclickscard</string>
+        <string>supertoss</string> 
+        <string>mpocket.online.ansimclick</string> 
+        <string>ansimclickscard</string>
         <string>ansimclickipcollect</string>
         <string>vguardstart</string>
         <string>samsungpay</string>
@@ -136,8 +138,6 @@
         <key>NSAllowsArbitraryLoadsInWebContent</key>
         <true/>
     </dict>
-        <key>FlutterDeepLinkingEnabled</key>
-        <false/>
 
 </dict>
 </plist>

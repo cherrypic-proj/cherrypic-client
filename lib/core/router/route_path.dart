@@ -38,7 +38,6 @@ class RoutePath {
       '/store/subscription/payment_method_screen';
   static const String payment_complete =
       '/store/subscription/payment_complete_screen';
-  static const String paymentResult = '/payment-result';
 
   static const String photo_printing =
       '/store/photo_printing/photo_printing_screen';
