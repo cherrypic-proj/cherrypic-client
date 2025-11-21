@@ -193,13 +193,11 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
         Navigator.pop(context, true);
       }
     } catch (e) {
-      // Pop loading dialog and Iamport webview to return to PaymentMethodScreen
       if (mounted) {
         Navigator.pop(context); // Pop loading dialog
         Navigator.pop(context); // Pop Iamport webview
       }
 
-      // Now, pop the PaymentMethodScreen itself to go back to the previous screen
       if (mounted) {
         context.pop();
       }

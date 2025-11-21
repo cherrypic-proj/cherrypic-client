@@ -11,7 +11,9 @@ import 'package:cherrypic/core/constants/font.dart';
 import 'package:go_router/go_router.dart';
 
 class AlbumAddScreen extends StatefulWidget {
-  const AlbumAddScreen({super.key});
+  final AlbumAddViewModel? viewModel;
+
+  const AlbumAddScreen({super.key, this.viewModel});
 
   @override
   State<AlbumAddScreen> createState() => _AlbumAddScreenState();
@@ -25,7 +27,7 @@ class _AlbumAddScreenState extends State<AlbumAddScreen> {
   void initState() {
     super.initState();
     _albumCoverViewModel = AlbumCoverViewModel();
-    _albumAddViewModel = AlbumAddViewModel();
+    _albumAddViewModel = widget.viewModel ?? AlbumAddViewModel();
     // initState는 async가 될 수 없으므로 별도 메서드로 분리
     _initializeScreen();
   }

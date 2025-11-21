@@ -29,7 +29,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       title: GestureDetector(
         onTap: () {
-          final viewModel = Provider.of<MainViewModel?>(context, listen: false);
+          final viewModel = context.read<MainViewModel?>();
           viewModel?.refresh();
           context.go(RoutePath.home);
         },
