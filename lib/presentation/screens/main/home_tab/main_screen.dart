@@ -32,7 +32,7 @@ class _MainScreenState extends State<MainScreen> {
       context: context,
       barrierDismissible: true,
       barrierLabel: 'Dismiss',
-      barrierColor: Colors.black.withOpacity(0.5),
+      barrierColor: Colors.black.withValues(alpha: 0.5),
       transitionDuration: const Duration(milliseconds: 200),
       pageBuilder: (context, animation, secondaryAnimation) {
         return FadeTransition(
@@ -147,11 +147,7 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                 ),
                 const SizedBox(width: 6),
-                Image.asset(
-                  'assets/images/plus_bt.png',
-                  width: 20,
-                  height: 20,
-                ),
+                Image.asset('assets/images/plus_bt.png', width: 20, height: 20),
               ],
             ),
           ),
@@ -160,4 +156,3 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 }
-
