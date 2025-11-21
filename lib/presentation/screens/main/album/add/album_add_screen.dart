@@ -1,4 +1,5 @@
 import 'package:cherrypic/core/router/route_path.dart';
+import 'package:cherrypic/data/album/dto/response/unlinked_payment_response_dto.dart';
 import 'package:cherrypic/presentation/screens/main/album/add/album_add_view_model.dart';
 import 'package:cherrypic/presentation/screens/main/album/components/album_cover_section.dart';
 import 'package:cherrypic/presentation/screens/main/album/components/album_cover_view_model.dart';
@@ -10,7 +11,9 @@ import 'package:cherrypic/core/constants/font.dart';
 import 'package:go_router/go_router.dart';
 
 class AlbumAddScreen extends StatefulWidget {
-  const AlbumAddScreen({super.key});
+  final AlbumAddViewModel? viewModel;
+
+  const AlbumAddScreen({super.key, this.viewModel});
 
   @override
   State<AlbumAddScreen> createState() => _AlbumAddScreenState();
@@ -24,7 +27,20 @@ class _AlbumAddScreenState extends State<AlbumAddScreen> {
   void initState() {
     super.initState();
     _albumCoverViewModel = AlbumCoverViewModel();
-    _albumAddViewModel = AlbumAddViewModel();
+    _albumAddViewModel = widget.viewModel ?? AlbumAddViewModel();
+    // initState는 async가 될 수 없으므로 별도 메서드로 분리
+    _initializeScreen();
+  }
+
+  Future<void> _initializeScreen() async {
+    // 위젯이 완전히 빌드된 후에 실행하기 위해 지연 추가
+    await Future.delayed(Duration.zero);
+
+    final unlinkedPayment =
+        await _albumAddViewModel.checkForOrphanedPayment();
+    if (unlinkedPayment != null && mounted) {
+      _showRecoveryDialog(unlinkedPayment);
+    }
   }
 
   @override
@@ -32,6 +48,34 @@ class _AlbumAddScreenState extends State<AlbumAddScreen> {
     _albumCoverViewModel.dispose();
     _albumAddViewModel.dispose();
     super.dispose();
+  }
+
+  void _showRecoveryDialog(UnlinkedPaymentResponseDto payment) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('미완료된 결제 발견'),
+        content: Text(
+          '결제가 완료된 \'${payment.albumType}\' 구독 유형이 있습니다. '
+          '이어서 생성을 진행하시겠습니까?\n\n'
+          '(이 결제를 사용하지 않으면 10분 내에 자동으로 환불됩니다.)',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('아니오'),
+          ),
+          TextButton(
+            onPressed: () {
+              _albumAddViewModel.acceptRecovery();
+              Navigator.pop(dialogContext);
+            },
+            child: const Text('예'),
+          ),
+        ],
+      ),
+    );
   }
 
   // --- (Dialog 관련 메서드는 동일) ---
@@ -134,11 +178,11 @@ class _AlbumAddScreenState extends State<AlbumAddScreen> {
       return;
     }
 
-    // 무료 앨범인 경우 바로 생성
-    if (selectedType.price == 0) {
+    // 복구 모드이거나 무료 앨범인 경우 바로 생성 로직 실행
+    if (_albumAddViewModel.isRecovering || selectedType.price == 0) {
       _showLoadingDialog();
 
-      bool success = await _albumAddViewModel.createFreeAlbum(
+      bool success = await _albumAddViewModel.createAlbum(
         albumName: cleanAlbumName,
         coverImage: _albumCoverViewModel.coverImage,
       );
@@ -146,19 +190,25 @@ class _AlbumAddScreenState extends State<AlbumAddScreen> {
       _hideLoadingDialog();
 
       if (success && mounted) {
-        context.pop(true);
+        context.pop(true); // 성공 시 화면 닫기
       } else if (_albumAddViewModel.error != null) {
         _showErrorDialog(_albumAddViewModel.error!);
       }
     } else {
-      // 유료 앨범인 경우 결제 화면으로 이동
+      // 유료 앨범인 경우 결제 화면으로 이동하고 결과를 기다림
       final subscriptionType = _getSubscriptionTypeString(selectedType);
       final albumData = _getAlbumData();
 
-      context.push(
+      final result = await context.push(
         RoutePath.payment_method,
         extra: {'subscriptionType': subscriptionType, 'albumData': albumData},
       );
+
+      // 결제 및 생성이 성공적으로 완료되었다면(result == true),
+      // 이 화면도 닫으면서 이전(AlbumOptionMenu)에 성공 신호를 전달합니다.
+      if (result == true && mounted) {
+        context.pop(true);
+      }
     }
   }
 
@@ -201,6 +251,10 @@ class _AlbumAddScreenState extends State<AlbumAddScreen> {
                     onTypeSelected: (type) {
                       _albumAddViewModel.setSelectedAlbumType(type);
                     },
+                    // 복구 모드일 때는 앨범 유형 선택을 비활성화
+                    enabled: !_albumAddViewModel.isRecovering,
+                    // 복구 모드일 때 선택된 타입을 초기값으로 설정
+                    initialSelectedType: _albumAddViewModel.selectedAlbumType,
                   ),
                   const SizedBox(height: 50),
 

@@ -45,12 +45,11 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+    
     <key>NSPhotoLibraryUsageDescription</key>
     <string>앨범 커버로 설정할 이미지를 선택하기 위해 사진 라이브러리에 접근합니다.</string>
-    
     <key>NSLocalNetworkUsageDescription</key>
     <string>결제 처리를 위해 로컬 네트워크에 접근합니다.</string>
-    
     <key>NSPhotoLibraryAddUsageDescription</key>
     <string>선택한 사진을 기기의 앨범에 저장하기 위해 권한이 필요합니다.</string>
     
@@ -61,7 +60,7 @@
     
     <key>KAKAO_APP_KEY</key>
     <string>$(KAKAO_NATIVE_APP_KEY)</string>
-    
+   
     <key>LSApplicationQueriesSchemes</key>
     <array>
         <string>kakaokompassauth</string>
@@ -72,21 +71,54 @@
         <string>kakaopay</string>
         <string>toss</string>
         <string>tosspayments</string>
+        <string>supertoss</string> 
+        <string>mpocket.online.ansimclick</string> 
+        <string>ansimclickscard</string>
+        <string>ansimclickipcollect</string>
+        <string>vguardstart</string>
+        <string>samsungpay</string>
+        <string>scardcertiapp</string>
+        <string>lottesmartpay</string>
+        <string>lotteappcard</string>
+        <string>cloudpay</string>
+        <string>nhappcardansimclick</string>
+        <string>nonghyupcardansimclick</string>
+        <string>kb-acp</string>
+        <string>mpocket.online.ansimclick</string>
+        <string>ansimclickscard</string>
+        <string>ansimclickipcollect</string>
+        <string>vguardstart</string>
+        <string>samsungpay</string>
+        <string>scardcertiapp</string>
+        <string>lottesmartpay</string>
+        <string>lotteappcard</string>
+        <string>cloudpay</string>
+        <string>nhappcardansimclick</string>
+        <string>nonghyupcardansimclick</string>
+        <string>citispay</string>
+        <string>citicardappkr</string>
+        <string>citimobileapp</string>
+        <string>kpay</string>
+        <string>payco</string>
+        <string>lpayapp</string>
+        <string>hanamopmoasign</string>
+        <string>wooripay</string>
+        <string>nhallonepayansimclick</string>
+        <string>hanawalletmembers</string>
     </array>
     
-	<key>CFBundleURLTypes</key>
+    <key>CFBundleURLTypes</key>
     <array>
         <dict>
-            <key>CFBundleURLName</key>
-            <string>kakao</string>
             <key>CFBundleTypeRole</key>
             <string>Editor</string>
+            <key>CFBundleURLName</key>
+            <string>kakao</string>
             <key>CFBundleURLSchemes</key>
             <array>
                 <string>kakao$(KAKAO_NATIVE_APP_KEY)</string>
             </array>
         </dict>
-        
         <dict>
             <key>CFBundleTypeRole</key>
             <string>Editor</string>
@@ -97,6 +129,15 @@
                 <string>cherrypic</string>
             </array>
         </dict>
-    </array>    
+    </array>
+
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+        <key>NSAllowsArbitraryLoadsInWebContent</key>
+        <true/>
+    </dict>
+
 </dict>
 </plist>

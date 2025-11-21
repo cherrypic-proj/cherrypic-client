@@ -2,42 +2,40 @@ import 'package:cherrypic/presentation/screens/store/components/payment_method_b
 import 'package:iamport_flutter/model/payment_data.dart';
 
 class IamportService {
-  // React 코드와 동일한 가맹점 코드 사용
-  static const String userCode = 'imp14735503';
+  // 가맹점 식별 코드
+  static const String userCode = 'imp51387560';
 
-  // 기존 호환성을 위한 카카오페이 결제 데이터 생성
-  static PaymentData createPaymentData({
+  /// ------------------------------------------------------------
+  /// [핵심] 환경별/결제수단별 통합 결제 데이터 생성 함수
+  /// 이 함수 하나로 카카오페이와 토스페이를 모두 처리합니다.
+  /// ------------------------------------------------------------
+  static PaymentData createPaymentDataForEnvironment({
     required String merchantUid,
     required String name,
     required int amount,
     required String buyerName,
+    required PaymentMethodType paymentType, // 여기서 카카오인지 토스인지 구분
+    bool isProduction = false,
   }) {
-    return PaymentData(
-      pg: 'kakaopay', // React 코드와 동일
-      payMethod: 'card',
-      name: name, // 테스트 표시 제거 (React 코드와 동일)
-      merchantUid: merchantUid,
-      amount: amount, // 실제 금액 사용 (React 코드와 동일)
-      buyerName: buyerName,
-      buyerTel: '010-1234-5678',
-      buyerEmail: 'test@example.com',
-      buyerAddr: '서울시 강남구 신사동 661-16',
-      buyerPostcode: '06018',
-      appScheme: 'cherrypic',
-      customData: {'service_type': 'subscription', 'platform': 'mobile_app'},
-    );
-  }
+    String pg;
+    String method;
 
-  // 토스페이 결제 데이터 생성
-  static PaymentData createTossPaymentData({
-    required String merchantUid,
-    required String name,
-    required int amount,
-    required String buyerName,
-  }) {
+    // 1. 결제 수단에 따른 PG사 및 PayMethod 설정 분기
+    if (paymentType == PaymentMethodType.kakao) {
+      // [카카오페이 설정]
+      pg = 'kakaopay';
+      // 카카오는 'card'나 'EASY_PAY' 등을 사용 (보통 card로 해도 앱이 뜹니다)
+      method = 'card';
+    } else {
+      // [토스페이 설정] - 앱 연동을 위한 필수 설정
+      pg = 'tosspay_v2';
+      // 토스페이 앱을 바로 띄우려면 반드시 'tosspay'여야 함
+      method = 'tosspay';
+    }
+
     return PaymentData(
-      pg: 'tosspay',
-      payMethod: 'card',
+      pg: pg, // 위에서 결정된 PG사
+      payMethod: method, // 위에서 결정된 결제 방식
       name: name,
       merchantUid: merchantUid,
       amount: amount,
@@ -46,68 +44,8 @@ class IamportService {
       buyerEmail: 'test@example.com',
       buyerAddr: '서울시 강남구 신사동 661-16',
       buyerPostcode: '06018',
-      appScheme: 'cherrypic',
-      customData: {'service_type': 'subscription', 'platform': 'mobile_app'},
-    );
-  }
+      appScheme: 'cherrypic', // 필수 설정
 
-  // 결제 결과 처리 (React 코드 로직과 동일)
-  static bool isPaymentSuccessful(Map<String, String> result) {
-    // React: rsp.success 체크
-    final success = result['success'];
-    final impSuccess = result['imp_success'];
-
-    print('결제 결과 success 값: $success');
-    print('결제 결과 imp_success 값: $impSuccess');
-    print('전체 결과: $result');
-
-    // React 코드와 동일한 로직
-    if (success == 'true' || impSuccess == 'true') {
-      print('✅ 결제 성공');
-      return true;
-    } else {
-      final errorCode = result['error_code'];
-      final errorMsg = result['error_msg'];
-      print('❌ 결제 실패: $errorCode - $errorMsg');
-      return false;
-    }
-  }
-
-  // IMP UID 추출 (React: rsp 객체에서 추출)
-  static String? getImpUid(Map<String, String> result) {
-    return result['imp_uid'];
-  }
-
-  // 환경별 결제 데이터 생성
-  static PaymentData createPaymentDataForEnvironment({
-    required String merchantUid,
-    required String name,
-    required int amount,
-    required String buyerName,
-    required PaymentMethodType paymentType,
-    bool isProduction = false,
-  }) {
-    String pg;
-
-    // React 코드 기반 PG 설정
-    if (paymentType == PaymentMethodType.kakao) {
-      pg = 'kakaopay'; // React 코드와 동일
-    } else {
-      pg = 'tosspay';
-    }
-
-    return PaymentData(
-      pg: pg,
-      payMethod: 'card',
-      name: name, // React 코드처럼 원본 이름 사용
-      merchantUid: merchantUid,
-      amount: amount, // React 코드처럼 실제 금액 사용
-      buyerName: buyerName,
-      buyerTel: '010-1234-5678',
-      buyerEmail: 'test@example.com',
-      buyerAddr: '서울시 강남구 신사동 661-16',
-      buyerPostcode: '06018',
-      appScheme: 'cherrypic',
       customData: {
         'service_type': 'subscription',
         'platform': 'mobile_app',
@@ -115,9 +53,44 @@ class IamportService {
       },
     );
   }
+
+  /// ------------------------------------------------------------
+  ///  결제 결과 성공 여부 판단 함수
+  /// (imp_uid가 있으면 성공으로 간주하도록 수정됨)
+  /// ------------------------------------------------------------
+  static bool isPaymentSuccessful(Map<String, String> result) {
+    final success = result['success'];
+    final impSuccess = result['imp_success'];
+    final impUid = result['imp_uid'];
+    final errorMsg = result['error_msg'];
+
+    print(
+      '🔍 결제 결과 분석: success=$success, imp_success=$impSuccess, imp_uid=$impUid',
+    );
+
+    // 성공 조건: success가 true이거나, imp_uid가 존재하면 성공으로 간주
+    // TODO: 결제 시스템 수정이 필요합니다.
+    // 일부 PG사(예: 토스페이)는 success 플래그를 리턴하지 않는 경우가 있어,
+    // 명시적인 에러 메시지가 없고 imp_uid가 존재하면 성공으로 간주합니다.
+    if (success == 'true' ||
+        impSuccess == 'true' ||
+        (impUid != null && errorMsg == null)) {
+      print('결제 성공 확인 (imp_uid: $impUid)');
+      return true;
+    } else {
+      final errorCode = result['error_code'];
+      print('결제 실패: $errorCode - $errorMsg');
+      return false;
+    }
+  }
+
+  // IMP UID 추출 헬퍼 함수
+  static String? getImpUid(Map<String, String> result) {
+    return result['imp_uid'];
+  }
 }
 
-// 결제 결과 모델
+//  결제 결과 모델 클래스 - 필요하면 사용
 class PaymentResult {
   final bool isSuccess;
   final String? impUid;
