@@ -4,6 +4,7 @@ import 'package:cherrypic/core/network/error_handler.dart';
 import 'package:cherrypic/data/album/dto/request/payment_ready_request_dto.dart';
 import 'package:cherrypic/data/album/dto/response/payment_ready_response_dto.dart';
 import 'package:cherrypic/data/album/dto/request/payment_verify_request_dto.dart';
+import 'package:cherrypic/data/album/dto/response/unlinked_payment_response_dto.dart';
 import 'package:dio/dio.dart';
 
 class PaymentRemoteDataSource {
@@ -45,6 +46,23 @@ class PaymentRemoteDataSource {
       );
 
       return apiResponse.data!;
+    } on DioException catch (e) {
+      throw ErrorHandler.handle(e);
+    }
+  }
+
+  // 연결되지 않은 결제 조회
+  Future<UnlinkedPaymentResponseDto?> getUnlinkedPayment() async {
+    try {
+      final response = await _dio.get('/payments/unlinked');
+
+      final apiResponse = ApiResponse.fromJson(
+        response.data,
+        (json) =>
+            UnlinkedPaymentResponseDto.fromJson(json as Map<String, dynamic>),
+      );
+
+      return apiResponse.data;
     } on DioException catch (e) {
       throw ErrorHandler.handle(e);
     }

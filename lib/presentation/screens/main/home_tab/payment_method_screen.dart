@@ -193,15 +193,22 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
         Navigator.pop(context, true);
       }
     } catch (e) {
-      // 로딩 및 웹뷰 닫기 (안전 처리)
-      if (mounted && Navigator.canPop(context)) Navigator.pop(context);
-
+      // Pop loading dialog and Iamport webview to return to PaymentMethodScreen
       if (mounted) {
-        _showGlobalDialog(
-          '오류',
-          '결제는 성공했으나 앨범 생성 중 오류가 발생했습니다.\n${e.toString()}',
-        );
+        Navigator.pop(context); // Pop loading dialog
+        Navigator.pop(context); // Pop Iamport webview
       }
+
+      // Now, pop the PaymentMethodScreen itself to go back to the previous screen
+      if (mounted) {
+        context.pop();
+      }
+
+      // Finally, show the informational dialog on the previous screen.
+      _showGlobalDialog(
+        '앨범 생성 실패',
+        '앨범 생성이 실패했습니다. 앨범 생성 버튼을 통해 다시 시도해 주세요. 10분 내에 생성하지 않으면 결제는 자동으로 취소됩니다.',
+      );
     }
   }
 
